@@ -84,9 +84,9 @@ function BlobBg2({ color = C.beige, opacity = 0.3, position = "bottom-left", sca
 }
 
 // ─── Glassmorphic Card ───
-function GlassCard({ children, style = {}, heavy = false, noBorder = false }) {
+function GlassCard({ children, style = {}, heavy = false, noBorder = false, onClick }) {
   return (
-    <div style={{
+    <div onClick={onClick} style={{
       background: heavy ? C.glassHeavy : C.glass,
       backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
       borderRadius: R.xl,
@@ -225,11 +225,11 @@ function PillTag({ children, variant = "red" }) {
 
 // ─── Data ───
 const schedule = [
-  { time: "07:00", cls: "Morning Flow", teacher: "Tara", spots: 3 },
-  { time: "09:30", cls: "Reformer Basics", teacher: "Elena", spots: 1 },
-  { time: "12:00", cls: "Power Mat", teacher: "Petra", spots: 5 },
-  { time: "17:30", cls: "Barre Sculpt", teacher: "Maia", spots: 2 },
-  { time: "19:00", cls: "Stretch & Restore", teacher: "Tara", spots: 7 },
+  { time: "07:00", cls: "Morning Flow", teacher: "Tara", spots: 3, duration: 50, level: "All levels", price: "€22", desc: "A gentle, energising flow to start your day. Focus on breath, mobility, and full-body activation. Perfect for early risers who want to move before work." },
+  { time: "09:30", cls: "Reformer Basics", teacher: "Elena", spots: 1, duration: 55, level: "Beginner", price: "€28", desc: "Learn the fundamentals of Reformer Pilates with proper form and alignment. Small class size ensures personalised attention. Grip socks required." },
+  { time: "12:00", cls: "Power Mat", teacher: "Petra", spots: 5, duration: 45, level: "Intermediate", price: "€20", desc: "A challenging mat Pilates class that builds core strength and endurance. Expect planks, teasers, and a serious burn. Bring water!" },
+  { time: "17:30", cls: "Barre Sculpt", teacher: "Maia", spots: 2, duration: 50, level: "All levels", price: "€24", desc: "Ballet-inspired movements meet Pilates precision. Sculpt your legs, glutes, and arms with small, controlled pulses. No dance experience needed." },
+  { time: "19:00", cls: "Stretch & Restore", teacher: "Tara", spots: 7, duration: 60, level: "All levels", price: "€18", desc: "Wind down with deep stretching, myofascial release, and guided relaxation. The perfect end to your day. Props provided." },
 ];
 
 const deals = [
@@ -311,15 +311,24 @@ function DealModal({ deal, onClose }) {
 // ═══════════════════════════════════════════════════
 // SCREEN: HOME
 // ═══════════════════════════════════════════════════
-function HomeScreen({ visits, onProfileClick, onNfcTap, profileComplete, hasFreeCreditAvailable, onBookFreeClass }) {
+function HomeScreen({ visits, onProfileClick, onNfcTap, profileComplete, hasFreeCreditAvailable, onBookFreeClass, onBookClass }) {
   const [expandedDeal, setExpandedDeal] = useState(null);
 
-  const progressMsg = visits < 3
-    ? "You're just getting started — let's move!"
-    : visits < 6 ? "Nice momentum — keep showing up!"
-    : visits < 9 ? "So close to your free class!"
-    : visits === 9 ? "One more visit to go!"
-    : "Ready to claim your reward!";
+  const milestones = [
+    { at: 0, emoji: "🌱", msg: "Tap to start your journey!", color: C.textA(0.5) },
+    { at: 1, emoji: "🔥", msg: "First visit done — you're in!", color: C.red },
+    { at: 2, emoji: "💪", msg: "Building a habit — nice!", color: C.red },
+    { at: 3, emoji: "⚡", msg: "3 down — getting stronger!", color: C.red },
+    { at: 4, emoji: "🌟", msg: "Almost halfway there!", color: C.red },
+    { at: 5, emoji: "🎯", msg: "Halfway! Keep that energy!", color: C.blue },
+    { at: 6, emoji: "🔥", msg: "6 visits — you're on fire!", color: C.blue },
+    { at: 7, emoji: "🚀", msg: "7 down — unstoppable!", color: C.blue },
+    { at: 8, emoji: "✨", msg: "So close — 2 more to go!", color: C.red },
+    { at: 9, emoji: "🏆", msg: "ONE more visit to your free class!", color: C.red },
+    { at: 10, emoji: "🎉", msg: "Free class earned!", color: C.red },
+  ];
+  const milestone = milestones[Math.min(visits, 10)];
+  const pct = Math.round((visits / 10) * 100);
 
   return (
     <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, position: "relative", overflow: "hidden", minHeight: "100%" }}>
@@ -377,23 +386,46 @@ function HomeScreen({ visits, onProfileClick, onNfcTap, profileComplete, hasFree
         </div>
       )}
 
-      {/* Progress Card — with ring */}
-      <GlassCard style={{ padding: S.lg }} heavy>
-        <div style={{ display: "flex", alignItems: "center", gap: S.lg }}>
-          <ProgressRing value={visits} max={10} size={72} stroke={5} />
+      {/* Progress Card — redesigned for impact */}
+      <GlassCard style={{ padding: S.lg, overflow: "hidden" }} heavy>
+        {/* Top section: ring + milestone */}
+        <div style={{ display: "flex", alignItems: "center", gap: S.lg, marginBottom: S.md }}>
+          <ProgressRing value={visits} max={10} size={80} stroke={6} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: F.xs, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1, marginBottom: S.xs }}>Your Progress</div>
-            <div style={{ fontSize: F.md, fontWeight: 700, color: C.text, fontFamily: F.display }}>{visits} of 10 visits</div>
-            <div style={{ fontSize: F.xs, color: C.textA(0.55), fontFamily: F.body, marginTop: S.xs, lineHeight: 1.4 }}>{progressMsg}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: S.sm, marginBottom: S.xs }}>
+              <span style={{ fontSize: 20 }}>{milestone.emoji}</span>
+              <span style={{ fontSize: F.xs, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1 }}>{pct}% complete</span>
+            </div>
+            <div style={{ fontSize: F.lg, fontWeight: 800, color: milestone.color, fontFamily: F.display, lineHeight: 1.3 }}>{milestone.msg}</div>
           </div>
         </div>
+
+        {/* Big progress bar */}
+        <div style={{ height: 8, borderRadius: R.pill, background: C.textA(0.06), marginBottom: S.md, overflow: "hidden" }}>
+          <div style={{
+            height: "100%", borderRadius: R.pill,
+            background: visits >= 5 ? C.blueGrad : C.warmGrad,
+            width: pct + "%", transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+          }} />
+        </div>
+
+        {/* Stamp grid */}
         <MiniStampGrid filled={visits} />
+
+        {/* Reward teaser */}
         <div style={{
-          marginTop: S.md, padding: "8px 12px", borderRadius: R.md,
-          background: C.redA(0.05), display: "flex", alignItems: "center", gap: S.sm,
+          marginTop: S.md, padding: "10px 12px", borderRadius: R.md,
+          background: visits >= 8 ? C.redA(0.08) : C.redA(0.04),
+          display: "flex", alignItems: "center", gap: S.sm,
+          border: visits >= 8 ? "1px solid " + C.redA(0.15) : "none",
         }}>
-          <span style={{ fontSize: 14 }}>🎁</span>
-          <span style={{ fontSize: F.xs, color: C.text, fontFamily: F.body, flex: 1 }}><strong>Reward:</strong> Free class at visit 10</span>
+          <span style={{ fontSize: 16 }}>{visits >= 8 ? "🔥" : "🎁"}</span>
+          <span style={{ fontSize: F.xs, color: C.text, fontFamily: F.body, flex: 1 }}>
+            {visits >= 8
+              ? <strong style={{ color: C.red }}>Almost there! {10 - visits} visit{10 - visits !== 1 ? "s" : ""} to your free class</strong>
+              : <span><strong>Reward:</strong> Free class at visit 10 · {10 - visits} to go</span>
+            }
+          </span>
         </div>
       </GlassCard>
 
@@ -417,7 +449,7 @@ function HomeScreen({ visits, onProfileClick, onNfcTap, profileComplete, hasFree
               <div style={{ fontSize: F.sm, fontWeight: 600, color: C.text, fontFamily: F.body, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.cls}</div>
               <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{s.teacher} · {s.spots} spot{s.spots !== 1 ? "s" : ""}</div>
             </div>
-            <div style={{
+            <div onClick={(e) => { e.stopPropagation(); onBookClass && onBookClass(i); }} style={{
               padding: "5px 12px", borderRadius: R.sm,
               background: C.warmGrad,
               fontSize: 9, fontWeight: 700, color: C.white, fontFamily: F.display,
@@ -854,7 +886,7 @@ function J3BScreen({ onComplete, onBookFreeClass }) {
 // BOOK FREE CLASS SCREEN
 // ═══════════════════════════════════════════════════
 function BookFreeClassScreen({ onBack, onBook }) {
-  const [selectedClass, setSelectedClass] = useState(null);
+  const [picked, setPicked] = useState(null);
 
   return (
     <div style={{ padding: S.xl, display: "flex", flexDirection: "column", gap: S.md, minHeight: "100%", position: "relative", overflow: "hidden" }}>
@@ -880,34 +912,38 @@ function BookFreeClassScreen({ onBack, onBook }) {
         </div>
       </div>
 
-      {schedule.map((s, i) => (
-        <GlassCard
-          key={i}
-          style={{
-            display: "flex", alignItems: "center", gap: S.md, padding: "12px 14px",
-            border: selectedClass === i ? `2px solid ${C.red}` : `1px solid ${C.textA(0.06)}`,
-            background: selectedClass === i ? C.redA(0.06) : C.glassHeavy,
-            cursor: "pointer",
-          }}
-          noBorder
-          heavy={selectedClass === i}
-          onClick={() => setSelectedClass(i)}
-        >
-          {selectedClass === i && (
-            <div style={{ width: 22, height: 22, borderRadius: R.full, background: C.warmGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: C.white, flexShrink: 0 }}>✓</div>
-          )}
-          <div style={{ width: 42, textAlign: "center", fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body, flexShrink: 0 }}>{s.time}</div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: F.sm, fontWeight: 600, color: C.text, fontFamily: F.body }}>{s.cls}</div>
-            <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{s.teacher} · {s.spots} spot{s.spots !== 1 ? "s" : ""}</div>
+      {schedule.map(function(s, i) {
+        var isSelected = picked === i;
+        return (
+          <div
+            key={i}
+            onClick={function() { setPicked(i); }}
+            style={{
+              display: "flex", alignItems: "center", gap: S.md, padding: "12px 14px",
+              borderRadius: R.xl,
+              border: isSelected ? "2px solid " + C.red : "1px solid " + C.textA(0.06),
+              background: isSelected ? C.redA(0.06) : C.glassHeavy,
+              backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+              boxShadow: C.shadowMd,
+              cursor: "pointer", position: "relative", zIndex: 1, transition: transition,
+            }}
+          >
+            {isSelected && (
+              <div style={{ width: 22, height: 22, borderRadius: R.full, background: C.warmGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: C.white, flexShrink: 0 }}>✓</div>
+            )}
+            <div style={{ width: 42, textAlign: "center", fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body, flexShrink: 0 }}>{s.time}</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: F.sm, fontWeight: 600, color: C.text, fontFamily: F.body }}>{s.cls}</div>
+              <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{s.teacher} · {s.spots} spot{s.spots !== 1 ? "s" : ""}</div>
+            </div>
+            {isSelected && <PillTag variant="red">FREE</PillTag>}
           </div>
-          {selectedClass === i && <PillTag variant="red">FREE</PillTag>}
-        </GlassCard>
-      ))}
+        );
+      })}
 
       <div style={{ flex: 1 }} />
-      <Btn onClick={() => selectedClass !== null && onBook()} disabled={selectedClass === null}>
-        {selectedClass !== null ? `Book ${schedule[selectedClass].cls} — Free` : "Select a class"}
+      <Btn onClick={function() { if (picked !== null) { onBook(); } }} disabled={picked === null}>
+        {picked !== null ? "Book " + schedule[picked].cls + " — Free" : "Select a class"}
       </Btn>
     </div>
   );
@@ -938,6 +974,245 @@ function BookingConfirmedScreen({ onDone }) {
 
       <GlassCard style={{ padding: "12px 20px", textAlign: "center" }}>
         <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body }}>Check Mindbody app for booking details</div>
+      </GlassCard>
+
+      <div style={{ flex: 1 }} />
+      <Btn onClick={onDone} icon="🏠">Back to Home</Btn>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// SCREEN: CLASS DETAIL (Booking step 1)
+// ═══════════════════════════════════════════════════
+function ClassDetailScreen({ classItem, onBack, onBook, isFreeBooking }) {
+  const c = classItem;
+  return (
+    <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, minHeight: "100%", position: "relative", overflow: "hidden" }}>
+      <BlobBg color={C.red} opacity={0.04} position="top-right" scale={1.2} />
+      <BlobBg2 color={C.beige} opacity={0.3} position="bottom-left" scale={1} />
+
+      <div onClick={onBack} style={{ display: "flex", alignItems: "center", gap: S.sm, cursor: "pointer", position: "relative", zIndex: 1 }}>
+        <span style={{ fontSize: 14, color: C.red }}>←</span>
+        <span style={{ fontSize: F.sm, fontWeight: 600, color: C.red, fontFamily: F.body }}>Back</span>
+      </div>
+
+      {/* Hero area */}
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center", paddingTop: S.sm }}>
+        <div style={{
+          width: 56, height: 56, borderRadius: R.full, margin: "0 auto 12px",
+          background: C.warmGrad, display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 24, color: C.white, boxShadow: `0 0 0 6px ${C.redA(0.1)}, ` + C.shadowLg,
+        }}>🧘</div>
+        <div style={{ fontSize: F.xl, fontWeight: 800, color: C.text, fontFamily: F.display }}>{c.cls}</div>
+        <div style={{ fontSize: F.sm, color: C.textA(0.5), fontFamily: F.body, marginTop: S.xs }}>with {c.teacher}</div>
+      </div>
+
+      {/* Meta pills */}
+      <div style={{ display: "flex", justifyContent: "center", gap: S.sm, flexWrap: "wrap", position: "relative", zIndex: 1 }}>
+        <PillTag variant="warm">{c.time}</PillTag>
+        <PillTag variant="red">{c.duration} min</PillTag>
+        <PillTag variant="blue">{c.level}</PillTag>
+      </div>
+
+      {/* Description */}
+      <GlassCard style={{ padding: S.lg }} heavy>
+        <div style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1, marginBottom: S.sm }}>About this class</div>
+        <div style={{ fontSize: F.sm, color: C.textA(0.65), fontFamily: F.body, lineHeight: 1.7 }}>{c.desc}</div>
+      </GlassCard>
+
+      {/* Class info card */}
+      <GlassCard style={{ padding: S.lg }} heavy>
+        <div style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1, marginBottom: S.md }}>Details</div>
+        {[
+          { icon: "🕐", label: "Time", value: `${c.time} · ${c.duration} min` },
+          { icon: "👤", label: "Teacher", value: c.teacher },
+          { icon: "📊", label: "Level", value: c.level },
+          { icon: "💺", label: "Spots left", value: `${c.spots} spot${c.spots !== 1 ? "s" : ""} remaining` },
+        ].map((row, i) => (
+          <div key={i} style={{
+            display: "flex", alignItems: "center", gap: S.md,
+            padding: "8px 0", borderBottom: i < 3 ? `1px solid ${C.textA(0.05)}` : "none",
+          }}>
+            <span style={{ fontSize: 14, flexShrink: 0 }}>{row.icon}</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 0.8 }}>{row.label}</div>
+              <div style={{ fontSize: F.sm, fontWeight: 600, color: C.text, fontFamily: F.body, marginTop: 1 }}>{row.value}</div>
+            </div>
+          </div>
+        ))}
+      </GlassCard>
+
+      {/* Price + CTA */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        {isFreeBooking ? (
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "center", gap: S.sm,
+            padding: "8px 16px", borderRadius: R.md, background: C.redA(0.06), marginBottom: S.md,
+          }}>
+            <span style={{ fontSize: 14 }}>🎁</span>
+            <span style={{ fontSize: F.sm, fontWeight: 700, color: C.red, fontFamily: F.body }}>This booking uses your free class credit</span>
+          </div>
+        ) : (
+          <div style={{ textAlign: "center", marginBottom: S.md }}>
+            <span style={{ fontSize: F.xxl, fontWeight: 800, color: C.text, fontFamily: F.display }}>{c.price}</span>
+            <span style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body, marginLeft: S.xs }}>per class</span>
+          </div>
+        )}
+        <Btn onClick={onBook} icon="→">
+          {isFreeBooking ? `Book ${c.cls} — Free` : `Continue to Payment — ${c.price}`}
+        </Btn>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// SCREEN: PAYMENT (Booking step 2)
+// ═══════════════════════════════════════════════════
+function PaymentScreen({ classItem, onBack, onConfirm }) {
+  const [selectedMethod, setSelectedMethod] = useState(null);
+  const c = classItem;
+
+  const methods = [
+    { id: "apple", icon: "🍎", label: "Apple Pay", sub: "Express checkout" },
+    { id: "card", icon: "💳", label: "Credit Card", sub: "Visa •••• 4821" },
+    { id: "klarna", icon: "🟢", label: "Klarna", sub: "Pay in 30 days" },
+  ];
+
+  return (
+    <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, minHeight: "100%", position: "relative", overflow: "hidden" }}>
+      <BlobBg2 color={C.beige} opacity={0.3} position="top-right" scale={0.9} />
+
+      <div onClick={onBack} style={{ display: "flex", alignItems: "center", gap: S.sm, cursor: "pointer", position: "relative", zIndex: 1 }}>
+        <span style={{ fontSize: 14, color: C.red }}>←</span>
+        <span style={{ fontSize: F.sm, fontWeight: 600, color: C.red, fontFamily: F.body }}>Back</span>
+      </div>
+
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xl, fontWeight: 800, color: C.text, fontFamily: F.display }}>Payment</div>
+        <div style={{ fontSize: F.sm, color: C.textA(0.5), fontFamily: F.body, marginTop: S.xs }}>Choose how you'd like to pay</div>
+      </div>
+
+      {/* Order summary */}
+      <GlassCard style={{ padding: S.lg }} heavy>
+        <div style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1, marginBottom: S.md }}>Order Summary</div>
+        <div style={{ display: "flex", alignItems: "center", gap: S.md, marginBottom: S.md }}>
+          <div style={{
+            width: 40, height: 40, borderRadius: R.md, background: C.beige,
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0,
+          }}>🧘</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{c.cls}</div>
+            <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{c.time} · {c.teacher} · {c.duration} min</div>
+          </div>
+        </div>
+        <div style={{ height: 1, background: C.textA(0.06), marginBottom: S.md }} />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontSize: F.sm, color: C.textA(0.5), fontFamily: F.body }}>Total</span>
+          <span style={{ fontSize: F.xl, fontWeight: 800, color: C.text, fontFamily: F.display }}>{c.price}</span>
+        </div>
+      </GlassCard>
+
+      {/* Payment methods */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1, marginBottom: S.sm }}>Payment Method</div>
+        {methods.map(function(m) {
+          var active = selectedMethod === m.id;
+          return (
+            <div
+              key={m.id}
+              onClick={function() { setSelectedMethod(m.id); }}
+              style={{
+                display: "flex", alignItems: "center", gap: S.md, padding: "14px 16px",
+                marginBottom: S.sm, cursor: "pointer", borderRadius: R.xl,
+                border: active ? "2px solid " + C.red : "1px solid " + C.textA(0.06),
+                background: active ? C.redA(0.04) : C.glassHeavy,
+                backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+                boxShadow: C.shadowMd, position: "relative", zIndex: 1, transition: transition,
+              }}
+            >
+              {active && (
+                <div style={{
+                  width: 20, height: 20, borderRadius: R.full, background: C.warmGrad,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 9, color: C.white, flexShrink: 0,
+                }}>✓</div>
+              )}
+              <span style={{ fontSize: 20, flexShrink: 0 }}>{m.icon}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{m.label}</div>
+                <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{m.sub}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Secure badge */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "center", gap: S.sm,
+        position: "relative", zIndex: 1,
+      }}>
+        <span style={{ fontSize: 12 }}>🔒</span>
+        <span style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>Secure payment · SSL encrypted</span>
+      </div>
+
+      <div style={{ flex: 1 }} />
+      <Btn onClick={() => selectedMethod && onConfirm()} disabled={!selectedMethod} icon="🔒">
+        {selectedMethod ? `Pay ${c.price}` : "Select a payment method"}
+      </Btn>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// SCREEN: PAID BOOKING CONFIRMED
+// ═══════════════════════════════════════════════════
+function PaidBookingConfirmedScreen({ classItem, onDone }) {
+  const c = classItem;
+  return (
+    <div style={{ padding: S.xl, display: "flex", flexDirection: "column", alignItems: "center", gap: S.lg, minHeight: "100%", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+      <BlobBg color={C.red} opacity={0.05} position="top-right" scale={1.3} />
+      <BlobBg2 color={C.beige} opacity={0.35} position="bottom-left" scale={1.2} />
+
+      <div style={{
+        width: 72, height: 72, borderRadius: R.full, background: C.warmGrad,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 36, position: "relative", zIndex: 1,
+        boxShadow: `0 0 0 10px ${C.redA(0.08)}, ` + C.shadowXl,
+      }}>✓</div>
+
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xxl, fontWeight: 800, color: C.red, fontFamily: F.display }}>You're Booked!</div>
+        <div style={{ fontSize: F.base, color: C.textA(0.55), fontFamily: F.body, marginTop: S.sm, lineHeight: 1.6 }}>
+          See you at the studio. Enjoy your class!
+        </div>
+      </div>
+
+      <GlassCard style={{ width: "100%", padding: S.lg }} heavy>
+        <div style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1, marginBottom: S.md }}>Booking Details</div>
+        {[
+          { icon: "🧘", label: "Class", value: c.cls },
+          { icon: "👤", label: "Teacher", value: c.teacher },
+          { icon: "🕐", label: "Time", value: `Today at ${c.time} · ${c.duration} min` },
+          { icon: "📊", label: "Level", value: c.level },
+        ].map((row, i) => (
+          <div key={i} style={{
+            display: "flex", alignItems: "center", gap: S.md,
+            padding: "6px 0", borderBottom: i < 3 ? `1px solid ${C.textA(0.05)}` : "none",
+          }}>
+            <span style={{ fontSize: 13, flexShrink: 0 }}>{row.icon}</span>
+            <span style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body, width: 50, flexShrink: 0 }}>{row.label}</span>
+            <span style={{ fontSize: F.sm, fontWeight: 600, color: C.text, fontFamily: F.body }}>{row.value}</span>
+          </div>
+        ))}
+      </GlassCard>
+
+      <GlassCard style={{ padding: "12px 20px", textAlign: "center" }}>
+        <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body }}>
+          Confirmation sent to your email. Check Mindbody for details.
+        </div>
       </GlassCard>
 
       <div style={{ flex: 1 }} />
@@ -994,8 +1269,10 @@ export default function TapInPrototype() {
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMsg, setToastMsg] = useState({ message: "", emoji: "" });
   const [hasFreeCreditAvailable, setHasFreeCreditAvailable] = useState(false);
+  const [selectedClassIdx, setSelectedClassIdx] = useState(null);
 
   const profileComplete = userData.name && userData.email && userData.birthday && userData.prefClass;
+  const selectedClass = selectedClassIdx !== null ? schedule[selectedClassIdx] : null;
 
   function showToast(message, emoji) {
     setToastMsg({ message, emoji });
@@ -1026,8 +1303,17 @@ export default function TapInPrototype() {
 
   function handleBookFreeClass() { setScreen("bookFree"); }
   function handleBookConfirmed() { setHasFreeCreditAvailable(false); setScreen("bookingConfirmed"); }
-  function handleBookingDone() { setScreen("home"); }
+  function handleBookingDone() { setScreen("home"); setSelectedClassIdx(null); }
   function handleUpdateField(key, value) { setUserData(prev => ({ ...prev, [key]: value })); }
+
+  // ─── Paid booking flow ───
+  function handleBookClass(idx) { setSelectedClassIdx(idx); setScreen("classDetail"); }
+  function handleClassDetailBook() {
+    if (hasFreeCreditAvailable) { handleBookConfirmedPaid(); }
+    else { setScreen("payment"); }
+  }
+  function handleBookConfirmedPaid() { setScreen("paidBookingConfirmed"); }
+  function handlePaidBookingDone() { setScreen("home"); setSelectedClassIdx(null); }
 
   function handleReset() {
     setScreen("home"); setVisits(0); setHasFreeCreditAvailable(false);
@@ -1036,7 +1322,7 @@ export default function TapInPrototype() {
 
   function renderScreen() {
     switch (screen) {
-      case "home": return <HomeScreen visits={visits} onProfileClick={() => setScreen("profile")} onNfcTap={handleNfcTap} profileComplete={profileComplete} hasFreeCreditAvailable={hasFreeCreditAvailable} onBookFreeClass={handleBookFreeClass} />;
+      case "home": return <HomeScreen visits={visits} onProfileClick={() => setScreen("profile")} onNfcTap={handleNfcTap} profileComplete={profileComplete} hasFreeCreditAvailable={hasFreeCreditAvailable} onBookFreeClass={handleBookFreeClass} onBookClass={handleBookClass} />;
       case "profile": return <ProfileScreen onBack={() => setScreen("home")} userData={userData} onUpdateField={handleUpdateField} />;
       case "j1": return <J1Screen onComplete={handleJ1Complete} />;
       case "j2": return <J2Screen visitNumber={visits} onComplete={handleJ2Complete} />;
@@ -1044,7 +1330,10 @@ export default function TapInPrototype() {
       case "j3b": return <J3BScreen onComplete={handleJ3BDone} onBookFreeClass={() => { setVisits(0); setScreen("bookFree"); }} />;
       case "bookFree": return <BookFreeClassScreen onBack={() => setScreen(hasFreeCreditAvailable ? "home" : "j3b")} onBook={handleBookConfirmed} />;
       case "bookingConfirmed": return <BookingConfirmedScreen onDone={handleBookingDone} />;
-      default: return <HomeScreen visits={visits} onProfileClick={() => setScreen("profile")} onNfcTap={handleNfcTap} profileComplete={profileComplete} hasFreeCreditAvailable={hasFreeCreditAvailable} onBookFreeClass={handleBookFreeClass} />;
+      case "classDetail": return selectedClass ? <ClassDetailScreen classItem={selectedClass} onBack={() => { setScreen("home"); setSelectedClassIdx(null); }} onBook={handleClassDetailBook} isFreeBooking={hasFreeCreditAvailable} /> : null;
+      case "payment": return selectedClass ? <PaymentScreen classItem={selectedClass} onBack={() => setScreen("classDetail")} onConfirm={handleBookConfirmedPaid} /> : null;
+      case "paidBookingConfirmed": return selectedClass ? <PaidBookingConfirmedScreen classItem={selectedClass} onDone={handlePaidBookingDone} /> : null;
+      default: return <HomeScreen visits={visits} onProfileClick={() => setScreen("profile")} onNfcTap={handleNfcTap} profileComplete={profileComplete} hasFreeCreditAvailable={hasFreeCreditAvailable} onBookFreeClass={handleBookFreeClass} onBookClass={handleBookClass} />;
     }
   }
 
@@ -1053,6 +1342,7 @@ export default function TapInPrototype() {
     j1: "Journey 1 — First Check-in", j2: `Journey 2 — Visit ${visits}/10`,
     j3a: "Journey 3 — Reward Claim", j3b: "Journey 3 — Success",
     bookFree: "Book Free Class", bookingConfirmed: "Booking Confirmed",
+    classDetail: "Class Details", payment: "Payment", paidBookingConfirmed: "Booking Confirmed",
   };
 
   return (
