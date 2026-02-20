@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="375" height="812" viewBox="0 0 375 812">
+  <defs>
+    <clipPath id="phone"><rect width="375" height="812" rx="50" /></clipPath>
+  </defs>
+  <rect width="375" height="812" rx="50" fill="#F5F5F5" />
+  <g clip-path="url(#phone)">
+    <rect x="0" y="0" width="375" height="50" fill="#FFFFFF" />
+    <rect x="147" y="10" width="80" height="6" rx="3" fill="#DDDDDD" />
+    <line x1="0" y1="50" x2="375" y2="50" stroke="#DDDDDD" />
+    <circle cx="187" cy="106" r="26" fill="#E8E8E8" stroke="#557799" stroke-width="2" />
+    <text x="187" y="112" text-anchor="middle" font-size="20">🎁</text>
+    <text x="187" y="148" text-anchor="middle" font-size="16" fill="#333333" font-weight="700" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">You're all set!</text>
+    <text x="187" y="166" text-anchor="middle" font-size="11" fill="#999999" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Accounts linked · free class ready</text>
+    <rect x="20" y="184" width="335" height="44" rx="12" fill="#FFFFFF" stroke="#DDDDDD" stroke-width="1" />
+    <circle cx="44" cy="206" r="12" fill="#557799" />
+    <text x="44" y="210" text-anchor="middle" font-size="10" fill="#FFFFFF">✓</text>
+    <text x="68" y="202" font-size="11" fill="#333333" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">TapIn → Mindbody linked</text>
+    <text x="68" y="218" font-size="9" fill="#999999" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Visits verified</text>
+    <rect x="20" y="240" width="335" height="44" rx="12" fill="#FFFFFF" stroke="#DDDDDD" stroke-width="1" />
+    <circle cx="44" cy="262" r="12" fill="#557799" />
+    <text x="44" y="266" text-anchor="middle" font-size="10" fill="#FFFFFF">✓</text>
+    <text x="68" y="258" font-size="11" fill="#333333" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Free class added</text>
+    <text x="68" y="274" font-size="9" fill="#999999" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Credited to Mindbody</text>
+    <rect x="20" y="296" width="335" height="120" rx="12" fill="#FFFFFF" stroke="#DDDDDD" stroke-width="1" />
+    <text x="187" y="314" text-anchor="middle" font-size="9" fill="#999999" font-weight="600">STAMP CARD RESET</text>
+    <rect x="52" y="322" width="48" height="48" rx="10" fill="#E8E8E8" stroke="#DDDDDD" stroke-width="2" />
+    <text x="76" y="350" text-anchor="middle" font-size="11" fill="#999999" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">1</text>
+    <rect x="108" y="322" width="48" height="48" rx="10" fill="#E8E8E8" stroke="#DDDDDD" stroke-width="2" />
+    <text x="132" y="350" text-anchor="middle" font-size="11" fill="#999999" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">2</text>
+    <rect x="164" y="322" width="48" height="48" rx="10" fill="#E8E8E8" stroke="#DDDDDD" stroke-width="2" />
+    <text x="188" y="350" text-anchor="middle" font-size="11" fill="#999999" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">3</text>
+    <rect x="220" y="322" width="48" height="48" rx="10" fill="#E8E8E8" stroke="#DDDDDD" stroke-width="2" />
+    <text x="244" y="350" text-anchor="middle" font-size="11" fill="#999999" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">4</text>
+    <rect x="276" y="322" width="48" height="48" rx="10" fill="#E8E8E8" stroke="#DDDDDD" stroke-width="2" />
+    <text x="300" y="350" text-anchor="middle" font-size="11" fill="#999999" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">5</text>
+    <rect x="52" y="378" width="48" height="48" rx="10" fill="#E8E8E8" stroke="#DDDDDD" stroke-width="2" />
+    <text x="76" y="406" text-anchor="middle" font-size="11" fill="#999999" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">6</text>
+    <rect x="108" y="378" width="48" height="48" rx="10" fill="#E8E8E8" stroke="#DDDDDD" stroke-width="2" />
+    <text x="132" y="406" text-anchor="middle" font-size="11" fill="#999999" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">7</text>
+    <rect x="164" y="378" width="48" height="48" rx="10" fill="#E8E8E8" stroke="#DDDDDD" stroke-width="2" />
+    <text x="188" y="406" text-anchor="middle" font-size="11" fill="#999999" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">8</text>
+    <rect x="220" y="378" width="48" height="48" rx="10" fill="#E8E8E8" stroke="#DDDDDD" stroke-width="2" />
+    <text x="244" y="406" text-anchor="middle" font-size="11" fill="#999999" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">9</text>
+    <rect x="276" y="378" width="48" height="48" rx="10" fill="#E8E8E8" stroke="#DDDDDD" stroke-width="2" />
+    <text x="300" y="406" text-anchor="middle" font-size="11" fill="#999999" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">10</text>
+    <rect x="20" y="430" width="335" height="44" rx="10" fill="#557799" stroke="#557799" stroke-width="1.5" />
+    <text x="187" y="456" text-anchor="middle" font-size="13" fill="#FFFFFF" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Book Your Free Class →</text>
+    <rect x="20" y="484" width="335" height="44" rx="10" fill="#FFFFFF" stroke="#557799" stroke-width="1.5" />
+    <text x="187" y="510" text-anchor="middle" font-size="13" fill="#557799" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Maybe Later — Go Home</text>
+  </g>
+</svg>

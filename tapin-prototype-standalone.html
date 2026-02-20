@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TapIn — Good Moves Studio Interactive Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: linear-gradient(180deg, #FBF6F1 0%, #EEDBC3 100%); min-height: 100vh; }
+  ::-webkit-scrollbar { width: 0; background: transparent; }
+  input::placeholder { color: rgba(0,0,68,0.3); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+// ═══════════════════════════════════════════════════════════
+// GOOD MOVES STUDIO — TapIn Redesigned Prototype
+// Design System: Untitled UI + 2026 Trends + GMS Brand
+// Glassmorphism · Soft gradients · Expressive minimalism
+// ═══════════════════════════════════════════════════════════
+
+// ─── GMS Brand Palette (extended) ───
+const C = {
+  red: "#B0482D",
+  beige: "#EEDBC3",
+  blue: "#001DA2",
+  light: "#FBF6F1",
+  text: "#000044",
+  white: "#FFFFFF",
+  // Gradient stops
+  redGradStart: "#C4603F",
+  redGradEnd: "#B0482D",
+  warmGrad: "linear-gradient(135deg, #C4603F 0%, #B0482D 50%, #8A3520 100%)",
+  blueGrad: "linear-gradient(135deg, #1A3FD4 0%, #001DA2 100%)",
+  beigeGrad: "linear-gradient(135deg, #FBF6F1 0%, #EEDBC3 100%)",
+  // Alpha variants
+  redA: (a) => `rgba(176,72,45,${a})`,
+  blueA: (a) => `rgba(0,29,162,${a})`,
+  textA: (a) => `rgba(0,0,68,${a})`,
+  whiteA: (a) => `rgba(255,255,255,${a})`,
+  // Glass
+  glass: "rgba(255,255,255,0.72)",
+  glassBorder: "rgba(255,255,255,0.35)",
+  glassHeavy: "rgba(255,255,255,0.88)",
+  // Shadows (Untitled UI-inspired hierarchy)
+  shadowXs: "0 1px 2px rgba(0,0,68,0.05)",
+  shadowSm: "0 1px 3px rgba(0,0,68,0.08), 0 1px 2px rgba(0,0,68,0.06)",
+  shadowMd: "0 4px 8px -2px rgba(0,0,68,0.08), 0 2px 4px -2px rgba(0,0,68,0.06)",
+  shadowLg: "0 12px 16px -4px rgba(0,0,68,0.08), 0 4px 6px -2px rgba(0,0,68,0.05)",
+  shadowXl: "0 20px 24px -4px rgba(0,0,68,0.1), 0 8px 8px -4px rgba(0,0,68,0.04)",
+};
+
+// ─── Typography (refined scale) ───
+const F = {
+  display: "'Quicksand', 'Varela Round', 'Nunito', system-ui, sans-serif",
+  body: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+  // Size scale
+  xs: 10, sm: 11, base: 13, md: 14, lg: 16, xl: 20, xxl: 24, hero: 28,
+};
+
+// ─── Spacing scale (8px grid) ───
+const S = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32 };
+
+// ─── Radii ───
+const R = { sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, pill: 100, full: "50%" };
+
+const transition = "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+
+// ─── Organic Blob SVGs (brand signature — refined) ───
+function BlobBg({ color = C.red, opacity = 0.07, position = "top-right", scale = 1 }) {
+  const positions = {
+    "top-right": { top: -40, right: -60 },
+    "bottom-left": { bottom: -50, left: -70 },
+    "top-left": { top: -30, left: -50 },
+    "center-right": { top: "30%", right: -80 },
+  };
+  const pos = positions[position] || positions["top-right"];
+  return (
+    <svg viewBox="0 0 200 200" style={{ position: "absolute", ...pos, width: 220 * scale, height: 220 * scale, opacity, pointerEvents: "none", zIndex: 0 }}>
+      <path d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90,-16.3,88.5,-0.9C87,14.5,81.4,29,72.8,41.5C64.2,54,52.6,64.5,39.4,71.8C26.2,79.1,11.4,83.2,-2.8,87.4C-17,91.6,-34,95.8,-47.2,88.8C-60.4,81.8,-69.8,63.6,-76.4,46.1C-83,28.6,-86.8,11.8,-84.6,-3.6C-82.4,-19,-74.2,-33.1,-63.5,-43.7C-52.8,-54.3,-39.6,-61.5,-26.4,-69.4C-13.2,-77.3,0,-85.9,14.2,-87.2C28.4,-88.5,56.8,-82.5,44.7,-76.4Z" fill={color} transform="translate(100 100)" />
+    </svg>
+  );
+}
+
+function BlobBg2({ color = C.beige, opacity = 0.3, position = "bottom-left", scale = 1 }) {
+  const positions = {
+    "bottom-left": { bottom: -60, left: -50 },
+    "top-right": { top: -50, right: -40 },
+    "center-left": { top: "40%", left: -90 },
+  };
+  const pos = positions[position] || positions["bottom-left"];
+  return (
+    <svg viewBox="0 0 200 200" style={{ position: "absolute", ...pos, width: 200 * scale, height: 200 * scale, opacity, pointerEvents: "none", zIndex: 0 }}>
+      <path d="M39.5,-67.5C52.9,-60.1,66.8,-53.2,74.8,-42C82.8,-30.8,84.9,-15.4,83.3,-0.9C81.7,13.5,76.4,27.1,68.4,38.6C60.4,50.1,49.7,59.6,37.4,66.1C25.1,72.6,11.1,76.1,-2.5,80.3C-16.1,84.5,-32.2,89.4,-45,83.8C-57.8,78.2,-67.3,62.1,-73.5,45.8C-79.7,29.5,-82.6,13,-80.5,1.2C-78.4,-10.6,-71.3,-19,-63.5,-28.3C-55.7,-37.6,-47.2,-47.8,-36.8,-56.7C-26.4,-65.6,-13.2,-73.2,0.4,-73.9C14,-74.6,28,-74.9,39.5,-67.5Z" fill={color} transform="translate(100 100)" />
+    </svg>
+  );
+}
+
+// ─── Glassmorphic Card ───
+function GlassCard({ children, style = {}, heavy = false, noBorder = false }) {
+  return (
+    <div style={{
+      background: heavy ? C.glassHeavy : C.glass,
+      backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+      borderRadius: R.xl,
+      border: noBorder ? "none" : `1px solid ${C.glassBorder}`,
+      boxShadow: C.shadowMd,
+      position: "relative", zIndex: 1,
+      ...style,
+    }}>
+      {children}
+    </div>
+  );
+}
+
+// ─── Progress Ring (animated SVG) ───
+function ProgressRing({ value, max = 10, size = 80, stroke = 5 }) {
+  const radius = (size - stroke) / 2;
+  const circ = 2 * Math.PI * radius;
+  const pct = Math.min(value / max, 1);
+  return (
+    <div style={{ position: "relative", width: size, height: size }}>
+      <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={C.beige} strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={C.red} strokeWidth={stroke}
+          strokeDasharray={circ} strokeDashoffset={circ * (1 - pct)} strokeLinecap="round"
+          style={{ transition: "stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1)" }} />
+      </svg>
+      <div style={{
+        position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+      }}>
+        <span style={{ fontSize: F.xl, fontWeight: 800, color: C.text, fontFamily: F.display, lineHeight: 1 }}>{value}</span>
+        <span style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body }}>of {max}</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Mini Stamp Grid (horizontal dots) ───
+function MiniStampGrid({ filled, total = 10 }) {
+  return (
+    <div style={{ display: "flex", gap: 4, justifyContent: "center", position: "relative", zIndex: 1 }}>
+      {Array.from({ length: total }, (_, i) => (
+        <div key={i} style={{
+          width: 22, height: 22, borderRadius: R.sm,
+          background: i < filled ? C.warmGrad : C.whiteA(0.6),
+          border: `1.5px solid ${i < filled ? "transparent" : C.textA(0.08)}`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 8, fontFamily: F.body,
+          color: i < filled ? C.white : C.textA(0.3), fontWeight: 700, transition,
+          boxShadow: i < filled ? "0 2px 4px " + C.redA(0.2) : "none",
+        }}>
+          {i < filled ? "✓" : ""}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Full Stamp Grid (5×2) ───
+function StampGrid({ filled, total = 10 }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6, position: "relative", zIndex: 1 }}>
+      {Array.from({ length: total }, (_, i) => (
+        <div key={i} style={{
+          aspectRatio: "1", borderRadius: R.md,
+          background: i < filled ? C.warmGrad : C.whiteA(0.5),
+          border: `1.5px solid ${i < filled ? "transparent" : C.textA(0.06)}`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: F.sm, fontFamily: F.body,
+          color: i < filled ? C.white : C.textA(0.3), fontWeight: 600, transition,
+          boxShadow: i < filled ? "0 2px 6px " + C.redA(0.2) : "none",
+        }}>
+          {i < filled ? "✓" : i + 1}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Progress Bar (gradient) ───
+function ProgressBar({ value, max = 10 }) {
+  return (
+    <div style={{ height: 5, borderRadius: R.pill, background: C.textA(0.04), marginTop: S.sm, position: "relative", zIndex: 1 }}>
+      <div style={{
+        height: "100%", borderRadius: R.pill,
+        background: C.warmGrad,
+        width: `${(value / max) * 100}%`, transition,
+      }} />
+    </div>
+  );
+}
+
+// ─── Button (redesigned) ───
+function Btn({ children, onClick, primary = true, disabled = false, outline = false, blue = false, icon = null }) {
+  const bg = disabled ? C.textA(0.08) : outline ? C.white : blue ? C.blueGrad : C.warmGrad;
+  const color = disabled ? C.textA(0.35) : outline ? C.red : C.white;
+  const borderColor = disabled ? "transparent" : outline ? C.redA(0.3) : "transparent";
+  return (
+    <div
+      onClick={disabled ? undefined : onClick}
+      style={{
+        width: "100%", padding: "15px 0", borderRadius: R.lg,
+        border: outline ? `1.5px solid ${borderColor}` : "none",
+        background: bg, color,
+        textAlign: "center",
+        fontSize: F.md, fontWeight: 700, fontFamily: F.display, letterSpacing: 0.3,
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.6 : 1, transition,
+        boxShadow: !disabled && !outline ? C.shadowMd : C.shadowXs,
+        position: "relative", zIndex: 1,
+        display: "flex", alignItems: "center", justifyContent: "center", gap: S.sm,
+      }}
+    >
+      {icon && <span style={{ fontSize: 16 }}>{icon}</span>}
+      {children}
+    </div>
+  );
+}
+
+// ─── Pill Tag ───
+function PillTag({ children, variant = "red" }) {
+  const variants = {
+    red: { bg: C.redA(0.08), color: C.red, border: C.redA(0.12) },
+    blue: { bg: C.blueA(0.06), color: C.blue, border: C.blueA(0.1) },
+    warm: { bg: C.beige, color: C.red, border: C.redA(0.1) },
+  };
+  const v = variants[variant] || variants.red;
+  return (
+    <span style={{
+      display: "inline-flex", padding: "3px 10px", borderRadius: R.pill,
+      background: v.bg, color: v.color, border: `1px solid ${v.border}`,
+      fontSize: F.xs, fontWeight: 700, fontFamily: F.display, letterSpacing: 0.3,
+    }}>{children}</span>
+  );
+}
+
+// ─── Data ───
+const schedule = [
+  { time: "07:00", cls: "Morning Flow", teacher: "Tara", spots: 3 },
+  { time: "09:30", cls: "Reformer Basics", teacher: "Elena", spots: 1 },
+  { time: "12:00", cls: "Power Mat", teacher: "Petra", spots: 5 },
+  { time: "17:30", cls: "Barre Sculpt", teacher: "Maia", spots: 2 },
+  { time: "19:00", cls: "Stretch & Restore", teacher: "Tara", spots: 7 },
+];
+
+const deals = [
+  { emoji: "☕", title: "Early Bird Perk", desc: "5 morning classes → 1 free coffee", tag: "Popular", detail: "Attend 5 classes before 9am within a month and earn a free coffee from Companion Coffee.", progress: "2/5" },
+  { emoji: "🧘", title: "Bring a Friend", desc: "Bring a friend to 3 classes → both get 1 free", tag: "New", detail: "Invite a friend who hasn't been to Good Moves before. After 3 classes together, you BOTH earn a free class.", progress: "0/3" },
+  { emoji: "🎒", title: "Weekend Warrior", desc: "4 weekend classes → 20% off GMS merch", tag: null, detail: "Attend 4 Saturday or Sunday classes and unlock 20% off all Good Moves merch.", progress: "1/4" },
+  { emoji: "✨", title: "Consistency Bonus", desc: "3x/week for a month → free mat rental", tag: null, detail: "Come at least 3 times per week for 4 consecutive weeks and earn one month of free mat rental.", progress: "Week 1: 2/3" },
+];
+
+// ═══════════════════════════════════════════════════
+// TOAST NOTIFICATION (glassmorphic)
+// ═══════════════════════════════════════════════════
+function Toast({ message, emoji, visible }) {
+  return (
+    <div style={{
+      position: "absolute", top: 60, left: S.md, right: S.md, zIndex: 20,
+      padding: "14px 16px", borderRadius: R.lg,
+      background: C.blueGrad, color: C.white,
+      display: "flex", alignItems: "center", gap: S.md,
+      boxShadow: C.shadowXl,
+      transform: visible ? "translateY(0)" : "translateY(-80px)",
+      opacity: visible ? 1 : 0,
+      transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+      pointerEvents: "none",
+    }}>
+      <span style={{ fontSize: 18 }}>{emoji}</span>
+      <div style={{ fontFamily: F.body, fontSize: F.sm, fontWeight: 600, lineHeight: 1.3 }}>{message}</div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// DEAL MODAL (glassmorphic)
+// ═══════════════════════════════════════════════════
+function DealModal({ deal, onClose }) {
+  if (!deal) return null;
+  return (
+    <div onClick={onClose} style={{
+      position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+      background: C.textA(0.45), backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+      zIndex: 15, borderRadius: 50,
+      display: "flex", alignItems: "center", justifyContent: "center", padding: S.xl,
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        width: "100%", maxWidth: 300, padding: S.xxl, borderRadius: R.xxl,
+        background: C.white, boxShadow: C.shadowXl,
+      }}>
+        <div style={{ textAlign: "center", marginBottom: S.lg }}>
+          <div style={{
+            width: 56, height: 56, borderRadius: R.lg, margin: "0 auto 12px",
+            background: C.beigeGrad || C.beige, display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 28, boxShadow: C.shadowSm,
+          }}>{deal.emoji}</div>
+          <div style={{ fontSize: F.lg, fontWeight: 800, color: C.text, fontFamily: F.display }}>{deal.title}</div>
+          {deal.tag && <div style={{ marginTop: S.xs }}><PillTag>{deal.tag}</PillTag></div>}
+        </div>
+
+        <div style={{ fontSize: F.sm, color: C.textA(0.65), fontFamily: F.body, lineHeight: 1.7, marginBottom: S.lg }}>
+          {deal.detail}
+        </div>
+
+        <div style={{
+          padding: "10px 14px", borderRadius: R.md, background: C.light,
+          display: "flex", alignItems: "center", gap: S.md, marginBottom: S.lg,
+        }}>
+          <span style={{ fontSize: 14 }}>📊</span>
+          <div>
+            <div style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1 }}>Progress</div>
+            <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{deal.progress}</div>
+          </div>
+        </div>
+
+        <Btn onClick={onClose}>Got it</Btn>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// SCREEN: HOME
+// ═══════════════════════════════════════════════════
+function HomeScreen({ visits, onProfileClick, onNfcTap, profileComplete, hasFreeCreditAvailable, onBookFreeClass }) {
+  const [expandedDeal, setExpandedDeal] = useState(null);
+
+  const progressMsg = visits < 3
+    ? "You're just getting started — let's move!"
+    : visits < 6 ? "Nice momentum — keep showing up!"
+    : visits < 9 ? "So close to your free class!"
+    : visits === 9 ? "One more visit to go!"
+    : "Ready to claim your reward!";
+
+  return (
+    <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, position: "relative", overflow: "hidden", minHeight: "100%" }}>
+      <BlobBg color={C.red} opacity={0.05} position="top-right" scale={1.3} />
+      <BlobBg2 color={C.beige} opacity={0.35} position="bottom-left" scale={1.1} />
+
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", position: "relative", zIndex: 1 }}>
+        <div>
+          <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body, letterSpacing: 0.8, fontWeight: 500 }}>Welcome back</div>
+          <div style={{ fontSize: F.xl, fontWeight: 800, color: C.red, fontFamily: F.display, letterSpacing: -0.3 }}>Good Moves</div>
+        </div>
+        <div
+          onClick={onProfileClick}
+          style={{
+            width: 42, height: 42, borderRadius: R.full,
+            background: C.warmGrad, border: "3px solid " + C.white,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 16, color: C.white, cursor: "pointer",
+            boxShadow: C.shadowMd, position: "relative",
+          }}
+        >
+          👤
+          {!profileComplete && (
+            <div style={{
+              position: "absolute", top: -2, right: -2,
+              width: 12, height: 12, borderRadius: R.full,
+              background: C.blue, border: `2px solid ${C.white}`,
+            }} />
+          )}
+        </div>
+      </div>
+
+      {/* Free class credit banner */}
+      {hasFreeCreditAvailable && (
+        <div
+          onClick={onBookFreeClass}
+          style={{
+            width: "100%", padding: "14px 16px", borderRadius: R.xl,
+            background: C.blueGrad, cursor: "pointer",
+            display: "flex", alignItems: "center", gap: S.md,
+            position: "relative", zIndex: 1, boxShadow: C.shadowLg,
+          }}
+        >
+          <div style={{
+            width: 40, height: 40, borderRadius: R.md,
+            background: C.whiteA(0.15), display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 20,
+          }}>🎁</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: F.base, fontWeight: 800, color: C.white, fontFamily: F.display }}>You have a free class!</div>
+            <div style={{ fontSize: F.xs, color: C.whiteA(0.6), fontFamily: F.body, marginTop: 2 }}>Tap to book your reward class</div>
+          </div>
+          <span style={{ fontSize: 16, color: C.whiteA(0.5) }}>→</span>
+        </div>
+      )}
+
+      {/* Progress Card — with ring */}
+      <GlassCard style={{ padding: S.lg }} heavy>
+        <div style={{ display: "flex", alignItems: "center", gap: S.lg }}>
+          <ProgressRing value={visits} max={10} size={72} stroke={5} />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: F.xs, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1, marginBottom: S.xs }}>Your Progress</div>
+            <div style={{ fontSize: F.md, fontWeight: 700, color: C.text, fontFamily: F.display }}>{visits} of 10 visits</div>
+            <div style={{ fontSize: F.xs, color: C.textA(0.55), fontFamily: F.body, marginTop: S.xs, lineHeight: 1.4 }}>{progressMsg}</div>
+          </div>
+        </div>
+        <MiniStampGrid filled={visits} />
+        <div style={{
+          marginTop: S.md, padding: "8px 12px", borderRadius: R.md,
+          background: C.redA(0.05), display: "flex", alignItems: "center", gap: S.sm,
+        }}>
+          <span style={{ fontSize: 14 }}>🎁</span>
+          <span style={{ fontSize: F.xs, color: C.text, fontFamily: F.body, flex: 1 }}><strong>Reward:</strong> Free class at visit 10</span>
+        </div>
+      </GlassCard>
+
+      {/* Schedule */}
+      <GlassCard style={{ padding: S.lg }} heavy>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: S.md }}>
+          <span style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.display }}>Today's Classes</span>
+          <span style={{ fontSize: F.xs, color: C.red, fontFamily: F.body, fontWeight: 600 }}>View all →</span>
+        </div>
+        {schedule.map((s, i) => (
+          <div key={i} style={{
+            display: "flex", alignItems: "center", gap: S.md, padding: "9px 10px", borderRadius: R.md,
+            background: i === 0 ? C.redA(0.06) : "transparent",
+            marginBottom: 3, transition,
+          }}>
+            <div style={{
+              width: 40, textAlign: "center", fontSize: F.sm, fontWeight: 700,
+              color: i === 0 ? C.red : C.text, fontFamily: F.body, flexShrink: 0,
+            }}>{s.time}</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: F.sm, fontWeight: 600, color: C.text, fontFamily: F.body, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.cls}</div>
+              <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{s.teacher} · {s.spots} spot{s.spots !== 1 ? "s" : ""}</div>
+            </div>
+            <div style={{
+              padding: "5px 12px", borderRadius: R.sm,
+              background: C.warmGrad,
+              fontSize: 9, fontWeight: 700, color: C.white, fontFamily: F.display,
+              flexShrink: 0, cursor: "pointer", boxShadow: C.shadowXs,
+            }}>Book</div>
+          </div>
+        ))}
+      </GlassCard>
+
+      {/* Deals */}
+      <GlassCard style={{ padding: S.lg }} heavy>
+        <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.display, marginBottom: S.md }}>Deals & Perks</div>
+        {deals.map((d, i) => (
+          <div
+            key={i} onClick={() => setExpandedDeal(d)}
+            style={{
+              padding: "10px 12px", borderRadius: R.lg,
+              background: C.whiteA(0.6), display: "flex", gap: S.md, alignItems: "center",
+              marginBottom: S.sm, cursor: "pointer", transition,
+              border: `1px solid ${C.textA(0.04)}`,
+            }}
+          >
+            <div style={{
+              width: 36, height: 36, borderRadius: R.md,
+              background: C.beige, display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 18, flexShrink: 0, boxShadow: C.shadowXs,
+            }}>{d.emoji}</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: S.sm }}>
+                <span style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{d.title}</span>
+                {d.tag && <PillTag variant={d.tag === "New" ? "blue" : "red"}>{d.tag}</PillTag>}
+              </div>
+              <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body, marginTop: 2 }}>{d.desc}</div>
+            </div>
+            <span style={{ fontSize: 12, color: C.textA(0.3) }}>→</span>
+          </div>
+        ))}
+      </GlassCard>
+
+      {/* NFC Tap Simulator */}
+      <div
+        onClick={onNfcTap}
+        style={{
+          width: "100%", padding: "18px 0", borderRadius: R.xl,
+          background: C.warmGrad, textAlign: "center",
+          cursor: "pointer", transition, position: "relative", zIndex: 1,
+          boxShadow: C.shadowLg,
+        }}
+      >
+        <div style={{ fontSize: 22, marginBottom: 4 }}>📱</div>
+        <div style={{ fontSize: F.md, fontWeight: 700, color: C.white, fontFamily: F.display }}>Simulate NFC Tap</div>
+        <div style={{ fontSize: F.xs, color: C.whiteA(0.65), fontFamily: F.body, marginTop: 3 }}>Tap to trigger next check-in</div>
+      </div>
+
+      <div style={{ height: S.md }} />
+      {expandedDeal && <DealModal deal={expandedDeal} onClose={() => setExpandedDeal(null)} />}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// SCREEN: PROFILE
+// ═══════════════════════════════════════════════════
+function ProfileScreen({ onBack, userData, onUpdateField }) {
+  const fields = [
+    { key: "phone", label: "Phone", icon: "📱", placeholder: "Add phone", alwaysFilled: true },
+    { key: "name", label: "Name", icon: "👤", placeholder: "Add your name" },
+    { key: "email", label: "Email", icon: "✉", placeholder: "Add your email" },
+    { key: "birthday", label: "Birthday", icon: "🎂", placeholder: "Add for a birthday surprise" },
+    { key: "prefClass", label: "Preferred class", icon: "🧘", placeholder: "e.g. Morning Flow, Barre" },
+  ];
+  const filledCount = fields.filter(f => f.alwaysFilled || userData[f.key]).length;
+  const [editingField, setEditingField] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+
+  return (
+    <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, position: "relative", overflow: "hidden", minHeight: "100%" }}>
+      <BlobBg color={C.beige} opacity={0.5} position="top-right" scale={1} />
+
+      <div onClick={onBack} style={{ display: "flex", alignItems: "center", gap: S.sm, cursor: "pointer", position: "relative", zIndex: 1 }}>
+        <span style={{ fontSize: 14, color: C.red }}>←</span>
+        <span style={{ fontSize: F.sm, fontWeight: 600, color: C.red, fontFamily: F.body }}>Back</span>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: S.sm, paddingTop: S.xs, position: "relative", zIndex: 1 }}>
+        <div style={{
+          width: 68, height: 68, borderRadius: R.full, background: C.warmGrad,
+          border: `3px solid ${C.white}`, display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 26, color: C.white, boxShadow: C.shadowLg,
+        }}>👤</div>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: F.lg, fontWeight: 800, color: C.text, fontFamily: F.display }}>Your Profile</div>
+          <div style={{ fontSize: F.xs, color: C.textA(0.55), fontFamily: F.body, marginTop: 2 }}>Complete your info for a personalised experience</div>
+        </div>
+      </div>
+
+      {/* Completion bar */}
+      <div style={{ width: "100%", padding: "8px 14px", borderRadius: R.md, background: C.redA(0.06), display: "flex", alignItems: "center", gap: S.md, position: "relative", zIndex: 1 }}>
+        <div style={{ flex: 1, height: 5, borderRadius: R.pill, background: C.textA(0.06) }}>
+          <div style={{ height: "100%", borderRadius: R.pill, background: C.warmGrad, width: `${(filledCount / 5) * 100}%`, transition }} />
+        </div>
+        <span style={{ fontSize: F.xs, fontWeight: 700, color: C.red, fontFamily: F.body }}>{filledCount}/5</span>
+      </div>
+
+      <GlassCard style={{ overflow: "hidden" }} heavy>
+        {fields.map((f, i) => {
+          const isFilled = f.alwaysFilled || !!userData[f.key];
+          const isEditing = editingField === f.key;
+          return (
+            <div key={f.key} style={{
+              padding: "13px 16px", borderBottom: i < fields.length - 1 ? `1px solid ${C.textA(0.05)}` : "none",
+              display: "flex", alignItems: "center", gap: S.md,
+            }}>
+              <span style={{ fontSize: 15, flexShrink: 0 }}>{f.icon}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 0.8 }}>{f.label}</div>
+                {isEditing ? (
+                  <input
+                    autoFocus value={inputValue}
+                    onChange={e => setInputValue(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === "Enter" && inputValue.trim()) {
+                        onUpdateField(f.key, inputValue.trim());
+                        setEditingField(null); setInputValue("");
+                      }
+                    }}
+                    onBlur={() => {
+                      if (inputValue.trim()) onUpdateField(f.key, inputValue.trim());
+                      setEditingField(null); setInputValue("");
+                    }}
+                    placeholder={f.placeholder}
+                    style={{
+                      fontSize: F.sm, fontFamily: F.body, color: C.text, border: "none",
+                      borderBottom: `2px solid ${C.red}`, outline: "none",
+                      background: "transparent", width: "100%", marginTop: 2, padding: "3px 0",
+                    }}
+                  />
+                ) : isFilled ? (
+                  <div style={{ fontSize: F.sm, fontWeight: 600, color: C.text, fontFamily: F.body, marginTop: 2 }}>
+                    {f.alwaysFilled ? "+49 170 •••• 89" : userData[f.key]}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: F.sm, color: C.textA(0.3), fontFamily: F.body, marginTop: 2, fontStyle: "italic" }}>{f.placeholder}</div>
+                )}
+              </div>
+              {isFilled ? (
+                <div style={{ width: 22, height: 22, borderRadius: R.full, background: C.warmGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: C.white, flexShrink: 0, boxShadow: C.shadowXs }}>✓</div>
+              ) : !isEditing ? (
+                <span onClick={() => { setEditingField(f.key); setInputValue(userData[f.key] || ""); }} style={{ fontSize: F.xs, color: C.red, fontWeight: 700, fontFamily: F.body, flexShrink: 0, cursor: "pointer" }}>Add →</span>
+              ) : null}
+            </div>
+          );
+        })}
+      </GlassCard>
+
+      <GlassCard style={{ padding: S.md }}>
+        <div style={{ fontSize: F.xs, fontWeight: 600, color: C.text, fontFamily: F.body, marginBottom: S.xs }}>Why we ask</div>
+        <div style={{ fontSize: F.xs, color: C.textA(0.55), fontFamily: F.body, lineHeight: 1.6 }}>
+          Your name and email help us link your visits to Mindbody so you can earn rewards. Birthday lets us surprise you. We never share your data.
+        </div>
+      </GlassCard>
+
+      <div style={{ textAlign: "center", padding: S.md, position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>
+          Only a hashed phone number is stored. Text <strong style={{ color: C.text }}>DELETE</strong> to the studio to remove your data.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// SCREEN: J1 — FIRST CHECK-IN
+// ═══════════════════════════════════════════════════
+function J1Screen({ onComplete }) {
+  const [phoneEntered, setPhoneEntered] = useState(false);
+  const [phoneValue, setPhoneValue] = useState("");
+
+  return (
+    <div style={{ padding: S.xl, display: "flex", flexDirection: "column", alignItems: "center", gap: S.md, minHeight: "100%", position: "relative", overflow: "hidden" }}>
+      <BlobBg color={C.red} opacity={0.04} position="top-left" scale={1.3} />
+      <BlobBg2 color={C.beige} opacity={0.3} position="center-left" scale={0.8} />
+
+      <PillTag variant="warm">Good Moves Studio</PillTag>
+
+      <div style={{
+        width: 60, height: 60, borderRadius: R.full, background: C.warmGrad,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 24, color: C.white, position: "relative", zIndex: 1,
+        boxShadow: `0 0 0 6px ${C.redA(0.1)}, ` + C.shadowLg,
+      }}>✓</div>
+
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xl, fontWeight: 800, color: C.text, fontFamily: F.display }}>You're checked in!</div>
+        <div style={{ fontSize: F.base, color: C.textA(0.55), fontFamily: F.body, marginTop: S.xs }}>Visit 1 of 10 — welcome to Good Moves!</div>
+      </div>
+
+      <GlassCard style={{ width: "100%", padding: S.md }} heavy>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: S.sm }}>
+          <span style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1 }}>Your Progress</span>
+          <span style={{ fontSize: F.xs, fontWeight: 600, color: C.red, fontFamily: F.body }}>1/10</span>
+        </div>
+        <StampGrid filled={1} />
+        <ProgressBar value={1} />
+      </GlassCard>
+
+      <div style={{ width: "100%", display: "flex", alignItems: "center", gap: S.sm, position: "relative", zIndex: 1 }}>
+        <div style={{ height: 1, flex: 1, background: C.textA(0.08) }} />
+        <span style={{ fontSize: 9, color: C.textA(0.35), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1 }}>Save your progress</span>
+        <div style={{ height: 1, flex: 1, background: C.textA(0.08) }} />
+      </div>
+
+      <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: S.sm, position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.display }}>Enter your phone number</div>
+        <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body }}>So we remember you next time. No app needed.</div>
+        <GlassCard style={{
+          display: "flex", alignItems: "center", gap: S.sm, padding: "12px 14px",
+          border: `1.5px solid ${phoneEntered ? C.red : C.textA(0.08)}`,
+        }} noBorder>
+          <span style={{ fontSize: F.sm, color: C.textA(0.45), fontFamily: F.body }}>🇩🇪 +49</span>
+          <input
+            value={phoneValue}
+            onChange={e => { setPhoneValue(e.target.value); setPhoneEntered(e.target.value.length > 5); }}
+            placeholder="170 1234 5678"
+            style={{ flex: 1, border: "none", outline: "none", fontSize: F.base, fontFamily: F.body, color: C.text, background: "transparent" }}
+          />
+        </GlassCard>
+        <div style={{ fontSize: 9, color: C.textA(0.35), fontFamily: F.body }}>Only stored as a hash · no spam · text DELETE to remove</div>
+      </div>
+
+      <div style={{ flex: 1 }} />
+      <Btn onClick={() => phoneEntered && onComplete()} disabled={!phoneEntered} icon="→">Save & Continue</Btn>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// SCREEN: J2 — INSTANT CHECK-IN
+// ═══════════════════════════════════════════════════
+function J2Screen({ visitNumber, onComplete }) {
+  const remaining = 10 - visitNumber;
+  const messages = {
+    2: "great start!", 3: "you're on a roll!", 4: "almost halfway!",
+    5: "halfway there!", 6: "keep showing up!", 7: "keep that energy!",
+    8: "so close!", 9: "one more to go!",
+  };
+
+  return (
+    <div style={{ padding: S.xl, display: "flex", flexDirection: "column", alignItems: "center", gap: S.lg, minHeight: "100%", position: "relative", overflow: "hidden" }}>
+      <BlobBg color={C.red} opacity={0.04} position="top-right" scale={1.1} />
+
+      <div style={{ height: S.sm }} />
+      <PillTag variant="warm">Welcome back — instant check-in</PillTag>
+
+      <div style={{
+        width: 68, height: 68, borderRadius: R.full, background: C.warmGrad,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 28, color: C.white, position: "relative", zIndex: 1,
+        boxShadow: `0 0 0 8px ${C.redA(0.08)}, ` + C.shadowLg,
+      }}>✓</div>
+
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xl, fontWeight: 800, color: C.text, fontFamily: F.display }}>You're checked in!</div>
+        <div style={{ fontSize: F.base, color: C.textA(0.55), fontFamily: F.body, marginTop: S.sm }}>
+          Visit {visitNumber} of 10 — {messages[visitNumber] || "keep going!"}
+        </div>
+      </div>
+
+      <GlassCard style={{ width: "100%", padding: S.lg }} heavy>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: S.sm }}>
+          <span style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1 }}>Your Progress</span>
+          <span style={{ fontSize: F.xs, fontWeight: 600, color: C.red, fontFamily: F.body }}>{visitNumber}/10</span>
+        </div>
+        <StampGrid filled={visitNumber} />
+        <ProgressBar value={visitNumber} />
+      </GlassCard>
+
+      <div style={{
+        padding: "10px 20px", borderRadius: R.pill,
+        background: C.redA(0.06), position: "relative", zIndex: 1,
+      }}>
+        <span style={{ fontSize: F.sm, color: C.textA(0.6), fontFamily: F.body }}>
+          {remaining} more visit{remaining > 1 ? "s" : ""} to your free class!
+        </span>
+      </div>
+
+      <div style={{ flex: 1 }} />
+      <Btn onClick={onComplete}>Done</Btn>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// SCREEN: J3A — REWARD + ACCOUNT LINK
+// ═══════════════════════════════════════════════════
+function J3AScreen({ onComplete, userData }) {
+  const [name, setName] = useState(userData.name || "");
+  const [email, setEmail] = useState(userData.email || "");
+  const canSubmit = name.length > 1 && email.includes("@");
+
+  return (
+    <div style={{
+      padding: S.xl, display: "flex", flexDirection: "column", alignItems: "center", gap: S.md,
+      minHeight: "100%", background: C.beigeGrad || C.beige, position: "relative", overflow: "hidden", paddingBottom: S.xxxl,
+    }}>
+      <BlobBg color={C.red} opacity={0.07} position="top-right" scale={1.4} />
+      <BlobBg2 color={C.white} opacity={0.5} position="bottom-left" scale={1.2} />
+
+      <div style={{ height: S.xs }} />
+      <div style={{
+        width: 56, height: 56, borderRadius: R.full,
+        background: C.warmGrad, display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 28, position: "relative", zIndex: 1,
+        boxShadow: `0 0 0 8px ${C.redA(0.1)}, ` + C.shadowLg,
+      }}>🎉</div>
+
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xl, fontWeight: 800, color: C.red, fontFamily: F.display }}>Free class earned!</div>
+        <div style={{ fontSize: F.sm, color: C.textA(0.55), fontFamily: F.body, marginTop: S.xs }}>10 visits completed — you're amazing.</div>
+      </div>
+
+      <GlassCard style={{ width: "100%", padding: S.md }} heavy>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: S.sm }}>
+          <span style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1 }}>Complete!</span>
+          <span style={{ fontSize: 9, fontWeight: 600, color: C.red, fontFamily: F.body }}>10/10</span>
+        </div>
+        <MiniStampGrid filled={10} />
+        <div style={{ height: 4, borderRadius: R.pill, background: C.textA(0.04), marginTop: S.sm }}>
+          <div style={{ height: "100%", borderRadius: R.pill, background: C.warmGrad, width: "100%", transition }} />
+        </div>
+      </GlassCard>
+
+      {/* Verification badge */}
+      <GlassCard style={{ width: "100%", padding: "10px 12px", display: "flex", alignItems: "center", gap: S.sm }}>
+        <div style={{
+          width: 20, height: 20, borderRadius: R.sm, background: C.beige,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 10, color: C.textA(0.5), flexShrink: 0,
+        }}>?</div>
+        <span style={{ fontSize: F.xs, color: C.textA(0.6), fontFamily: F.body, lineHeight: 1.3 }}>
+          <strong style={{ color: C.text }}>Verification needed</strong> — we'll match your name to Mindbody
+        </span>
+      </GlassCard>
+
+      {/* Divider */}
+      <div style={{ width: "100%", display: "flex", alignItems: "center", gap: S.sm, position: "relative", zIndex: 1 }}>
+        <div style={{ flex: 1, height: 1, background: C.textA(0.1) }} />
+        <span style={{ fontSize: 8, fontWeight: 700, color: C.textA(0.35), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1 }}>Link your account</span>
+        <div style={{ flex: 1, height: 1, background: C.textA(0.1) }} />
+      </div>
+
+      {/* Form */}
+      <GlassCard style={{ width: "100%", padding: S.lg, border: `2px solid ${C.redA(0.25)}` }} heavy noBorder>
+        <div style={{ fontSize: F.sm, fontWeight: 700, color: C.red, fontFamily: F.display, marginBottom: S.xs }}>Claim your free class</div>
+        <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body, marginBottom: S.md, lineHeight: 1.4 }}>
+          Enter your name to find your Mindbody account, and email for booking confirmation.
+        </div>
+
+        <div style={{ fontSize: 9, fontWeight: 600, color: C.text, fontFamily: F.body, marginBottom: S.xs }}>Name</div>
+        <div style={{ display: "flex", alignItems: "center", gap: S.sm, padding: "10px 12px", borderRadius: R.md, border: `1.5px solid ${name ? C.redA(0.3) : C.textA(0.08)}`, background: C.light, marginBottom: S.md }}>
+          <span style={{ fontSize: 12, color: C.textA(0.4) }}>👤</span>
+          <input value={name} onChange={e => setName(e.target.value)} placeholder="Your full name"
+            style={{ flex: 1, border: "none", outline: "none", fontSize: F.sm, fontFamily: F.body, color: C.text, background: "transparent" }} />
+        </div>
+
+        <div style={{ fontSize: 9, fontWeight: 600, color: C.text, fontFamily: F.body, marginBottom: S.xs }}>Email</div>
+        <div style={{ display: "flex", alignItems: "center", gap: S.sm, padding: "10px 12px", borderRadius: R.md, border: `1.5px solid ${email.includes("@") ? C.redA(0.3) : C.textA(0.08)}`, background: C.light }}>
+          <span style={{ fontSize: 12, color: C.textA(0.4) }}>✉</span>
+          <input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@email.com"
+            style={{ flex: 1, border: "none", outline: "none", fontSize: F.sm, fontFamily: F.body, color: C.text, background: "transparent" }} />
+        </div>
+        <div style={{ fontSize: 8, color: C.textA(0.35), fontFamily: F.body, marginTop: S.xs }}>Name must match your Mindbody / Urban Sports Club account</div>
+      </GlassCard>
+
+      <Btn onClick={() => canSubmit && onComplete(name, email)} disabled={!canSubmit} icon="→">Verify & Claim Free Class</Btn>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// SCREEN: J3B — LINKED + CREDITED
+// ═══════════════════════════════════════════════════
+function J3BScreen({ onComplete, onBookFreeClass }) {
+  return (
+    <div style={{ padding: S.xl, display: "flex", flexDirection: "column", alignItems: "center", gap: S.md, minHeight: "100%", position: "relative", overflow: "hidden", paddingBottom: S.xxxl }}>
+      <BlobBg color={C.red} opacity={0.05} position="center-right" scale={1} />
+
+      <div style={{ height: S.sm }} />
+      <div style={{
+        width: 60, height: 60, borderRadius: R.full, background: C.warmGrad,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 24, position: "relative", zIndex: 1,
+        boxShadow: `0 0 0 6px ${C.redA(0.1)}, ` + C.shadowLg,
+      }}>🎁</div>
+
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xl - 2, fontWeight: 800, color: C.text, fontFamily: F.display }}>You're all set!</div>
+        <div style={{ fontSize: F.sm, color: C.textA(0.55), fontFamily: F.body, marginTop: S.sm }}>Your accounts are linked and your free class is ready.</div>
+      </div>
+
+      {[
+        { title: "TapIn → Mindbody linked", sub: "Visits verified and connected to your account" },
+        { title: "Free class added", sub: "Credited to your Mindbody account — book anytime" },
+      ].map((item, i) => (
+        <GlassCard key={i} style={{ width: "100%", padding: "14px 16px", display: "flex", alignItems: "center", gap: S.md }} heavy>
+          <div style={{
+            width: 30, height: 30, borderRadius: R.full, background: C.warmGrad,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 14, color: C.white, flexShrink: 0, boxShadow: C.shadowSm,
+          }}>✓</div>
+          <div>
+            <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{item.title}</div>
+            <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body, marginTop: 2 }}>{item.sub}</div>
+          </div>
+        </GlassCard>
+      ))}
+
+      <GlassCard style={{ width: "100%", padding: S.lg, textAlign: "center" }} heavy>
+        <div style={{ fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body, textTransform: "uppercase", letterSpacing: 1, marginBottom: S.sm }}>Stamp card reset</div>
+        <StampGrid filled={0} />
+        <ProgressBar value={0} />
+        <div style={{ fontSize: F.sm, color: C.textA(0.55), fontFamily: F.body, marginTop: S.md }}>See you for the next 10!</div>
+      </GlassCard>
+
+      <div style={{ flex: 1 }} />
+      <Btn onClick={onBookFreeClass} icon="📅">Book Your Free Class</Btn>
+      <div style={{ height: S.xs }} />
+      <Btn onClick={onComplete} outline>Maybe Later — Go Home</Btn>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// BOOK FREE CLASS SCREEN
+// ═══════════════════════════════════════════════════
+function BookFreeClassScreen({ onBack, onBook }) {
+  const [selectedClass, setSelectedClass] = useState(null);
+
+  return (
+    <div style={{ padding: S.xl, display: "flex", flexDirection: "column", gap: S.md, minHeight: "100%", position: "relative", overflow: "hidden" }}>
+      <BlobBg2 color={C.beige} opacity={0.35} position="top-right" scale={0.9} />
+
+      <div onClick={onBack} style={{ display: "flex", alignItems: "center", gap: S.sm, cursor: "pointer", position: "relative", zIndex: 1 }}>
+        <span style={{ fontSize: 14, color: C.red }}>←</span>
+        <span style={{ fontSize: F.sm, fontWeight: 600, color: C.red, fontFamily: F.body }}>Back</span>
+      </div>
+
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: 28, marginBottom: S.sm }}>🎁</div>
+        <div style={{ fontSize: F.xl - 2, fontWeight: 800, color: C.text, fontFamily: F.display }}>Book Your Free Class</div>
+        <div style={{ fontSize: F.sm, color: C.textA(0.55), fontFamily: F.body, marginTop: S.sm }}>Pick any class — it's on us!</div>
+      </div>
+
+      <div style={{
+        padding: "10px 14px", borderRadius: R.md, background: C.redA(0.05),
+        textAlign: "center", position: "relative", zIndex: 1,
+      }}>
+        <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body }}>
+          Your free class will be booked via Mindbody. Choose from today's schedule:
+        </div>
+      </div>
+
+      {schedule.map((s, i) => (
+        <GlassCard
+          key={i}
+          style={{
+            display: "flex", alignItems: "center", gap: S.md, padding: "12px 14px",
+            border: selectedClass === i ? `2px solid ${C.red}` : `1px solid ${C.textA(0.06)}`,
+            background: selectedClass === i ? C.redA(0.06) : C.glassHeavy,
+            cursor: "pointer",
+          }}
+          noBorder
+          heavy={selectedClass === i}
+          onClick={() => setSelectedClass(i)}
+        >
+          {selectedClass === i && (
+            <div style={{ width: 22, height: 22, borderRadius: R.full, background: C.warmGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: C.white, flexShrink: 0 }}>✓</div>
+          )}
+          <div style={{ width: 42, textAlign: "center", fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body, flexShrink: 0 }}>{s.time}</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: F.sm, fontWeight: 600, color: C.text, fontFamily: F.body }}>{s.cls}</div>
+            <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{s.teacher} · {s.spots} spot{s.spots !== 1 ? "s" : ""}</div>
+          </div>
+          {selectedClass === i && <PillTag variant="red">FREE</PillTag>}
+        </GlassCard>
+      ))}
+
+      <div style={{ flex: 1 }} />
+      <Btn onClick={() => selectedClass !== null && onBook()} disabled={selectedClass === null}>
+        {selectedClass !== null ? `Book ${schedule[selectedClass].cls} — Free` : "Select a class"}
+      </Btn>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// BOOKING CONFIRMED SCREEN
+// ═══════════════════════════════════════════════════
+function BookingConfirmedScreen({ onDone }) {
+  return (
+    <div style={{ padding: S.xl, display: "flex", flexDirection: "column", alignItems: "center", gap: S.xl, minHeight: "100%", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+      <BlobBg color={C.red} opacity={0.05} position="top-right" scale={1.3} />
+      <BlobBg2 color={C.beige} opacity={0.35} position="bottom-left" scale={1.2} />
+
+      <div style={{
+        width: 72, height: 72, borderRadius: R.full, background: C.warmGrad,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 36, position: "relative", zIndex: 1,
+        boxShadow: `0 0 0 10px ${C.redA(0.08)}, ` + C.shadowXl,
+      }}>🎉</div>
+
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xxl, fontWeight: 800, color: C.red, fontFamily: F.display }}>Class Booked!</div>
+        <div style={{ fontSize: F.base, color: C.textA(0.55), fontFamily: F.body, marginTop: S.sm, lineHeight: 1.7, maxWidth: 260 }}>
+          Your free class is booked via Mindbody. You'll get a confirmation email shortly. Enjoy your movement!
+        </div>
+      </div>
+
+      <GlassCard style={{ padding: "12px 20px", textAlign: "center" }}>
+        <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body }}>Check Mindbody app for booking details</div>
+      </GlassCard>
+
+      <div style={{ flex: 1 }} />
+      <Btn onClick={onDone} icon="🏠">Back to Home</Btn>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// NFC TAP ANIMATION (glassmorphic)
+// ═══════════════════════════════════════════════════
+function NfcOverlay({ onDone }) {
+  const [phase, setPhase] = useState(0);
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 400);
+    const t2 = setTimeout(() => setPhase(2), 1000);
+    const t3 = setTimeout(() => onDone(), 1600);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, []);
+
+  return (
+    <div style={{
+      position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+      background: C.textA(0.6), backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      zIndex: 10, borderRadius: 50,
+    }}>
+      <div style={{
+        textAlign: "center", color: C.white, fontFamily: F.display,
+        transform: phase > 0 ? "scale(1)" : "scale(0.8)",
+        opacity: phase > 0 ? 1 : 0, transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+      }}>
+        <div style={{
+          width: 80, height: 80, borderRadius: R.full, margin: "0 auto 12px",
+          background: phase < 2 ? C.whiteA(0.12) : C.warmGrad,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 36, transition: "all 0.4s ease",
+          boxShadow: phase >= 2 ? `0 0 0 12px ${C.redA(0.2)}, ` + C.shadowXl : "none",
+        }}>{phase < 2 ? "📱" : "✓"}</div>
+        <div style={{ fontSize: F.lg, fontWeight: 700 }}>{phase < 2 ? "NFC detected..." : "Connected!"}</div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// MAIN PROTOTYPE
+// ═══════════════════════════════════════════════════
+function TapInPrototype() {
+  const [screen, setScreen] = useState("home");
+  const [visits, setVisits] = useState(0);
+  const [showNfc, setShowNfc] = useState(false);
+  const [userData, setUserData] = useState({ phone: "+49 170 1234 5678", name: "", email: "", birthday: "", prefClass: "" });
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMsg, setToastMsg] = useState({ message: "", emoji: "" });
+  const [hasFreeCreditAvailable, setHasFreeCreditAvailable] = useState(false);
+
+  const profileComplete = userData.name && userData.email && userData.birthday && userData.prefClass;
+
+  function showToast(message, emoji) {
+    setToastMsg({ message, emoji });
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 3000);
+  }
+
+  function handleNfcTap() { setShowNfc(true); }
+
+  function handleNfcDone() {
+    setShowNfc(false);
+    const nextVisit = visits + 1;
+    if (nextVisit === 1) { setScreen("j1"); }
+    else if (nextVisit <= 9) { setVisits(nextVisit); setScreen("j2"); }
+    else { setVisits(10); setScreen("j3a"); }
+  }
+
+  function handleJ1Complete() { setVisits(1); setScreen("home"); showToast("You're checked in! Enjoy your workout.", "✅"); }
+  function handleJ2Complete() { setScreen("home"); showToast("Checked in! Enjoy your workout.", "✅"); }
+  function handleJ3AClaim(name, email) { setUserData(prev => ({ ...prev, name, email })); setScreen("j3b"); }
+
+  function handleJ3BDone() {
+    setVisits(0);
+    setHasFreeCreditAvailable(true);
+    setScreen("home");
+    showToast("Free class ready! Tap the banner to book.", "🎁");
+  }
+
+  function handleBookFreeClass() { setScreen("bookFree"); }
+  function handleBookConfirmed() { setHasFreeCreditAvailable(false); setScreen("bookingConfirmed"); }
+  function handleBookingDone() { setScreen("home"); }
+  function handleUpdateField(key, value) { setUserData(prev => ({ ...prev, [key]: value })); }
+
+  function handleReset() {
+    setScreen("home"); setVisits(0); setHasFreeCreditAvailable(false);
+    setUserData({ phone: "+49 170 1234 5678", name: "", email: "", birthday: "", prefClass: "" });
+  }
+
+  function renderScreen() {
+    switch (screen) {
+      case "home": return <HomeScreen visits={visits} onProfileClick={() => setScreen("profile")} onNfcTap={handleNfcTap} profileComplete={profileComplete} hasFreeCreditAvailable={hasFreeCreditAvailable} onBookFreeClass={handleBookFreeClass} />;
+      case "profile": return <ProfileScreen onBack={() => setScreen("home")} userData={userData} onUpdateField={handleUpdateField} />;
+      case "j1": return <J1Screen onComplete={handleJ1Complete} />;
+      case "j2": return <J2Screen visitNumber={visits} onComplete={handleJ2Complete} />;
+      case "j3a": return <J3AScreen onComplete={handleJ3AClaim} userData={userData} />;
+      case "j3b": return <J3BScreen onComplete={handleJ3BDone} onBookFreeClass={() => { setVisits(0); setScreen("bookFree"); }} />;
+      case "bookFree": return <BookFreeClassScreen onBack={() => setScreen(hasFreeCreditAvailable ? "home" : "j3b")} onBook={handleBookConfirmed} />;
+      case "bookingConfirmed": return <BookingConfirmedScreen onDone={handleBookingDone} />;
+      default: return <HomeScreen visits={visits} onProfileClick={() => setScreen("profile")} onNfcTap={handleNfcTap} profileComplete={profileComplete} hasFreeCreditAvailable={hasFreeCreditAvailable} onBookFreeClass={handleBookFreeClass} />;
+    }
+  }
+
+  const screenLabels = {
+    home: "Home", profile: "Profile",
+    j1: "Journey 1 — First Check-in", j2: `Journey 2 — Visit ${visits}/10`,
+    j3a: "Journey 3 — Reward Claim", j3b: "Journey 3 — Success",
+    bookFree: "Book Free Class", bookingConfirmed: "Booking Confirmed",
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: `linear-gradient(180deg, ${C.light} 0%, ${C.beige} 100%)`, padding: "40px 20px", fontFamily: F.body }}>
+      {/* Header */}
+      <div style={{ textAlign: "center", marginBottom: S.xxl }}>
+        <PillTag variant="warm">Good Moves Studio</PillTag>
+        <h1 style={{ fontSize: F.hero, fontWeight: 800, color: C.text, margin: "12px 0 6px", fontFamily: F.display, letterSpacing: -0.5 }}>TapIn</h1>
+        <p style={{ fontSize: F.base, color: C.textA(0.5), margin: "0 0 4px", fontFamily: F.body }}>Interactive Prototype — Redesigned</p>
+        <div style={{
+          display: "inline-block", padding: "6px 18px", borderRadius: R.pill,
+          background: C.warmGrad, color: C.white,
+          fontSize: F.xs, fontWeight: 700, fontFamily: F.display, letterSpacing: 0.5, marginTop: S.sm,
+          boxShadow: C.shadowMd,
+        }}>{screenLabels[screen]}</div>
+      </div>
+
+      {/* Instructions */}
+      <GlassCard style={{ maxWidth: 500, margin: "0 auto 28px", padding: S.lg, textAlign: "center" }} heavy>
+        <div style={{ fontSize: F.sm, color: C.text, fontFamily: F.body, lineHeight: 1.7 }}>
+          <strong>How to use:</strong> Click "Simulate NFC Tap" on the home screen to trigger check-ins.
+          Click the avatar (top-right) to open your profile. Click any deal to see details. Visit count: <strong style={{ color: C.red }}>{visits}</strong>
+          {hasFreeCreditAvailable && <span style={{ color: C.blue }}> · 🎁 Free class available!</span>}
+        </div>
+      </GlassCard>
+
+      {/* Phone frame */}
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: S.md }}>
+          <div style={{
+            width: 375, height: 812, borderRadius: 50,
+            border: `3px solid ${C.textA(0.08)}`,
+            background: C.light, overflow: "hidden",
+            boxShadow: C.shadowXl + `, 0 0 0 1px ${C.textA(0.03)}`,
+            position: "relative",
+          }}>
+            {/* Dynamic Island */}
+            <div style={{ height: 54, display: "flex", alignItems: "center", justifyContent: "center", background: C.white, position: "relative" }}>
+              <div style={{ width: 120, height: 34, borderRadius: 20, background: "#1a1a1a", position: "absolute", top: 10 }} />
+            </div>
+            <div style={{ height: 758, overflowY: "auto" }}>
+              {renderScreen()}
+            </div>
+            {showNfc && <NfcOverlay onDone={handleNfcDone} />}
+            <Toast message={toastMsg.message} emoji={toastMsg.emoji} visible={toastVisible} />
+          </div>
+          <div style={{ fontSize: F.sm, color: C.red, fontFamily: F.display, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.2 }}>
+            {screenLabels[screen]}
+          </div>
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div style={{ maxWidth: 500, margin: "32px auto 0", display: "flex", gap: S.md, justifyContent: "center", flexWrap: "wrap" }}>
+        {[
+          { label: "🔄 Reset Everything", onClick: handleReset, variant: "default" },
+          { label: "🏠 Go Home", onClick: () => setScreen("home"), variant: "default" },
+          { label: "⚡ Skip to Visit 9", onClick: () => { setVisits(9); setScreen("home"); }, variant: "accent" },
+        ].map((btn, i) => (
+          <div key={i} onClick={btn.onClick} style={{
+            padding: "8px 20px", borderRadius: R.md,
+            background: btn.variant === "accent" ? C.redA(0.06) : C.glass,
+            backdropFilter: "blur(8px)",
+            border: `1.5px solid ${btn.variant === "accent" ? C.redA(0.2) : C.textA(0.08)}`,
+            fontSize: F.sm, fontWeight: 600,
+            color: btn.variant === "accent" ? C.red : C.text,
+            fontFamily: btn.variant === "accent" ? F.display : F.body,
+            cursor: "pointer", boxShadow: C.shadowXs,
+          }}>{btn.label}</div>
+        ))}
+      </div>
+
+      {/* Flow diagram */}
+      <GlassCard style={{ maxWidth: 700, margin: "40px auto 0", padding: S.xl }} heavy>
+        <div style={{ fontSize: F.md, fontWeight: 800, color: C.text, fontFamily: F.display, marginBottom: S.lg, textAlign: "center" }}>User Flow</div>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: S.sm, flexWrap: "wrap" }}>
+          {[
+            { label: "Home", screen: "home", active: screen === "home" || screen === "profile" },
+            { label: "→" },
+            { label: "J1: Phone", screen: "j1", active: screen === "j1" },
+            { label: "→" },
+            { label: "J2: Check-in", screen: "j2", active: screen === "j2" },
+            { label: "×8 →" },
+            { label: "J3A: Claim", screen: "j3a", active: screen === "j3a" },
+            { label: "→" },
+            { label: "J3B: Done", screen: "j3b", active: screen === "j3b" },
+            { label: "→" },
+            { label: "📅 Book", screen: "bookFree", active: screen === "bookFree" || screen === "bookingConfirmed" },
+            { label: "→ 🔄" },
+          ].map((item, i) => item.screen ? (
+            <div
+              key={i}
+              onClick={() => {
+                if (item.screen === "j2") setVisits(Math.max(visits, 5));
+                if (item.screen === "j3a") setVisits(10);
+                if (item.screen === "bookFree") setHasFreeCreditAvailable(true);
+                setScreen(item.screen);
+              }}
+              style={{
+                padding: "7px 14px", borderRadius: R.sm,
+                background: item.active ? C.warmGrad : C.whiteA(0.7),
+                color: item.active ? C.white : C.text,
+                border: `1.5px solid ${item.active ? "transparent" : C.textA(0.08)}`,
+                fontSize: F.xs, fontWeight: 700, fontFamily: F.display,
+                cursor: "pointer", transition,
+                boxShadow: item.active ? C.shadowMd : C.shadowXs,
+              }}
+            >{item.label}</div>
+          ) : (
+            <span key={i} style={{ color: C.textA(0.3), fontSize: 12, fontFamily: F.body }}>{item.label}</span>
+          ))}
+        </div>
+        <div style={{ textAlign: "center", marginTop: S.md, fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>
+          Click any step to jump to that screen
+        </div>
+      </GlassCard>
+
+      {/* State debug */}
+      <GlassCard style={{ maxWidth: 500, margin: "20px auto 0", padding: S.lg }}>
+        <div style={{ fontSize: F.xs, fontWeight: 700, color: C.text, fontFamily: F.body, marginBottom: S.sm }}>App State</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px 20px", fontSize: F.xs, fontFamily: F.body }}>
+          <span style={{ color: C.textA(0.4) }}>Screen:</span><span style={{ color: C.text, fontWeight: 600 }}>{screen}</span>
+          <span style={{ color: C.textA(0.4) }}>Visits:</span><span style={{ color: C.text, fontWeight: 600 }}>{visits}</span>
+          <span style={{ color: C.textA(0.4) }}>Name:</span><span style={{ color: C.text, fontWeight: 600 }}>{userData.name || "—"}</span>
+          <span style={{ color: C.textA(0.4) }}>Email:</span><span style={{ color: C.text, fontWeight: 600 }}>{userData.email || "—"}</span>
+          <span style={{ color: C.textA(0.4) }}>Free class:</span><span style={{ color: C.red, fontWeight: 600 }}>{hasFreeCreditAvailable ? "Available" : "—"}</span>
+          <span style={{ color: C.textA(0.4) }}>Profile:</span><span style={{ color: C.text, fontWeight: 600 }}>{profileComplete ? "Complete" : "Incomplete"}</span>
+        </div>
+      </GlassCard>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(TapInPrototype));
+</script>
+</body>
+</html>

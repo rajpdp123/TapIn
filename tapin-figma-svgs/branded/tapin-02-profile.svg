@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="375" height="812" viewBox="0 0 375 812">
+  <defs>
+    <clipPath id="phone"><rect width="375" height="812" rx="50" /></clipPath>
+    <linearGradient id="progressGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#B0482D" />
+      <stop offset="100%" stop-color="#C4603F" />
+    </linearGradient>
+  </defs>
+  <rect width="375" height="812" rx="50" fill="#FBF6F1" />
+  <g clip-path="url(#phone)">
+    <!-- Dynamic Island -->
+    <rect x="0" y="0" width="375" height="54" fill="#FFFFFF" />
+    <rect x="127" y="10" width="120" height="34" rx="17" fill="#1a1a1a" />
+    <line x1="0" y1="54" x2="375" y2="54" stroke="rgba(0,0,68,0.1)" stroke-width="1" />
+    <g transform="translate(250,-30) scale(1.0)" opacity="0.5">
+      <path d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90,-16.3,88.5,-0.9C87,14.5,81.4,29,72.8,41.5C64.2,54,52.6,64.5,39.4,71.8C26.2,79.1,11.4,83.2,-2.8,87.4C-17,91.6,-34,95.8,-47.2,88.8C-60.4,81.8,-69.8,63.6,-76.4,46.1C-83,28.6,-86.8,11.8,-84.6,-3.6C-82.4,-19,-74.2,-33.1,-63.5,-43.7C-52.8,-54.3,-39.6,-61.5,-26.4,-69.4C-13.2,-77.3,0,-85.9,14.2,-87.2C28.4,-88.5,56.8,-82.5,44.7,-76.4Z" fill="#EEDBC3" transform="translate(100,100)" />
+    </g>
+    <text x="20" y="70" font-size="14" fill="#B0482D">←</text>
+    <text x="38" y="70" font-size="12" fill="#B0482D" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Back</text>
+    <circle cx="187" cy="130" r="32" fill="#EEDBC3" stroke="rgba(176,72,45,0.15)" stroke-width="2" />
+    <text x="187" y="136" text-anchor="middle" font-size="24" fill="#B0482D">👤</text>
+    <text x="187" y="174" text-anchor="middle" font-size="16" fill="#000044" font-weight="800" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">Your Profile</text>
+    <text x="187" y="190" text-anchor="middle" font-size="10" fill="rgba(0,0,68,0.65)" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Complete your info for a personalised experience</text>
+    <rect x="20" y="206" width="335" height="30" rx="10" fill="rgba(176,72,45,0.08)" />
+    <rect x="30" y="218" width="270" height="5" rx="3" fill="#EEDBC3" />
+    <rect x="30" y="218" width="54" height="5" rx="3" fill="#B0482D" />
+    <text x="330" y="225" text-anchor="end" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">1/5</text>
+    <rect x="20" y="250" width="335" height="250" rx="16" fill="#FFFFFF" stroke="rgba(0,0,68,0.1)" stroke-width="1.5" />
+    <line x1="20" y1="300" x2="355" y2="300" stroke="#EEDBC3" />
+    <text x="36" y="280" font-size="14">📱</text>
+    <text x="58" y="272" font-size="9" fill="rgba(0,0,68,0.45)" font-weight="700" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">PHONE</text>
+    <text x="58" y="288" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">+49 170 •••• 89</text>
+    <circle cx="340" cy="278" r="10" fill="#B0482D" />
+    <text x="340" y="282" text-anchor="middle" font-size="10" fill="#FFFFFF">✓</text>
+    <line x1="20" y1="350" x2="355" y2="350" stroke="#EEDBC3" />
+    <text x="36" y="330" font-size="14">👤</text>
+    <text x="58" y="322" font-size="9" fill="rgba(0,0,68,0.45)" font-weight="700" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">NAME</text>
+    <text x="58" y="338" font-size="11" fill="#E5D0B5" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-style="italic">Add your name</text>
+    <text x="340" y="332" text-anchor="end" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Add →</text>
+    <line x1="20" y1="400" x2="355" y2="400" stroke="#EEDBC3" />
+    <text x="36" y="380" font-size="14">✉</text>
+    <text x="58" y="372" font-size="9" fill="rgba(0,0,68,0.45)" font-weight="700" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">EMAIL</text>
+    <text x="58" y="388" font-size="11" fill="#E5D0B5" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-style="italic">Add your email</text>
+    <text x="340" y="382" text-anchor="end" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Add →</text>
+    <line x1="20" y1="450" x2="355" y2="450" stroke="#EEDBC3" />
+    <text x="36" y="430" font-size="14">🎂</text>
+    <text x="58" y="422" font-size="9" fill="rgba(0,0,68,0.45)" font-weight="700" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">BIRTHDAY</text>
+    <text x="58" y="438" font-size="11" fill="#E5D0B5" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-style="italic">Add for a birthday surprise</text>
+    <text x="340" y="432" text-anchor="end" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Add →</text>
+    <text x="36" y="480" font-size="14">🧘</text>
+    <text x="58" y="472" font-size="9" fill="rgba(0,0,68,0.45)" font-weight="700" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">PREFERRED CLASS</text>
+    <text x="58" y="488" font-size="11" fill="#E5D0B5" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-style="italic">e.g. Morning Flow, Barre</text>
+    <text x="340" y="482" text-anchor="end" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Add →</text>
+    <rect x="20" y="514" width="335" height="55" rx="12" fill="rgba(176,72,45,0.08)" stroke="rgba(176,72,45,0.15)" stroke-width="1" />
+    <text x="32" y="530" font-size="10" fill="#000044" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Why we ask</text>
+    <text x="32" y="544" font-size="10" fill="rgba(0,0,68,0.65)" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Your name and email help us link visits to</text>
+    <text x="32" y="556" font-size="10" fill="rgba(0,0,68,0.65)" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Mindbody. Birthday lets us surprise you.</text>
+  </g>
+</svg>
