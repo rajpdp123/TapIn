@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TapIn Admin — Good Moves Studio Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: linear-gradient(180deg, #FBF6F1 0%, #EEDBC3 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  ::-webkit-scrollbar { width: 0; background: transparent; }
+  input::placeholder { color: rgba(0,0,68,0.3); }
+  textarea::placeholder { color: rgba(0,0,68,0.3); }
+  input:focus, textarea:focus { outline: none; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+// ═══════════════════════════════════════════════════════════
+// GOOD MOVES STUDIO — TapIn ADMIN Prototype
+// Studio Manager & Receptionist PWA
+// Design System: Shared with customer app (GMS Brand)
+// Admin accent: Blue primary (vs Red for customer)
+// ═══════════════════════════════════════════════════════════
+
+// ─── GMS Brand Palette ───
+const C = {
+  red: "#B0482D", beige: "#EEDBC3", blue: "#001DA2",
+  light: "#FBF6F1", text: "#000044", white: "#FFFFFF",
+  warmGrad: "linear-gradient(135deg, #C4603F 0%, #B0482D 50%, #8A3520 100%)",
+  blueGrad: "linear-gradient(135deg, #1A3FD4 0%, #001DA2 100%)",
+  beigeGrad: "linear-gradient(135deg, #FBF6F1 0%, #EEDBC3 100%)",
+  greenGrad: "linear-gradient(135deg, #34D399 0%, #059669 100%)",
+  redA: function(a) { return "rgba(176,72,45," + a + ")"; },
+  blueA: function(a) { return "rgba(0,29,162," + a + ")"; },
+  textA: function(a) { return "rgba(0,0,68," + a + ")"; },
+  whiteA: function(a) { return "rgba(255,255,255," + a + ")"; },
+  greenA: function(a) { return "rgba(5,150,105," + a + ")"; },
+  glass: "rgba(255,255,255,0.72)", glassBorder: "rgba(255,255,255,0.35)",
+  glassHeavy: "rgba(255,255,255,0.88)",
+  shadowXs: "0 1px 2px rgba(0,0,68,0.05)",
+  shadowSm: "0 1px 3px rgba(0,0,68,0.08), 0 1px 2px rgba(0,0,68,0.06)",
+  shadowMd: "0 4px 8px -2px rgba(0,0,68,0.08), 0 2px 4px -2px rgba(0,0,68,0.06)",
+  shadowLg: "0 12px 16px -4px rgba(0,0,68,0.08), 0 4px 6px -2px rgba(0,0,68,0.05)",
+  shadowXl: "0 20px 24px -4px rgba(0,0,68,0.1), 0 8px 8px -4px rgba(0,0,68,0.04)",
+};
+
+const F = {
+  display: "'Quicksand', 'Varela Round', 'Nunito', system-ui, sans-serif",
+  body: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+  xs: 10, sm: 11, base: 13, md: 14, lg: 16, xl: 20, xxl: 24, hero: 28,
+};
+
+const S = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32 };
+const R = { sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, pill: 100, full: "50%" };
+const transition = "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+
+// ─── Blob BGs ───
+function BlobBg2({ color, opacity, position, scale }) {
+  color = color || C.beige; opacity = opacity || 0.3; position = position || "bottom-left"; scale = scale || 1;
+  var positions = {
+    "bottom-left": { bottom: -60, left: -50 },
+    "top-right": { top: -50, right: -40 },
+    "center-left": { top: "40%", left: -90 },
+  };
+  var pos = positions[position] || positions["bottom-left"];
+  return (
+    <svg viewBox="0 0 200 200" style={{ position: "absolute", ...pos, width: 200 * scale, height: 200 * scale, opacity: opacity, pointerEvents: "none", zIndex: 0 }}>
+      <path d="M39.5,-67.5C52.9,-60.1,66.8,-53.2,74.8,-42C82.8,-30.8,84.9,-15.4,83.3,-0.9C81.7,13.5,76.4,27.1,68.4,38.6C60.4,50.1,49.7,59.6,37.4,66.1C25.1,72.6,11.1,76.1,-2.5,80.3C-16.1,84.5,-32.2,89.4,-45,83.8C-57.8,78.2,-67.3,62.1,-73.5,45.8C-79.7,29.5,-82.6,13,-80.5,1.2C-78.4,-10.6,-71.3,-19,-63.5,-28.3C-55.7,-37.6,-47.2,-47.8,-36.8,-56.7C-26.4,-65.6,-13.2,-73.2,0.4,-73.9C14,-74.6,28,-74.9,39.5,-67.5Z" fill={color} transform="translate(100 100)" />
+    </svg>
+  );
+}
+
+// ─── Shared Components ───
+function GlassCard({ children, style, heavy, noBorder, onClick }) {
+  return (
+    <div onClick={onClick} style={{
+      background: heavy ? C.glassHeavy : C.glass,
+      backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+      borderRadius: R.xl, border: noBorder ? "none" : "1px solid " + C.glassBorder,
+      boxShadow: C.shadowMd, position: "relative", zIndex: 1, ...(style || {}),
+    }}>{children}</div>
+  );
+}
+
+function Btn({ children, onClick, disabled, outline, blue, icon, small, style }) {
+  var bg = disabled ? C.textA(0.08) : outline ? C.white : blue ? C.blueGrad : C.warmGrad;
+  var color = disabled ? C.textA(0.35) : outline ? C.blue : C.white;
+  return (
+    <div onClick={disabled ? undefined : onClick} style={{
+      width: "100%", padding: small ? "10px 0" : "15px 0", borderRadius: R.lg,
+      border: outline ? "1.5px solid " + C.blueA(0.3) : "none",
+      background: bg, color: color, textAlign: "center",
+      fontSize: small ? F.sm : F.md, fontWeight: 700, fontFamily: F.display,
+      cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.6 : 1,
+      transition: transition, boxShadow: !disabled && !outline ? C.shadowMd : C.shadowXs,
+      position: "relative", zIndex: 1,
+      display: "flex", alignItems: "center", justifyContent: "center", gap: S.sm,
+      ...(style || {}),
+    }}>
+      {icon && <span style={{ fontSize: small ? 14 : 16 }}>{icon}</span>}
+      {children}
+    </div>
+  );
+}
+
+function PillTag({ children, variant }) {
+  variant = variant || "blue";
+  var styles = {
+    red: { bg: C.redA(0.08), color: C.red, border: C.redA(0.12) },
+    blue: { bg: C.blueA(0.06), color: C.blue, border: C.blueA(0.1) },
+    green: { bg: C.greenA(0.08), color: "#059669", border: C.greenA(0.12) },
+    warm: { bg: C.beige, color: C.red, border: C.redA(0.1) },
+  };
+  var s = styles[variant] || styles.blue;
+  return (
+    <span style={{
+      display: "inline-flex", padding: "3px 10px", borderRadius: R.pill,
+      background: s.bg, color: s.color, border: "1px solid " + s.border,
+      fontSize: F.xs, fontWeight: 700, fontFamily: F.body,
+    }}>{children}</span>
+  );
+}
+
+function SectionLabel({ children }) {
+  return (
+    <div style={{
+      fontSize: 9, fontWeight: 700, color: C.textA(0.4), fontFamily: F.body,
+      textTransform: "uppercase", letterSpacing: 1, marginBottom: S.sm, position: "relative", zIndex: 1,
+    }}>{children}</div>
+  );
+}
+
+function Toast({ message, emoji, visible }) {
+  return (
+    <div style={{
+      position: "fixed", top: 60, left: S.md, right: S.md,
+      background: C.blueGrad, color: C.white, borderRadius: R.lg,
+      padding: "14px 16px", boxShadow: C.shadowXl, zIndex: 20,
+      display: "flex", alignItems: "center", gap: S.sm,
+      transform: visible ? "translateY(0)" : "translateY(-80px)",
+      opacity: visible ? 1 : 0, transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)",
+      fontFamily: F.body, fontSize: F.sm, fontWeight: 600,
+    }}>
+      <span style={{ fontSize: 18 }}>{emoji}</span>{message}
+    </div>
+  );
+}
+
+function Toggle({ value, onChange, label }) {
+  return (
+    <div onClick={function() { onChange(!value); }} style={{
+      display: "flex", alignItems: "center", justifyContent: "space-between",
+      cursor: "pointer", position: "relative", zIndex: 1,
+    }}>
+      <span style={{ fontSize: F.sm, fontWeight: 600, color: C.text, fontFamily: F.body }}>{label}</span>
+      <div style={{
+        width: 44, height: 24, borderRadius: R.pill,
+        background: value ? C.blueGrad : C.textA(0.12),
+        padding: 2, transition: transition, position: "relative",
+      }}>
+        <div style={{
+          width: 20, height: 20, borderRadius: R.full,
+          background: C.white, boxShadow: C.shadowSm,
+          transform: value ? "translateX(20px)" : "translateX(0)", transition: transition,
+        }} />
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOCK DATA
+// ═══════════════════════════════════════════════════════════
+
+// matchStatus: "linked" = matched to Mindbody client via phone/email
+//              "standalone" = TapIn-only, no Mindbody match (typically aggregator members)
+//              "pending" = awaiting email at visit 10 to retry match
+// source: "Direct" = booked directly with studio | "USC" = Urban Sports Club | "ClassPass"
+var mockMembers = [
+  { name: "Lena K.", visits: 8, lastVisit: "Today 09:30", class: "Reformer Basics", avatar: "👩‍🦰", matchStatus: "linked", source: "Direct", phone: "+49 170 ****12" },
+  { name: "Sophie M.", visits: 5, lastVisit: "Today 09:30", class: "Reformer Basics", avatar: "👱‍♀️", matchStatus: "standalone", source: "USC", phone: "+49 157 ****88" },
+  { name: "Jonas R.", visits: 3, lastVisit: "Today 07:00", class: "Morning Flow", avatar: "🧔", matchStatus: "linked", source: "Direct", phone: "+49 176 ****45" },
+  { name: "Anna B.", visits: 10, lastVisit: "Today 07:00", class: "Morning Flow", avatar: "👩", matchStatus: "linked", source: "ClassPass", phone: "+49 151 ****77" },
+  { name: "Mia W.", visits: 1, lastVisit: "Yesterday", class: "Barre Sculpt", avatar: "👧", matchStatus: "standalone", source: "USC", phone: "+49 162 ****03" },
+  { name: "Felix P.", visits: 6, lastVisit: "Yesterday", class: "Power Mat", avatar: "👨", matchStatus: "linked", source: "Direct", phone: "+49 170 ****56" },
+  { name: "Clara H.", visits: 4, lastVisit: "2 days ago", class: "Stretch & Restore", avatar: "👩‍🦱", matchStatus: "standalone", source: "USC", phone: "+49 160 ****91" },
+  { name: "Tom S.", visits: 2, lastVisit: "3 days ago", class: "Morning Flow", avatar: "🧑", matchStatus: "pending", source: "ClassPass", phone: "+49 152 ****34" },
+];
+
+var mockTapIns = [
+  { name: "Lena K.", time: "09:32", class: "Reformer Basics", visits: 8, avatar: "👩‍🦰", matchStatus: "linked", source: "Direct" },
+  { name: "Sophie M.", time: "09:30", class: "Reformer Basics", visits: 5, avatar: "👱‍♀️", matchStatus: "standalone", source: "USC" },
+  { name: "Jonas R.", time: "07:05", class: "Morning Flow", visits: 3, avatar: "🧔", matchStatus: "linked", source: "Direct" },
+  { name: "Anna B.", time: "07:02", class: "Morning Flow", visits: 10, avatar: "👩", matchStatus: "linked", source: "ClassPass" },
+];
+
+var mockMessages = [
+  { title: "Weekend Warrior Special", audience: "All Members", sent: 142, opened: 98, channel: "SMS", date: "Feb 18" },
+  { title: "Your free class is waiting!", audience: "Loyal (5+)", sent: 24, opened: 19, channel: "Push", date: "Feb 15" },
+  { title: "Welcome to Good Moves!", audience: "New", sent: 8, opened: 7, channel: "SMS", date: "Feb 12" },
+];
+
+var mockTemplates = [
+  { name: "Welcome", emoji: "👋", preview: "Welcome to Good Moves! Your loyalty journey starts now..." },
+  { name: "Reward Reminder", emoji: "🎁", preview: "You're so close to your free class! Just {n} more visits..." },
+  { name: "Class Promo", emoji: "🧘", preview: "New class alert! Try {class} with {teacher} this week..." },
+  { name: "Win-back", emoji: "💛", preview: "We miss you! Come back and enjoy 20% off your next class..." },
+];
+
+var mockProgrammes = [
+  { name: "10-Visit Free Class", threshold: 10, reward: "Free class", active: true, members: 47, redeemed: 12 },
+  { name: "Summer 2025 Special", threshold: 8, reward: "20% discount", active: false, members: 32, redeemed: 8 },
+];
+
+// ═══════════════════════════════════════════════════════════
+// TAB 1: DASHBOARD
+// ═══════════════════════════════════════════════════════════
+
+function DashboardTab() {
+  var _search = useState("");
+  var search = _search[0]; var setSearch = _search[1];
+
+  var filtered = search.length > 0
+    ? mockMembers.filter(function(m) { return m.name.toLowerCase().indexOf(search.toLowerCase()) >= 0; })
+    : null;
+
+  return (
+    <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, position: "relative", overflow: "hidden" }}>
+      <BlobBg2 color={C.beige} opacity={0.25} position="top-right" scale={1} />
+
+      {/* Header */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>Studio Dashboard</div>
+        <div style={{ fontSize: F.xxl, fontWeight: 800, color: C.text, fontFamily: F.display }}>Today</div>
+        <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body, marginTop: 2 }}>Friday, 21 Feb 2026</div>
+      </div>
+
+      {/* Stats Row */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: S.sm, position: "relative", zIndex: 1 }}>
+        {[
+          { label: "Tap-ins", value: "4", emoji: "📱" },
+          { label: "Linked", value: "31", emoji: "🔗" },
+          { label: "TapIn-only", value: "16", emoji: "📱" },
+        ].map(function(s) {
+          return (
+            <GlassCard key={s.label} heavy style={{ padding: S.md, textAlign: "center" }}>
+              <div style={{ fontSize: 20, marginBottom: 4 }}>{s.emoji}</div>
+              <div style={{ fontSize: F.xl, fontWeight: 800, color: C.text, fontFamily: F.display }}>{s.value}</div>
+              <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{s.label}</div>
+            </GlassCard>
+          );
+        })}
+      </div>
+
+      {/* Search */}
+      <GlassCard heavy style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: S.sm }}>
+        <span style={{ fontSize: 14, color: C.textA(0.35) }}>🔍</span>
+        <input
+          value={search}
+          onChange={function(e) { setSearch(e.target.value); }}
+          placeholder="Search members..."
+          style={{
+            flex: 1, border: "none", background: "transparent",
+            fontSize: F.sm, fontFamily: F.body, color: C.text,
+          }}
+        />
+        {search && (
+          <span onClick={function() { setSearch(""); }} style={{ fontSize: 12, color: C.textA(0.35), cursor: "pointer" }}>✕</span>
+        )}
+      </GlassCard>
+
+      {/* Search results OR Live feed */}
+      {filtered ? (
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <SectionLabel>Search Results ({filtered.length})</SectionLabel>
+          {filtered.length === 0 && (
+            <div style={{ textAlign: "center", padding: S.xxl, color: C.textA(0.4), fontSize: F.sm, fontFamily: F.body }}>No members found</div>
+          )}
+          {filtered.map(function(m, i) {
+            var statusColor = m.matchStatus === "linked" ? "#059669" : m.matchStatus === "pending" ? C.blue : C.textA(0.35);
+            var statusIcon = m.matchStatus === "linked" ? "🔗" : m.matchStatus === "pending" ? "⏳" : "📱";
+            var statusLabel = m.matchStatus === "linked" ? "Linked" : m.matchStatus === "pending" ? "Pending" : "TapIn-only";
+            return (
+              <GlassCard key={i} style={{ padding: "12px 14px", marginBottom: S.sm, display: "flex", alignItems: "center", gap: S.md }}>
+                <div style={{ width: 36, height: 36, borderRadius: R.full, background: C.beigeGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{m.avatar}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{m.name}</span>
+                    {m.source !== "Direct" && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: C.textA(0.06), color: C.textA(0.45), fontWeight: 600, fontFamily: F.body }}>{m.source}</span>}
+                  </div>
+                  <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{m.visits} visits · {statusIcon} {statusLabel}</div>
+                </div>
+                <PillTag variant={m.matchStatus === "linked" ? "green" : m.matchStatus === "pending" ? "blue" : "warm"}>{m.visits}/10</PillTag>
+              </GlassCard>
+            );
+          })}
+        </div>
+      ) : (
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <SectionLabel>Live Tap-Ins</SectionLabel>
+          {mockTapIns.map(function(t, i) {
+            var statusIcon = t.matchStatus === "linked" ? "🔗" : t.matchStatus === "pending" ? "⏳" : "📱";
+            return (
+              <GlassCard key={i} style={{ padding: "12px 14px", marginBottom: S.sm, display: "flex", alignItems: "center", gap: S.md }}>
+                <div style={{ width: 36, height: 36, borderRadius: R.full, background: C.beigeGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{t.avatar}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{t.name}</span>
+                    {t.source !== "Direct" && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: C.textA(0.06), color: C.textA(0.45), fontWeight: 600, fontFamily: F.body }}>{t.source}</span>}
+                  </div>
+                  <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{t.class} · {t.time} · {statusIcon}</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <PillTag variant={t.visits >= 10 ? "green" : t.visits >= 5 ? "blue" : "warm"}>{t.visits}/10</PillTag>
+                  {t.visits === 10 && <div style={{ fontSize: 8, color: "#059669", fontWeight: 700, marginTop: 3, fontFamily: F.body }}>FREE CLASS!</div>}
+                </div>
+              </GlassCard>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Quick Insights */}
+      <GlassCard style={{ padding: S.lg }}>
+        <SectionLabel>Quick Insights</SectionLabel>
+        <div style={{ display: "flex", flexDirection: "column", gap: S.md }}>
+          {[
+            { icon: "🔥", text: "Morning Flow is your most popular class today" },
+            { icon: "⭐", text: "Anna B. just earned her free class — visit #10!" },
+            { icon: "🔗", text: "Anna B. (ClassPass) matched to Mindbody via email" },
+            { icon: "📱", text: "Sophie M. (USC) is TapIn-only — will match at visit 10" },
+          ].map(function(ins, i) {
+            return (
+              <div key={i} style={{ display: "flex", gap: S.sm, alignItems: "flex-start" }}>
+                <span style={{ fontSize: 14, flexShrink: 0 }}>{ins.icon}</span>
+                <span style={{ fontSize: F.sm, color: C.text, fontFamily: F.body, lineHeight: 1.4 }}>{ins.text}</span>
+              </div>
+            );
+          })}
+        </div>
+      </GlassCard>
+
+      <div style={{ height: 80 }} />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB 2: MINDBODY CONNECT
+// ═══════════════════════════════════════════════════════════
+
+function MindbodyTab() {
+  var _step = useState("connected"); // "disconnected" | "connecting" | "connected"
+  var step = _step[0]; var setStep = _step[1];
+  var _apiKey = useState("");
+  var apiKey = _apiKey[0]; var setApiKey = _apiKey[1];
+  var _syncing = useState(false);
+  var syncing = _syncing[0]; var setSyncing = _syncing[1];
+  var _syncMembers = useState(true);
+  var syncMembers = _syncMembers[0]; var setSyncMembers = _syncMembers[1];
+  var _syncSchedule = useState(true);
+  var syncSchedule = _syncSchedule[0]; var setSyncSchedule = _syncSchedule[1];
+  var _syncBookings = useState(false);
+  var syncBookings = _syncBookings[0]; var setSyncBookings = _syncBookings[1];
+
+  function handleConnect() {
+    if (apiKey.length > 3) {
+      setStep("connected");
+    }
+  }
+
+  function handleSync() {
+    setSyncing(true);
+    setTimeout(function() { setSyncing(false); }, 2000);
+  }
+
+  return (
+    <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, position: "relative", overflow: "hidden" }}>
+      <BlobBg2 color={C.beige} opacity={0.25} position="top-right" scale={0.9} />
+
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>Integration</div>
+        <div style={{ fontSize: F.xxl, fontWeight: 800, color: C.text, fontFamily: F.display }}>Mindbody</div>
+      </div>
+
+      {/* Connection Status */}
+      <GlassCard heavy style={{ padding: S.lg }}>
+        <div style={{ display: "flex", alignItems: "center", gap: S.md }}>
+          <div style={{
+            width: 48, height: 48, borderRadius: R.md,
+            background: step === "connected" ? C.greenA(0.08) : C.textA(0.04),
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24,
+          }}>
+            {step === "connected" ? "✅" : "🔗"}
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: F.md, fontWeight: 700, color: C.text, fontFamily: F.body }}>
+              {step === "connected" ? "Connected" : "Not Connected"}
+            </div>
+            <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>
+              {step === "connected" ? "Good Moves Studio Berlin" : "Link your Mindbody account"}
+            </div>
+          </div>
+          <PillTag variant={step === "connected" ? "green" : "red"}>
+            {step === "connected" ? "Active" : "Offline"}
+          </PillTag>
+        </div>
+      </GlassCard>
+
+      {step === "disconnected" && (
+        <Btn blue onClick={function() { setStep("connecting"); }} icon="🔗">
+          Connect to Mindbody
+        </Btn>
+      )}
+
+      {step === "connecting" && (
+        <GlassCard heavy style={{ padding: S.xl }}>
+          <div style={{ textAlign: "center", marginBottom: S.lg }}>
+            <div style={{ fontSize: 28, marginBottom: S.sm }}>🔐</div>
+            <div style={{ fontSize: F.lg, fontWeight: 700, color: C.text, fontFamily: F.display }}>Enter API Key</div>
+            <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body, marginTop: S.xs }}>Find this in Mindbody → Settings → API</div>
+          </div>
+          <input
+            value={apiKey}
+            onChange={function(e) { setApiKey(e.target.value); }}
+            placeholder="MB-XXXX-XXXX-XXXX"
+            style={{
+              width: "100%", padding: "14px 16px", borderRadius: R.lg,
+              border: "1.5px solid " + C.blueA(0.15), background: C.whiteA(0.8),
+              fontSize: F.md, fontFamily: "monospace", color: C.text,
+              marginBottom: S.lg, textAlign: "center", letterSpacing: 1,
+            }}
+          />
+          <Btn blue onClick={handleConnect} disabled={apiKey.length < 4} icon="✓">
+            Verify & Connect
+          </Btn>
+          <div onClick={function() { setStep("disconnected"); }} style={{
+            textAlign: "center", marginTop: S.md, fontSize: F.sm, color: C.textA(0.4),
+            cursor: "pointer", fontFamily: F.body,
+          }}>Cancel</div>
+        </GlassCard>
+      )}
+
+      {step === "connected" && (
+        <React.Fragment>
+          {/* Last Sync */}
+          <GlassCard style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div>
+              <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>Last synced</div>
+              <div style={{ fontSize: F.sm, fontWeight: 600, color: C.text, fontFamily: F.body }}>
+                {syncing ? "Syncing..." : "Today, 08:15 AM"}
+              </div>
+            </div>
+            <div onClick={handleSync} style={{
+              padding: "8px 16px", borderRadius: R.pill, background: C.blueA(0.06),
+              color: C.blue, fontSize: F.xs, fontWeight: 700, cursor: "pointer",
+              fontFamily: F.body, border: "1px solid " + C.blueA(0.1),
+              opacity: syncing ? 0.5 : 1, transition: transition,
+            }}>
+              {syncing ? "⟳ Syncing" : "↻ Sync Now"}
+            </div>
+          </GlassCard>
+
+          {/* Sync Settings */}
+          <SectionLabel>Sync Settings</SectionLabel>
+          <GlassCard heavy style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.xl }}>
+            <Toggle value={syncMembers} onChange={setSyncMembers} label="Auto-sync members" />
+            <div style={{ height: 1, background: C.textA(0.04) }} />
+            <Toggle value={syncSchedule} onChange={setSyncSchedule} label="Sync class schedule" />
+            <div style={{ height: 1, background: C.textA(0.04) }} />
+            <Toggle value={syncBookings} onChange={setSyncBookings} label="Sync bookings" />
+          </GlassCard>
+
+          {/* Member Matching Overview */}
+          <SectionLabel>Member Matching</SectionLabel>
+          <GlassCard heavy style={{ padding: S.lg }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: S.lg }}>
+              {[
+                { label: "Linked", value: "31", color: "#059669", bg: C.greenA(0.06) },
+                { label: "TapIn-only", value: "12", color: C.blue, bg: C.blueA(0.06) },
+                { label: "Pending", value: "4", color: "#D97706", bg: "rgba(217,119,6,0.06)" },
+              ].map(function(s) {
+                return (
+                  <div key={s.label} style={{ textAlign: "center", flex: 1 }}>
+                    <div style={{ fontSize: F.xl, fontWeight: 800, color: s.color, fontFamily: F.display }}>{s.value}</div>
+                    <div style={{ fontSize: 9, color: C.textA(0.45), fontFamily: F.body, fontWeight: 600 }}>{s.label}</div>
+                  </div>
+                );
+              })}
+            </div>
+            {/* Match progress bar */}
+            <div style={{ height: 8, borderRadius: R.pill, background: C.textA(0.06), overflow: "hidden", display: "flex" }}>
+              <div style={{ width: "66%", background: C.greenGrad, borderRadius: R.pill }} />
+              <div style={{ width: "25.5%", background: C.blueGrad, marginLeft: 2 }} />
+              <div style={{ width: "8.5%", background: "linear-gradient(135deg, #F59E0B, #D97706)", marginLeft: 2, borderRadius: "0 " + R.pill + "px " + R.pill + "px 0" }} />
+            </div>
+            <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body, marginTop: S.sm, textAlign: "center" }}>
+              66% of TapIn members linked to Mindbody
+            </div>
+          </GlassCard>
+
+          {/* Matching strategy explainer */}
+          <GlassCard style={{ padding: S.lg }}>
+            <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body, marginBottom: S.sm }}>How matching works</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: S.md }}>
+              {[
+                { icon: "1️⃣", title: "Phone match at first tap", desc: "TapIn captures real phone → queries Mindbody. Works for direct bookers." },
+                { icon: "2️⃣", title: "Name+email match at visit 10", desc: "Aggregator members get matched when they claim their reward." },
+                { icon: "📱", title: "TapIn-only in between", desc: "USC/ClassPass members run on TapIn loyalty independently until matched." },
+              ].map(function(s, i) {
+                return (
+                  <div key={i} style={{ display: "flex", gap: S.sm, alignItems: "flex-start" }}>
+                    <span style={{ fontSize: 14, flexShrink: 0 }}>{s.icon}</span>
+                    <div>
+                      <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{s.title}</div>
+                      <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body, lineHeight: 1.4 }}>{s.desc}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </GlassCard>
+
+          {/* Member list with match status */}
+          <SectionLabel>Members by Status</SectionLabel>
+          {mockMembers.slice(0, 5).map(function(m, i) {
+            var statusColor = m.matchStatus === "linked" ? "#059669" : m.matchStatus === "pending" ? "#D97706" : C.blue;
+            var statusIcon = m.matchStatus === "linked" ? "🔗" : m.matchStatus === "pending" ? "⏳" : "📱";
+            var statusLabel = m.matchStatus === "linked" ? "Linked" : m.matchStatus === "pending" ? "Pending" : "TapIn-only";
+            return (
+              <GlassCard key={i} style={{ padding: "10px 14px", marginBottom: S.sm, display: "flex", alignItems: "center", gap: S.sm }}>
+                <div style={{ width: 32, height: 32, borderRadius: R.full, background: C.beigeGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{m.avatar}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{m.name}</span>
+                    {m.source !== "Direct" && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: C.textA(0.06), color: C.textA(0.45), fontWeight: 600, fontFamily: F.body }}>{m.source}</span>}
+                  </div>
+                  <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{m.visits} visits · {m.phone}</div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <span style={{ fontSize: 12 }}>{statusIcon}</span>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: statusColor, fontFamily: F.body }}>{statusLabel}</span>
+                </div>
+              </GlassCard>
+            );
+          })}
+
+          {/* Sync Stats */}
+          <GlassCard style={{ padding: S.lg }}>
+            <SectionLabel>Synced Data</SectionLabel>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: S.md }}>
+              {[
+                { label: "MB Clients", value: "47", icon: "👥" },
+                { label: "Classes", value: "23", icon: "🧘" },
+                { label: "Bookings", value: "156", icon: "📅" },
+                { label: "Instructors", value: "5", icon: "⭐" },
+              ].map(function(d) {
+                return (
+                  <div key={d.label} style={{ display: "flex", alignItems: "center", gap: S.sm }}>
+                    <span style={{ fontSize: 16 }}>{d.icon}</span>
+                    <div>
+                      <div style={{ fontSize: F.lg, fontWeight: 800, color: C.text, fontFamily: F.display }}>{d.value}</div>
+                      <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>{d.label}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </GlassCard>
+
+          {/* Disconnect */}
+          <div onClick={function() { setStep("disconnected"); setApiKey(""); }} style={{
+            textAlign: "center", fontSize: F.xs, color: C.redA(0.6),
+            cursor: "pointer", fontFamily: F.body, padding: S.sm,
+            position: "relative", zIndex: 1,
+          }}>Disconnect Mindbody</div>
+        </React.Fragment>
+      )}
+
+      <div style={{ height: 80 }} />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB 3: MESSAGING
+// ═══════════════════════════════════════════════════════════
+
+function MessagingTab() {
+  var _channel = useState("sms");
+  var channel = _channel[0]; var setChannel = _channel[1];
+  var _message = useState("");
+  var message = _message[0]; var setMessage = _message[1];
+  var _audience = useState("all");
+  var audience = _audience[0]; var setAudience = _audience[1];
+  var _view = useState("compose"); // "compose" | "history" | "templates"
+  var view = _view[0]; var setView = _view[1];
+  var _toast = useState(false);
+  var toast = _toast[0]; var setToast = _toast[1];
+
+  var audiences = [
+    { id: "all", label: "All Members", count: 47, emoji: "👥" },
+    { id: "loyal", label: "Loyal (5+)", count: 24, emoji: "⭐" },
+    { id: "new", label: "New (< 3)", count: 11, emoji: "🌱" },
+    { id: "inactive", label: "Inactive (30d)", count: 6, emoji: "😴" },
+  ];
+
+  function handleSend() {
+    if (message.length > 0) {
+      setToast(true);
+      setMessage("");
+      setTimeout(function() { setToast(false); }, 3000);
+    }
+  }
+
+  function handleTemplate(t) {
+    setMessage(t.preview);
+    setView("compose");
+  }
+
+  return (
+    <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, position: "relative", overflow: "hidden" }}>
+      <BlobBg2 color={C.beige} opacity={0.25} position="top-right" scale={0.9} />
+      <Toast message="Message queued for sending!" emoji="✅" visible={toast} />
+
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>Communication</div>
+        <div style={{ fontSize: F.xxl, fontWeight: 800, color: C.text, fontFamily: F.display }}>Messages</div>
+      </div>
+
+      {/* View Tabs */}
+      <div style={{ display: "flex", gap: S.xs, position: "relative", zIndex: 1 }}>
+        {[
+          { id: "compose", label: "Compose" },
+          { id: "history", label: "Sent" },
+          { id: "templates", label: "Templates" },
+        ].map(function(tab) {
+          var active = view === tab.id;
+          return (
+            <div key={tab.id} onClick={function() { setView(tab.id); }} style={{
+              flex: 1, padding: "8px 0", borderRadius: R.pill, textAlign: "center",
+              background: active ? C.blueGrad : C.whiteA(0.6),
+              color: active ? C.white : C.textA(0.5),
+              fontSize: F.xs, fontWeight: 700, fontFamily: F.body,
+              cursor: "pointer", transition: transition,
+              border: active ? "none" : "1px solid " + C.textA(0.06),
+            }}>{tab.label}</div>
+          );
+        })}
+      </div>
+
+      {view === "compose" && (
+        <React.Fragment>
+          {/* Channel */}
+          <SectionLabel>Channel</SectionLabel>
+          <div style={{ display: "flex", gap: S.sm, position: "relative", zIndex: 1 }}>
+            {[
+              { id: "sms", label: "📱 SMS", sub: "Text message" },
+              { id: "push", label: "🔔 Push", sub: "App notification" },
+            ].map(function(ch) {
+              var active = channel === ch.id;
+              return (
+                <div key={ch.id} onClick={function() { setChannel(ch.id); }} style={{
+                  flex: 1, padding: S.md, borderRadius: R.xl, textAlign: "center",
+                  border: active ? "2px solid " + C.blue : "1px solid " + C.textA(0.06),
+                  background: active ? C.blueA(0.04) : C.glassHeavy,
+                  cursor: "pointer", transition: transition,
+                }}>
+                  <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{ch.label}</div>
+                  <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>{ch.sub}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Audience */}
+          <SectionLabel>Audience</SectionLabel>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: S.sm, position: "relative", zIndex: 1 }}>
+            {audiences.map(function(a) {
+              var active = audience === a.id;
+              return (
+                <div key={a.id} onClick={function() { setAudience(a.id); }} style={{
+                  padding: "10px 12px", borderRadius: R.lg, display: "flex", alignItems: "center", gap: S.sm,
+                  border: active ? "2px solid " + C.blue : "1px solid " + C.textA(0.06),
+                  background: active ? C.blueA(0.04) : C.glassHeavy,
+                  cursor: "pointer", transition: transition,
+                }}>
+                  <span style={{ fontSize: 14 }}>{a.emoji}</span>
+                  <div>
+                    <div style={{ fontSize: F.xs, fontWeight: 700, color: C.text, fontFamily: F.body }}>{a.label}</div>
+                    <div style={{ fontSize: 9, color: C.textA(0.4), fontFamily: F.body }}>{a.count} members</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Composer */}
+          <SectionLabel>Message</SectionLabel>
+          <GlassCard heavy style={{ padding: S.md }}>
+            <textarea
+              value={message}
+              onChange={function(e) { setMessage(e.target.value); }}
+              placeholder="Write your message..."
+              rows={4}
+              style={{
+                width: "100%", border: "none", background: "transparent",
+                fontSize: F.sm, fontFamily: F.body, color: C.text,
+                resize: "none", lineHeight: 1.6,
+              }}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: S.sm, borderTop: "1px solid " + C.textA(0.04), paddingTop: S.sm }}>
+              <span style={{ fontSize: F.xs, color: C.textA(0.35), fontFamily: F.body }}>{message.length}{channel === "sms" ? "/160" : "/250"} chars</span>
+              <div onClick={function() { setView("templates"); }} style={{
+                fontSize: F.xs, color: C.blue, fontWeight: 600, cursor: "pointer", fontFamily: F.body,
+              }}>Use Template →</div>
+            </div>
+          </GlassCard>
+
+          <Btn blue onClick={handleSend} disabled={message.length === 0} icon="📤">
+            Send to {audiences.find(function(a) { return a.id === audience; }).count} members
+          </Btn>
+        </React.Fragment>
+      )}
+
+      {view === "history" && (
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <SectionLabel>Recent Messages</SectionLabel>
+          {mockMessages.map(function(m, i) {
+            var rate = Math.round((m.opened / m.sent) * 100);
+            return (
+              <GlassCard key={i} style={{ padding: S.lg, marginBottom: S.sm }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: S.sm }}>
+                  <div>
+                    <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{m.title}</div>
+                    <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{m.date} · {m.channel}</div>
+                  </div>
+                  <PillTag variant="blue">{m.audience}</PillTag>
+                </div>
+                <div style={{ display: "flex", gap: S.lg }}>
+                  <div>
+                    <div style={{ fontSize: F.lg, fontWeight: 800, color: C.text, fontFamily: F.display }}>{m.sent}</div>
+                    <div style={{ fontSize: 9, color: C.textA(0.4), fontFamily: F.body }}>Sent</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: F.lg, fontWeight: 800, color: C.blue, fontFamily: F.display }}>{m.opened}</div>
+                    <div style={{ fontSize: 9, color: C.textA(0.4), fontFamily: F.body }}>Opened</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: F.lg, fontWeight: 800, color: "#059669", fontFamily: F.display }}>{rate}%</div>
+                    <div style={{ fontSize: 9, color: C.textA(0.4), fontFamily: F.body }}>Rate</div>
+                  </div>
+                </div>
+              </GlassCard>
+            );
+          })}
+        </div>
+      )}
+
+      {view === "templates" && (
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <SectionLabel>Message Templates</SectionLabel>
+          {mockTemplates.map(function(t, i) {
+            return (
+              <GlassCard key={i} onClick={function() { handleTemplate(t); }} style={{
+                padding: S.lg, marginBottom: S.sm, cursor: "pointer",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: S.md, marginBottom: S.sm }}>
+                  <span style={{ fontSize: 20 }}>{t.emoji}</span>
+                  <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{t.name}</div>
+                </div>
+                <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body, lineHeight: 1.5 }}>{t.preview}</div>
+                <div style={{ fontSize: F.xs, color: C.blue, fontWeight: 600, marginTop: S.sm, fontFamily: F.body }}>Use this template →</div>
+              </GlassCard>
+            );
+          })}
+        </div>
+      )}
+
+      <div style={{ height: 80 }} />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB 4: LOYALTY PROGRAMMES
+// ═══════════════════════════════════════════════════════════
+
+function LoyaltyTab() {
+  var _view = useState("overview"); // "overview" | "builder"
+  var view = _view[0]; var setView = _view[1];
+  var _name = useState("");
+  var name = _name[0]; var setName = _name[1];
+  var _threshold = useState(10);
+  var threshold = _threshold[0]; var setThreshold = _threshold[1];
+  var _rewardType = useState("free");
+  var rewardType = _rewardType[0]; var setRewardType = _rewardType[1];
+  var _rewardValue = useState("");
+  var rewardValue = _rewardValue[0]; var setRewardValue = _rewardValue[1];
+  var _hasExpiry = useState(false);
+  var hasExpiry = _hasExpiry[0]; var setHasExpiry = _hasExpiry[1];
+  var _expiryDays = useState(90);
+  var expiryDays = _expiryDays[0]; var setExpiryDays = _expiryDays[1];
+  var _toast = useState(false);
+  var toast = _toast[0]; var setToast = _toast[1];
+  var _programmes = useState(mockProgrammes);
+  var programmes = _programmes[0]; var setProgrammes = _programmes[1];
+
+  var rewardTypes = [
+    { id: "free", label: "Free Class", emoji: "🧘" },
+    { id: "discount", label: "Discount %", emoji: "💰" },
+    { id: "merch", label: "Merchandise", emoji: "👕" },
+    { id: "custom", label: "Custom", emoji: "✨" },
+  ];
+
+  function handleSave() {
+    setToast(true);
+    setTimeout(function() { setToast(false); setView("overview"); }, 2000);
+  }
+
+  function toggleProgramme(idx) {
+    var updated = programmes.map(function(p, i) {
+      if (i === idx) return { ...p, active: !p.active };
+      return p;
+    });
+    setProgrammes(updated);
+  }
+
+  return (
+    <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, position: "relative", overflow: "hidden" }}>
+      <BlobBg2 color={C.beige} opacity={0.25} position="top-right" scale={0.9} />
+      <Toast message="Programme saved!" emoji="🎉" visible={toast} />
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative", zIndex: 1 }}>
+        <div>
+          <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>Rewards</div>
+          <div style={{ fontSize: F.xxl, fontWeight: 800, color: C.text, fontFamily: F.display }}>Loyalty</div>
+        </div>
+        {view === "overview" && (
+          <div onClick={function() { setView("builder"); }} style={{
+            padding: "8px 16px", borderRadius: R.pill, background: C.blueGrad,
+            color: C.white, fontSize: F.xs, fontWeight: 700, cursor: "pointer",
+            fontFamily: F.body, boxShadow: C.shadowMd,
+          }}>+ New</div>
+        )}
+        {view === "builder" && (
+          <div onClick={function() { setView("overview"); }} style={{
+            fontSize: F.sm, color: C.textA(0.4), cursor: "pointer", fontFamily: F.body,
+          }}>Cancel</div>
+        )}
+      </div>
+
+      {view === "overview" && (
+        <React.Fragment>
+          <SectionLabel>Active Programmes</SectionLabel>
+          {programmes.map(function(p, i) {
+            return (
+              <GlassCard key={i} heavy style={{ padding: S.lg, marginBottom: S.sm }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: S.md }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: F.md, fontWeight: 700, color: C.text, fontFamily: F.body }}>{p.name}</div>
+                    <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body, marginTop: 2 }}>
+                      {p.threshold} visits → {p.reward}
+                    </div>
+                  </div>
+                  <Toggle value={p.active} onChange={function() { toggleProgramme(i); }} label="" />
+                </div>
+
+                <div style={{ display: "flex", gap: S.lg }}>
+                  <div>
+                    <div style={{ fontSize: F.lg, fontWeight: 800, color: C.blue, fontFamily: F.display }}>{p.members}</div>
+                    <div style={{ fontSize: 9, color: C.textA(0.4), fontFamily: F.body }}>Enrolled</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: F.lg, fontWeight: 800, color: "#059669", fontFamily: F.display }}>{p.redeemed}</div>
+                    <div style={{ fontSize: 9, color: C.textA(0.4), fontFamily: F.body }}>Redeemed</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: F.lg, fontWeight: 800, color: C.text, fontFamily: F.display }}>{Math.round((p.redeemed / p.members) * 100)}%</div>
+                    <div style={{ fontSize: 9, color: C.textA(0.4), fontFamily: F.body }}>Rate</div>
+                  </div>
+                </div>
+
+                {!p.active && (
+                  <div style={{
+                    marginTop: S.md, padding: "6px 0", borderTop: "1px solid " + C.textA(0.04),
+                    fontSize: F.xs, color: C.textA(0.35), fontFamily: F.body, textAlign: "center",
+                  }}>Programme paused</div>
+                )}
+              </GlassCard>
+            );
+          })}
+        </React.Fragment>
+      )}
+
+      {view === "builder" && (
+        <React.Fragment>
+          <SectionLabel>Create Programme</SectionLabel>
+
+          {/* Name */}
+          <GlassCard heavy style={{ padding: S.lg }}>
+            <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body, marginBottom: S.sm }}>Programme Name</div>
+            <input
+              value={name}
+              onChange={function(e) { setName(e.target.value); }}
+              placeholder="e.g. Spring Loyalty Special"
+              style={{
+                width: "100%", padding: "12px 14px", borderRadius: R.lg,
+                border: "1.5px solid " + C.textA(0.08), background: C.whiteA(0.8),
+                fontSize: F.sm, fontFamily: F.body, color: C.text,
+              }}
+            />
+          </GlassCard>
+
+          {/* Threshold */}
+          <GlassCard heavy style={{ padding: S.lg }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: S.md }}>
+              <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>Visit Threshold</div>
+              <div style={{ fontSize: F.xl, fontWeight: 800, color: C.blue, fontFamily: F.display }}>{threshold}</div>
+            </div>
+            <input
+              type="range"
+              min={5}
+              max={20}
+              value={threshold}
+              onChange={function(e) { setThreshold(parseInt(e.target.value)); }}
+              style={{ width: "100%", accentColor: C.blue }}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: C.textA(0.35), fontFamily: F.body, marginTop: S.xs }}>
+              <span>5 visits</span><span>20 visits</span>
+            </div>
+          </GlassCard>
+
+          {/* Reward Type */}
+          <GlassCard heavy style={{ padding: S.lg }}>
+            <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body, marginBottom: S.sm }}>Reward Type</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: S.sm }}>
+              {rewardTypes.map(function(rt) {
+                var active = rewardType === rt.id;
+                return (
+                  <div key={rt.id} onClick={function() { setRewardType(rt.id); }} style={{
+                    padding: S.md, borderRadius: R.lg, textAlign: "center",
+                    border: active ? "2px solid " + C.blue : "1px solid " + C.textA(0.06),
+                    background: active ? C.blueA(0.04) : "transparent",
+                    cursor: "pointer", transition: transition,
+                  }}>
+                    <div style={{ fontSize: 20, marginBottom: 4 }}>{rt.emoji}</div>
+                    <div style={{ fontSize: F.xs, fontWeight: 700, color: active ? C.blue : C.text, fontFamily: F.body }}>{rt.label}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </GlassCard>
+
+          {/* Reward Value */}
+          {(rewardType === "discount" || rewardType === "custom") && (
+            <GlassCard heavy style={{ padding: S.lg }}>
+              <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body, marginBottom: S.sm }}>
+                {rewardType === "discount" ? "Discount Percentage" : "Custom Reward"}
+              </div>
+              <input
+                value={rewardValue}
+                onChange={function(e) { setRewardValue(e.target.value); }}
+                placeholder={rewardType === "discount" ? "e.g. 20" : "e.g. Branded water bottle"}
+                style={{
+                  width: "100%", padding: "12px 14px", borderRadius: R.lg,
+                  border: "1.5px solid " + C.textA(0.08), background: C.whiteA(0.8),
+                  fontSize: F.sm, fontFamily: F.body, color: C.text,
+                }}
+              />
+            </GlassCard>
+          )}
+
+          {/* Expiry */}
+          <GlassCard heavy style={{ padding: S.lg }}>
+            <Toggle value={hasExpiry} onChange={setHasExpiry} label="Set expiry" />
+            {hasExpiry && (
+              <div style={{ marginTop: S.lg }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: S.sm }}>
+                  <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>Expires after</div>
+                  <div style={{ fontSize: F.md, fontWeight: 700, color: C.text, fontFamily: F.body }}>{expiryDays} days</div>
+                </div>
+                <input
+                  type="range"
+                  min={30}
+                  max={365}
+                  step={30}
+                  value={expiryDays}
+                  onChange={function(e) { setExpiryDays(parseInt(e.target.value)); }}
+                  style={{ width: "100%", accentColor: C.blue }}
+                />
+              </div>
+            )}
+          </GlassCard>
+
+          {/* Preview */}
+          <GlassCard style={{ padding: S.lg, borderLeft: "4px solid " + C.blue }}>
+            <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body, marginBottom: S.sm }}>Preview</div>
+            <div style={{ fontSize: F.md, fontWeight: 700, color: C.text, fontFamily: F.body }}>
+              {name || "Untitled Programme"}
+            </div>
+            <div style={{ fontSize: F.sm, color: C.textA(0.55), fontFamily: F.body, marginTop: 4 }}>
+              {threshold} visits → {rewardType === "free" ? "Free class" : rewardType === "discount" ? (rewardValue || "?") + "% discount" : rewardType === "merch" ? "Merchandise" : rewardValue || "Custom reward"}
+              {hasExpiry ? " · Expires in " + expiryDays + " days" : ""}
+            </div>
+          </GlassCard>
+
+          <Btn blue onClick={handleSave} icon="✓">
+            Save Programme
+          </Btn>
+        </React.Fragment>
+      )}
+
+      <div style={{ height: 80 }} />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADMIN APP (Root + Bottom Nav)
+// ═══════════════════════════════════════════════════════════
+
+function AdminApp() {
+  var _tab = useState("dashboard");
+  var tab = _tab[0]; var setTab = _tab[1];
+
+  var tabs = [
+    { id: "dashboard", label: "Dashboard", icon: "📊" },
+    { id: "mindbody", label: "Mindbody", icon: "🔗" },
+    { id: "messaging", label: "Messages", icon: "💬" },
+    { id: "loyalty", label: "Loyalty", icon: "🎁" },
+  ];
+
+  function renderTab() {
+    switch (tab) {
+      case "dashboard": return React.createElement(DashboardTab);
+      case "mindbody": return React.createElement(MindbodyTab);
+      case "messaging": return React.createElement(MessagingTab);
+      case "loyalty": return React.createElement(LoyaltyTab);
+      default: return React.createElement(DashboardTab);
+    }
+  }
+
+  return (
+    <div style={{
+      width: 375, height: 812, borderRadius: 50, overflow: "hidden",
+      background: C.beigeGrad, position: "relative",
+      boxShadow: "0 25px 60px rgba(0,0,68,0.2), 0 0 0 1px rgba(0,0,68,0.05)",
+    }}>
+      {/* Dynamic Island */}
+      <div style={{
+        height: 54, display: "flex", alignItems: "flex-start", justifyContent: "center",
+        paddingTop: 12, position: "relative", zIndex: 10,
+        background: C.whiteA(0.5),
+      }}>
+        <div style={{
+          width: 120, height: 34, borderRadius: 20,
+          background: "#1a1a1a", position: "relative",
+        }} />
+      </div>
+
+      {/* Scrollable Content */}
+      <div style={{
+        height: 812 - 54 - 70, overflowY: "auto", overflowX: "hidden",
+        WebkitOverflowScrolling: "touch",
+      }}>
+        {renderTab()}
+      </div>
+
+      {/* Bottom Nav */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0, height: 70,
+        background: C.glassHeavy, backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+        borderTop: "1px solid " + C.glassBorder,
+        display: "flex", alignItems: "flex-start", justifyContent: "space-around",
+        paddingTop: 8, zIndex: 10,
+      }}>
+        {tabs.map(function(t) {
+          var active = tab === t.id;
+          return (
+            <div key={t.id} onClick={function() { setTab(t.id); }} style={{
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
+              cursor: "pointer", padding: "4px 12px", transition: transition,
+            }}>
+              <span style={{ fontSize: 20, opacity: active ? 1 : 0.45, transition: transition }}>{t.icon}</span>
+              <span style={{
+                fontSize: 9, fontWeight: active ? 800 : 500,
+                color: active ? C.blue : C.textA(0.4),
+                fontFamily: F.body, transition: transition,
+              }}>{t.label}</span>
+              {active && (
+                <div style={{
+                  width: 4, height: 4, borderRadius: R.full,
+                  background: C.blueGrad, marginTop: 1,
+                }} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Mount ───
+var root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(React.createElement(AdminApp));
+</script>
+</body>
+</html>
