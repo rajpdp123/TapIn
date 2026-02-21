@@ -184,23 +184,45 @@ function Toggle({ value, onChange, label }) {
 // matchStatus: "linked" = matched to Mindbody client via phone/email
 //              "standalone" = TapIn-only, no Mindbody match (typically aggregator members)
 //              "pending" = awaiting email at visit 10 to retry match
+//              "conflict" = multiple possible Mindbody matches found, needs manual resolution
 // source: "Direct" = booked directly with studio | "USC" = Urban Sports Club | "ClassPass"
+// name: null = phone-only member (visits 1-9, hasn't provided name yet)
 var mockMembers = [
   { name: "Lena K.", visits: 8, lastVisit: "Today 09:30", class: "Reformer Basics", avatar: "👩‍🦰", matchStatus: "linked", source: "Direct", phone: "+49 170 ****12" },
   { name: "Sophie M.", visits: 5, lastVisit: "Today 09:30", class: "Reformer Basics", avatar: "👱‍♀️", matchStatus: "standalone", source: "USC", phone: "+49 157 ****88" },
   { name: "Jonas R.", visits: 3, lastVisit: "Today 07:00", class: "Morning Flow", avatar: "🧔", matchStatus: "linked", source: "Direct", phone: "+49 176 ****45" },
   { name: "Anna B.", visits: 10, lastVisit: "Today 07:00", class: "Morning Flow", avatar: "👩", matchStatus: "linked", source: "ClassPass", phone: "+49 151 ****77" },
-  { name: "Mia W.", visits: 1, lastVisit: "Yesterday", class: "Barre Sculpt", avatar: "👧", matchStatus: "standalone", source: "USC", phone: "+49 162 ****03" },
+  { name: null, visits: 1, lastVisit: "Today 08:45", class: "Barre Sculpt", avatar: "📱", matchStatus: "standalone", source: "USC", phone: "+49 162 ****03" },
   { name: "Felix P.", visits: 6, lastVisit: "Yesterday", class: "Power Mat", avatar: "👨", matchStatus: "linked", source: "Direct", phone: "+49 170 ****56" },
-  { name: "Clara H.", visits: 4, lastVisit: "2 days ago", class: "Stretch & Restore", avatar: "👩‍🦱", matchStatus: "standalone", source: "USC", phone: "+49 160 ****91" },
-  { name: "Tom S.", visits: 2, lastVisit: "3 days ago", class: "Morning Flow", avatar: "🧑", matchStatus: "pending", source: "ClassPass", phone: "+49 152 ****34" },
+  { name: null, visits: 2, lastVisit: "Yesterday", class: "Stretch & Restore", avatar: "📱", matchStatus: "standalone", source: "USC", phone: "+49 160 ****91" },
+  { name: "Tom S.", visits: 2, lastVisit: "3 days ago", class: "Morning Flow", avatar: "🧑", matchStatus: "conflict", source: "ClassPass", phone: "+49 152 ****34" },
+  { name: "Maria L.", visits: 7, lastVisit: "2 days ago", class: "Reformer Basics", avatar: "👩‍🦳", matchStatus: "conflict", source: "Direct", phone: "+49 171 ****67" },
 ];
 
 var mockTapIns = [
-  { name: "Lena K.", time: "09:32", class: "Reformer Basics", visits: 8, avatar: "👩‍🦰", matchStatus: "linked", source: "Direct" },
-  { name: "Sophie M.", time: "09:30", class: "Reformer Basics", visits: 5, avatar: "👱‍♀️", matchStatus: "standalone", source: "USC" },
-  { name: "Jonas R.", time: "07:05", class: "Morning Flow", visits: 3, avatar: "🧔", matchStatus: "linked", source: "Direct" },
-  { name: "Anna B.", time: "07:02", class: "Morning Flow", visits: 10, avatar: "👩", matchStatus: "linked", source: "ClassPass" },
+  { name: "Lena K.", time: "09:32", class: "Reformer Basics", visits: 8, avatar: "👩‍🦰", matchStatus: "linked", source: "Direct", phone: "+49 170 ****12" },
+  { name: "Sophie M.", time: "09:30", class: "Reformer Basics", visits: 5, avatar: "👱‍♀️", matchStatus: "standalone", source: "USC", phone: "+49 157 ****88" },
+  { name: null, time: "08:45", class: "Barre Sculpt", visits: 1, avatar: "📱", matchStatus: "standalone", source: "USC", phone: "+49 162 ****03" },
+  { name: "Jonas R.", time: "07:05", class: "Morning Flow", visits: 3, avatar: "🧔", matchStatus: "linked", source: "Direct", phone: "+49 176 ****45" },
+  { name: "Anna B.", time: "07:02", class: "Morning Flow", visits: 10, avatar: "👩", matchStatus: "linked", source: "ClassPass", phone: "+49 151 ****77" },
+];
+
+// Mock merge conflicts — receptionist needs to resolve these manually
+var mockConflicts = [
+  {
+    tapinName: "Tom S.", tapinPhone: "+49 152 ****34", visits: 2, source: "ClassPass",
+    candidates: [
+      { mbName: "Thomas Schmidt", mbEmail: "t.schmidt@gmail.com", lastClass: "Morning Flow", bookedVia: "Direct" },
+      { mbName: "Tom Schneider", mbEmail: "tom12345@classpass.com", lastClass: "Morning Flow", bookedVia: "ClassPass" },
+    ]
+  },
+  {
+    tapinName: "Maria L.", tapinPhone: "+49 171 ****67", visits: 7, source: "Direct",
+    candidates: [
+      { mbName: "Maria Lopez", mbEmail: "maria.l@web.de", lastClass: "Reformer Basics", bookedVia: "Direct" },
+      { mbName: "Maria Lehmann", mbEmail: "maria.lehmann@gmail.com", lastClass: "Barre Sculpt", bookedVia: "Direct" },
+    ]
+  },
 ];
 
 var mockMessages = [
@@ -230,7 +252,12 @@ function DashboardTab() {
   var search = _search[0]; var setSearch = _search[1];
 
   var filtered = search.length > 0
-    ? mockMembers.filter(function(m) { return m.name.toLowerCase().indexOf(search.toLowerCase()) >= 0; })
+    ? mockMembers.filter(function(m) {
+        var q = search.toLowerCase();
+        var nameMatch = m.name && m.name.toLowerCase().indexOf(q) >= 0;
+        var phoneMatch = m.phone && m.phone.indexOf(q) >= 0;
+        return nameMatch || phoneMatch;
+      })
     : null;
 
   return (
@@ -286,20 +313,23 @@ function DashboardTab() {
             <div style={{ textAlign: "center", padding: S.xxl, color: C.textA(0.4), fontSize: F.sm, fontFamily: F.body }}>No members found</div>
           )}
           {filtered.map(function(m, i) {
-            var statusColor = m.matchStatus === "linked" ? "#059669" : m.matchStatus === "pending" ? C.blue : C.textA(0.35);
-            var statusIcon = m.matchStatus === "linked" ? "🔗" : m.matchStatus === "pending" ? "⏳" : "📱";
-            var statusLabel = m.matchStatus === "linked" ? "Linked" : m.matchStatus === "pending" ? "Pending" : "TapIn-only";
+            var statusColor = m.matchStatus === "linked" ? "#059669" : m.matchStatus === "conflict" ? "#DC2626" : m.matchStatus === "pending" ? C.blue : C.textA(0.35);
+            var statusIcon = m.matchStatus === "linked" ? "🔗" : m.matchStatus === "conflict" ? "⚠️" : m.matchStatus === "pending" ? "⏳" : "📱";
+            var statusLabel = m.matchStatus === "linked" ? "Linked" : m.matchStatus === "conflict" ? "Conflict" : m.matchStatus === "pending" ? "Pending" : "TapIn-only";
+            var isPhoneOnly = !m.name;
+            var displayName = m.name || m.phone;
             return (
               <GlassCard key={i} style={{ padding: "12px 14px", marginBottom: S.sm, display: "flex", alignItems: "center", gap: S.md }}>
-                <div style={{ width: 36, height: 36, borderRadius: R.full, background: C.beigeGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{m.avatar}</div>
+                <div style={{ width: 36, height: 36, borderRadius: R.full, background: isPhoneOnly ? C.textA(0.06) : C.beigeGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: isPhoneOnly ? 16 : 18, flexShrink: 0 }}>{m.avatar}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <span style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{m.name}</span>
-                    {m.source !== "Direct" && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: C.textA(0.06), color: C.textA(0.45), fontWeight: 600, fontFamily: F.body }}>{m.source}</span>}
+                    <span style={{ fontSize: F.sm, fontWeight: 700, color: isPhoneOnly ? C.textA(0.55) : C.text, fontFamily: isPhoneOnly ? "monospace" : F.body }}>{displayName}</span>
+                    {isPhoneOnly && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: "#FEF3C7", color: "#92400E", fontWeight: 600, fontFamily: F.body }}>Phone only</span>}
+                    {!isPhoneOnly && m.source !== "Direct" && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: C.textA(0.06), color: C.textA(0.45), fontWeight: 600, fontFamily: F.body }}>{m.source}</span>}
                   </div>
                   <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{m.visits} visits · {statusIcon} {statusLabel}</div>
                 </div>
-                <PillTag variant={m.matchStatus === "linked" ? "green" : m.matchStatus === "pending" ? "blue" : "warm"}>{m.visits}/10</PillTag>
+                <PillTag variant={m.matchStatus === "linked" ? "green" : m.matchStatus === "conflict" ? "red" : m.matchStatus === "pending" ? "blue" : "warm"}>{m.visits}/10</PillTag>
               </GlassCard>
             );
           })}
@@ -308,14 +338,26 @@ function DashboardTab() {
         <div style={{ position: "relative", zIndex: 1 }}>
           <SectionLabel>Live Tap-Ins</SectionLabel>
           {mockTapIns.map(function(t, i) {
-            var statusIcon = t.matchStatus === "linked" ? "🔗" : t.matchStatus === "pending" ? "⏳" : "📱";
+            var statusIcon = t.matchStatus === "linked" ? "🔗" : t.matchStatus === "conflict" ? "⚠️" : t.matchStatus === "pending" ? "⏳" : "📱";
+            var isPhoneOnly = !t.name;
+            var displayName = t.name || t.phone;
             return (
               <GlassCard key={i} style={{ padding: "12px 14px", marginBottom: S.sm, display: "flex", alignItems: "center", gap: S.md }}>
-                <div style={{ width: 36, height: 36, borderRadius: R.full, background: C.beigeGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{t.avatar}</div>
+                <div style={{
+                  width: 36, height: 36, borderRadius: R.full,
+                  background: isPhoneOnly ? C.textA(0.06) : C.beigeGrad,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: isPhoneOnly ? 16 : 18, flexShrink: 0,
+                }}>{t.avatar}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <span style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{t.name}</span>
-                    {t.source !== "Direct" && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: C.textA(0.06), color: C.textA(0.45), fontWeight: 600, fontFamily: F.body }}>{t.source}</span>}
+                    <span style={{
+                      fontSize: F.sm, fontWeight: 700, fontFamily: isPhoneOnly ? "monospace" : F.body,
+                      color: isPhoneOnly ? C.textA(0.55) : C.text,
+                      letterSpacing: isPhoneOnly ? 0.3 : 0,
+                    }}>{displayName}</span>
+                    {isPhoneOnly && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: "#FEF3C7", color: "#92400E", fontWeight: 600, fontFamily: F.body }}>Phone only</span>}
+                    {!isPhoneOnly && t.source !== "Direct" && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: C.textA(0.06), color: C.textA(0.45), fontWeight: 600, fontFamily: F.body }}>{t.source}</span>}
                   </div>
                   <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{t.class} · {t.time} · {statusIcon}</div>
                 </div>
@@ -334,10 +376,10 @@ function DashboardTab() {
         <SectionLabel>Quick Insights</SectionLabel>
         <div style={{ display: "flex", flexDirection: "column", gap: S.md }}>
           {[
-            { icon: "🔥", text: "Morning Flow is your most popular class today" },
+            { icon: "⚠️", text: "2 merge conflicts need your attention in Mindbody tab" },
             { icon: "⭐", text: "Anna B. just earned her free class — visit #10!" },
-            { icon: "🔗", text: "Anna B. (ClassPass) matched to Mindbody via email" },
-            { icon: "📱", text: "Sophie M. (USC) is TapIn-only — will match at visit 10" },
+            { icon: "📱", text: "New phone-only tap-in at 08:45 — Barre Sculpt (USC)" },
+            { icon: "🔗", text: "66% of TapIn members are linked to Mindbody" },
           ].map(function(ins, i) {
             return (
               <div key={i} style={{ display: "flex", gap: S.sm, alignItems: "flex-start" }}>
@@ -351,6 +393,180 @@ function DashboardTab() {
 
       <div style={{ height: 80 }} />
     </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONFLICT RESOLUTION CARD (used in Mindbody tab)
+// ═══════════════════════════════════════════════════════════
+
+function ConflictCard(props) {
+  var c = props.conflict;
+  var onResolve = props.onResolve;
+
+  // State: "review" → "confirm" → "resolved"
+  var _phase = useState("review");
+  var phase = _phase[0]; var setPhase = _phase[1];
+  var _action = useState(null); // "link" | "merge" | "create" | "skip"
+  var action = _action[0]; var setAction = _action[1];
+  var _selectedIdx = useState(null);
+  var selectedIdx = _selectedIdx[0]; var setSelectedIdx = _selectedIdx[1];
+  var _mergeSelection = useState([]); // indices of candidates to merge
+  var mergeSelection = _mergeSelection[0]; var setMergeSelection = _mergeSelection[1];
+
+  function toggleMerge(idx) {
+    var next = mergeSelection.indexOf(idx) >= 0
+      ? mergeSelection.filter(function(i) { return i !== idx; })
+      : mergeSelection.concat([idx]);
+    setMergeSelection(next);
+  }
+
+  function handleConfirm() {
+    setPhase("resolved");
+    if (onResolve) onResolve();
+  }
+
+  // ─── Resolved state ───
+  if (phase === "resolved") {
+    var resolveLabel = action === "link" ? "Linked to " + c.candidates[selectedIdx].mbName
+      : action === "merge" ? "Merged " + mergeSelection.length + " MB profiles & linked"
+      : action === "create" ? "New Mindbody client created"
+      : "Skipped — will revisit later";
+    return (
+      <GlassCard style={{ padding: S.lg, marginBottom: S.md, borderLeft: "3px solid #059669", opacity: 0.75 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: S.sm }}>
+          <span style={{ fontSize: 18 }}>✅</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{c.tapinName}</div>
+            <div style={{ fontSize: F.xs, color: "#059669", fontFamily: F.body, fontWeight: 600 }}>{resolveLabel}</div>
+          </div>
+          <div onClick={function() { setPhase("review"); setAction(null); setSelectedIdx(null); setMergeSelection([]); }} style={{
+            fontSize: F.xs, color: C.textA(0.35), cursor: "pointer", fontFamily: F.body,
+          }}>Undo</div>
+        </div>
+      </GlassCard>
+    );
+  }
+
+  // ─── Confirm state ───
+  if (phase === "confirm") {
+    var confirmTitle = action === "link" ? "Link to " + c.candidates[selectedIdx].mbName + "?"
+      : action === "merge" ? "Merge " + mergeSelection.length + " Mindbody profiles?"
+      : action === "create" ? "Create new Mindbody client?"
+      : "Skip this conflict?";
+    var confirmDesc = action === "link" ? "This will connect " + c.tapinName + "'s TapIn visits to the selected Mindbody profile. Their visit history will sync."
+      : action === "merge" ? "The selected Mindbody profiles will be merged into one, then linked to this TapIn member. Booking history from both profiles will be combined."
+      : action === "create" ? "A new Mindbody client will be created using " + c.tapinName + "'s TapIn data (phone: " + c.tapinPhone + "). None of the existing profiles will be linked."
+      : "This conflict will stay in the queue. You can resolve it later.";
+    return (
+      <GlassCard heavy style={{ padding: S.lg, marginBottom: S.md, borderLeft: "3px solid " + C.blue }}>
+        <div style={{ textAlign: "center", marginBottom: S.md }}>
+          <div style={{ fontSize: 28, marginBottom: S.xs }}>{action === "link" ? "🔗" : action === "merge" ? "🔀" : action === "create" ? "➕" : "⏭️"}</div>
+          <div style={{ fontSize: F.md, fontWeight: 700, color: C.text, fontFamily: F.display }}>{confirmTitle}</div>
+          <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body, marginTop: S.xs, lineHeight: 1.5 }}>{confirmDesc}</div>
+        </div>
+        <div style={{ display: "flex", gap: S.sm }}>
+          <div onClick={function() { setPhase("review"); setAction(null); }} style={{
+            flex: 1, textAlign: "center", padding: "10px 0", borderRadius: R.lg,
+            border: "1.5px solid " + C.textA(0.1), fontSize: F.sm, fontWeight: 600,
+            color: C.textA(0.5), fontFamily: F.body, cursor: "pointer",
+          }}>Back</div>
+          <div onClick={handleConfirm} style={{
+            flex: 1, textAlign: "center", padding: "10px 0", borderRadius: R.lg,
+            background: C.blueGrad, fontSize: F.sm, fontWeight: 700,
+            color: C.white, fontFamily: F.body, cursor: "pointer",
+            boxShadow: C.shadowSm,
+          }}>Confirm</div>
+        </div>
+      </GlassCard>
+    );
+  }
+
+  // ─── Review state (default) ───
+  return (
+    <GlassCard heavy style={{ padding: S.lg, marginBottom: S.md, borderLeft: "3px solid #DC2626" }}>
+      {/* TapIn member header */}
+      <div style={{ display: "flex", alignItems: "center", gap: S.sm, marginBottom: S.md }}>
+        <span style={{ fontSize: 18 }}>⚠️</span>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{c.tapinName}</div>
+          <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{c.tapinPhone} · {c.visits} visits · via {c.source}</div>
+        </div>
+        <span style={{ fontSize: 8, padding: "2px 8px", borderRadius: R.pill, background: "#FEE2E2", color: "#DC2626", fontWeight: 700, fontFamily: F.body }}>Conflict</span>
+      </div>
+
+      <div style={{ fontSize: F.xs, color: C.textA(0.5), fontFamily: F.body, fontWeight: 600, marginBottom: S.sm }}>
+        {c.candidates.length} possible Mindbody matches found:
+      </div>
+
+      {/* Candidate cards — selectable */}
+      {c.candidates.map(function(cand, ki) {
+        var isSelected = selectedIdx === ki;
+        var isMergeSelected = mergeSelection.indexOf(ki) >= 0;
+        return (
+          <div key={ki} style={{
+            padding: "10px 12px", marginBottom: S.xs,
+            borderRadius: R.lg,
+            border: "1.5px solid " + (isSelected ? C.blueA(0.3) : isMergeSelected ? "#7C3AED33" : C.textA(0.08)),
+            background: isSelected ? C.blueA(0.04) : isMergeSelected ? "rgba(124,58,237,0.03)" : C.whiteA(0.6),
+            cursor: "pointer", transition: transition,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: S.sm }}>
+              <div style={{ width: 28, height: 28, borderRadius: R.full, background: C.beigeGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0 }}>👤</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{cand.mbName}</div>
+                <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>{cand.mbEmail}</div>
+                <div style={{ fontSize: F.xs, color: C.textA(0.35), fontFamily: F.body }}>Last class: {cand.lastClass} · Booked via {cand.bookedVia}</div>
+              </div>
+            </div>
+            {/* Action buttons per candidate */}
+            <div style={{ display: "flex", gap: S.xs, marginTop: S.sm, marginLeft: 36 }}>
+              <div onClick={function() { setSelectedIdx(ki); setAction("link"); setPhase("confirm"); }} style={{
+                padding: "4px 10px", borderRadius: R.pill,
+                background: C.blueA(0.08), color: C.blue,
+                fontSize: 10, fontWeight: 700, fontFamily: F.body,
+                border: "1px solid " + C.blueA(0.12), cursor: "pointer",
+              }}>🔗 Link this one</div>
+              <div onClick={function() { toggleMerge(ki); }} style={{
+                padding: "4px 10px", borderRadius: R.pill,
+                background: isMergeSelected ? "rgba(124,58,237,0.1)" : C.textA(0.03),
+                color: isMergeSelected ? "#7C3AED" : C.textA(0.4),
+                fontSize: 10, fontWeight: isMergeSelected ? 700 : 500, fontFamily: F.body,
+                border: "1px solid " + (isMergeSelected ? "rgba(124,58,237,0.2)" : C.textA(0.08)),
+                cursor: "pointer",
+              }}>{isMergeSelected ? "✓ Selected" : "Select to merge"}</div>
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Merge button — shown when 2+ candidates selected */}
+      {mergeSelection.length >= 2 && (
+        <div onClick={function() { setAction("merge"); setPhase("confirm"); }} style={{
+          textAlign: "center", padding: "10px 0", borderRadius: R.lg, marginTop: S.sm,
+          background: "linear-gradient(135deg, #7C3AED, #6D28D9)", color: C.white,
+          fontSize: F.sm, fontWeight: 700, fontFamily: F.body, cursor: "pointer",
+          boxShadow: C.shadowSm,
+        }}>🔀 Merge {mergeSelection.length} profiles & link</div>
+      )}
+
+      {/* Bottom actions */}
+      <div style={{ display: "flex", gap: S.sm, marginTop: S.md }}>
+        <div onClick={function() { setAction("skip"); setPhase("confirm"); }} style={{
+          flex: 1, textAlign: "center", padding: "8px 0",
+          fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body,
+          cursor: "pointer", borderRadius: R.md,
+          border: "1px dashed " + C.textA(0.1),
+        }}>⏭️ Skip for now</div>
+        <div onClick={function() { setAction("create"); setPhase("confirm"); }} style={{
+          flex: 1, textAlign: "center", padding: "8px 0",
+          fontSize: F.xs, color: "#059669", fontFamily: F.body,
+          cursor: "pointer", borderRadius: R.md, fontWeight: 600,
+          border: "1px dashed " + C.greenA(0.2),
+          background: C.greenA(0.03),
+        }}>➕ Create new MB client</div>
+      </div>
+    </GlassCard>
   );
 }
 
@@ -485,9 +701,10 @@ function MindbodyTab() {
           <GlassCard heavy style={{ padding: S.lg }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: S.lg }}>
               {[
-                { label: "Linked", value: "31", color: "#059669", bg: C.greenA(0.06) },
-                { label: "TapIn-only", value: "12", color: C.blue, bg: C.blueA(0.06) },
-                { label: "Pending", value: "4", color: "#D97706", bg: "rgba(217,119,6,0.06)" },
+                { label: "Linked", value: "31", color: "#059669" },
+                { label: "TapIn-only", value: "12", color: C.blue },
+                { label: "Phone only", value: "6", color: "#D97706" },
+                { label: "Conflicts", value: "2", color: "#DC2626" },
               ].map(function(s) {
                 return (
                   <div key={s.label} style={{ textAlign: "center", flex: 1 }}>
@@ -530,29 +747,15 @@ function MindbodyTab() {
             </div>
           </GlassCard>
 
-          {/* Member list with match status */}
-          <SectionLabel>Members by Status</SectionLabel>
-          {mockMembers.slice(0, 5).map(function(m, i) {
-            var statusColor = m.matchStatus === "linked" ? "#059669" : m.matchStatus === "pending" ? "#D97706" : C.blue;
-            var statusIcon = m.matchStatus === "linked" ? "🔗" : m.matchStatus === "pending" ? "⏳" : "📱";
-            var statusLabel = m.matchStatus === "linked" ? "Linked" : m.matchStatus === "pending" ? "Pending" : "TapIn-only";
-            return (
-              <GlassCard key={i} style={{ padding: "10px 14px", marginBottom: S.sm, display: "flex", alignItems: "center", gap: S.sm }}>
-                <div style={{ width: 32, height: 32, borderRadius: R.full, background: C.beigeGrad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{m.avatar}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <span style={{ fontSize: F.sm, fontWeight: 700, color: C.text, fontFamily: F.body }}>{m.name}</span>
-                    {m.source !== "Direct" && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: C.textA(0.06), color: C.textA(0.45), fontWeight: 600, fontFamily: F.body }}>{m.source}</span>}
-                  </div>
-                  <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{m.visits} visits · {m.phone}</div>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <span style={{ fontSize: 12 }}>{statusIcon}</span>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: statusColor, fontFamily: F.body }}>{statusLabel}</span>
-                </div>
-              </GlassCard>
-            );
-          })}
+          {/* Merge Conflicts — manual resolution by receptionist */}
+          {mockConflicts.length > 0 && (
+            <React.Fragment>
+              <SectionLabel>Needs Your Attention ({mockConflicts.length})</SectionLabel>
+              {mockConflicts.map(function(c, ci) {
+                return React.createElement(ConflictCard, { key: ci, conflict: c, onResolve: handleSync });
+              })}
+            </React.Fragment>
+          )}
 
           {/* Sync Stats */}
           <GlassCard style={{ padding: S.lg }}>
@@ -1026,6 +1229,343 @@ function LoyaltyTab() {
 }
 
 // ═══════════════════════════════════════════════════════════
+// TAB 5: MEMBERS
+// ═══════════════════════════════════════════════════════════
+
+function MembersTab() {
+  var _search = useState("");
+  var search = _search[0]; var setSearch = _search[1];
+  var _view = useState("list"); // "list" | "detail" | "add"
+  var view = _view[0]; var setView = _view[1];
+  var _selected = useState(null);
+  var selected = _selected[0]; var setSelected = _selected[1];
+  var _toast = useState(false);
+  var toast = _toast[0]; var setToast = _toast[1];
+
+  // Add form state
+  var _addPhone = useState("");
+  var addPhone = _addPhone[0]; var setAddPhone = _addPhone[1];
+  var _addName = useState("");
+  var addName = _addName[0]; var setAddName = _addName[1];
+  var _addEmail = useState("");
+  var addEmail = _addEmail[0]; var setAddEmail = _addEmail[1];
+  var _addSource = useState("Direct");
+  var addSource = _addSource[0]; var setAddSource = _addSource[1];
+
+  var filtered = search.length > 0
+    ? mockMembers.filter(function(m) {
+        var q = search.toLowerCase();
+        var nameMatch = m.name && m.name.toLowerCase().indexOf(q) >= 0;
+        var phoneMatch = m.phone && m.phone.indexOf(q) >= 0;
+        var sourceMatch = m.source && m.source.toLowerCase().indexOf(q) >= 0;
+        return nameMatch || phoneMatch || sourceMatch;
+      })
+    : mockMembers;
+
+  function showToast() {
+    setToast(true);
+    setTimeout(function() { setToast(false); }, 2000);
+  }
+
+  function openDetail(m) {
+    setSelected(m);
+    setView("detail");
+  }
+
+  // ─── Add Member View ───
+  if (view === "add") {
+    return (
+      <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, position: "relative", overflow: "hidden" }}>
+        <BlobBg2 color={C.beige} opacity={0.25} position="top-right" scale={0.9} />
+
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div onClick={function() { setView("list"); }} style={{ fontSize: F.xs, color: C.blue, fontFamily: F.body, cursor: "pointer", marginBottom: S.xs }}>← Back to Members</div>
+          <div style={{ fontSize: F.xxl, fontWeight: 800, color: C.text, fontFamily: F.display }}>Add Member</div>
+        </div>
+
+        <GlassCard heavy style={{ padding: S.xl, display: "flex", flexDirection: "column", gap: S.lg }}>
+          {[
+            { label: "Phone number *", value: addPhone, set: setAddPhone, placeholder: "+49 170 1234 5678", type: "tel" },
+            { label: "Name", value: addName, set: setAddName, placeholder: "Optional — collected at visit 10", type: "text" },
+            { label: "Email", value: addEmail, set: setAddEmail, placeholder: "Optional — for Mindbody matching", type: "email" },
+          ].map(function(f) {
+            return (
+              <div key={f.label}>
+                <div style={{ fontSize: F.xs, fontWeight: 700, color: C.textA(0.5), fontFamily: F.body, marginBottom: 6 }}>{f.label}</div>
+                <input
+                  value={f.value}
+                  onChange={function(e) { f.set(e.target.value); }}
+                  placeholder={f.placeholder}
+                  type={f.type}
+                  style={{
+                    width: "100%", padding: "12px 14px", borderRadius: R.lg,
+                    border: "1.5px solid " + C.textA(0.08), background: C.whiteA(0.7),
+                    fontSize: F.sm, fontFamily: F.body, color: C.text,
+                  }}
+                />
+              </div>
+            );
+          })}
+
+          {/* Booking source */}
+          <div>
+            <div style={{ fontSize: F.xs, fontWeight: 700, color: C.textA(0.5), fontFamily: F.body, marginBottom: 6 }}>Booking source</div>
+            <div style={{ display: "flex", gap: S.sm }}>
+              {["Direct", "USC", "ClassPass"].map(function(s) {
+                var active = addSource === s;
+                return (
+                  <div key={s} onClick={function() { setAddSource(s); }} style={{
+                    flex: 1, textAlign: "center", padding: "10px 0", borderRadius: R.lg,
+                    background: active ? C.blueA(0.08) : C.textA(0.03),
+                    border: "1.5px solid " + (active ? C.blueA(0.2) : C.textA(0.06)),
+                    color: active ? C.blue : C.textA(0.4),
+                    fontSize: F.sm, fontWeight: active ? 700 : 500, fontFamily: F.body,
+                    cursor: "pointer", transition: transition,
+                  }}>{s}</div>
+                );
+              })}
+            </div>
+          </div>
+        </GlassCard>
+
+        <Btn blue onClick={function() { showToast(); setView("list"); setAddPhone(""); setAddName(""); setAddEmail(""); }} disabled={addPhone.length < 5} icon="✓">
+          Add Member
+        </Btn>
+
+        <div style={{ fontSize: F.xs, color: C.textA(0.35), fontFamily: F.body, textAlign: "center", lineHeight: 1.5 }}>
+          Phone number is the only required field. Name and email are typically collected automatically through the loyalty journey.
+        </div>
+
+        {toast && (
+          <div style={{
+            position: "fixed", top: 80, left: "50%", transform: "translateX(-50%)",
+            background: C.greenGrad, color: C.white, padding: "10px 24px",
+            borderRadius: R.pill, fontSize: F.sm, fontWeight: 700, fontFamily: F.body,
+            boxShadow: C.shadowLg, zIndex: 100,
+          }}>Member added</div>
+        )}
+
+        <div style={{ height: 80 }} />
+      </div>
+    );
+  }
+
+  // ─── Member Detail View ───
+  if (view === "detail" && selected) {
+    var m = selected;
+    var isPhoneOnly = !m.name;
+    var statusColor = m.matchStatus === "linked" ? "#059669" : m.matchStatus === "conflict" ? "#DC2626" : m.matchStatus === "pending" ? "#D97706" : C.blue;
+    var statusLabel = m.matchStatus === "linked" ? "Linked to Mindbody" : m.matchStatus === "conflict" ? "Merge conflict" : m.matchStatus === "pending" ? "Pending match" : "TapIn-only";
+    var statusIcon = m.matchStatus === "linked" ? "🔗" : m.matchStatus === "conflict" ? "⚠️" : m.matchStatus === "pending" ? "⏳" : "📱";
+
+    return (
+      <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, position: "relative", overflow: "hidden" }}>
+        <BlobBg2 color={C.beige} opacity={0.25} position="top-right" scale={0.9} />
+
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div onClick={function() { setView("list"); setSelected(null); }} style={{ fontSize: F.xs, color: C.blue, fontFamily: F.body, cursor: "pointer", marginBottom: S.xs }}>← Back to Members</div>
+        </div>
+
+        {/* Profile header */}
+        <GlassCard heavy style={{ padding: S.xl, textAlign: "center" }}>
+          <div style={{
+            width: 60, height: 60, borderRadius: R.full,
+            background: isPhoneOnly ? C.textA(0.06) : C.beigeGrad,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: isPhoneOnly ? 28 : 32, margin: "0 auto 12px",
+          }}>{m.avatar}</div>
+          <div style={{ fontSize: F.xl, fontWeight: 800, color: isPhoneOnly ? C.textA(0.55) : C.text, fontFamily: isPhoneOnly ? "monospace" : F.display }}>
+            {m.name || m.phone}
+          </div>
+          {isPhoneOnly && <span style={{ fontSize: 9, padding: "2px 8px", borderRadius: R.pill, background: "#FEF3C7", color: "#92400E", fontWeight: 600, fontFamily: F.body }}>Phone only — name not yet collected</span>}
+          {!isPhoneOnly && (
+            <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body, marginTop: 4 }}>{m.phone}</div>
+          )}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginTop: S.sm }}>
+            <span style={{ fontSize: 14 }}>{statusIcon}</span>
+            <span style={{ fontSize: F.xs, fontWeight: 700, color: statusColor, fontFamily: F.body }}>{statusLabel}</span>
+          </div>
+        </GlassCard>
+
+        {/* Key stats */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: S.sm }}>
+          {[
+            { label: "Visits", value: String(m.visits), emoji: "📱" },
+            { label: "Source", value: m.source, emoji: m.source === "Direct" ? "🏠" : m.source === "USC" ? "🏃" : "🎟️" },
+            { label: "Progress", value: m.visits + "/10", emoji: m.visits >= 10 ? "🎉" : "🎯" },
+          ].map(function(s) {
+            return (
+              <GlassCard key={s.label} style={{ padding: S.md, textAlign: "center" }}>
+                <div style={{ fontSize: 16, marginBottom: 2 }}>{s.emoji}</div>
+                <div style={{ fontSize: F.md, fontWeight: 800, color: C.text, fontFamily: F.display }}>{s.value}</div>
+                <div style={{ fontSize: 9, color: C.textA(0.4), fontFamily: F.body }}>{s.label}</div>
+              </GlassCard>
+            );
+          })}
+        </div>
+
+        {/* Member info fields */}
+        <GlassCard style={{ padding: S.lg }}>
+          <SectionLabel>Details</SectionLabel>
+          <div style={{ display: "flex", flexDirection: "column", gap: S.md }}>
+            {[
+              { label: "Phone", value: m.phone },
+              { label: "Last visit", value: m.lastVisit },
+              { label: "Last class", value: m.class },
+              { label: "Name", value: m.name || "—" },
+              { label: "Email", value: m.name ? (m.name.split(" ")[0].toLowerCase() + "@email.de") : "—" },
+            ].map(function(f) {
+              return (
+                <div key={f.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{f.label}</span>
+                  <span style={{ fontSize: F.sm, fontWeight: 600, color: f.value === "—" ? C.textA(0.25) : C.text, fontFamily: f.label === "Phone" ? "monospace" : F.body }}>{f.value}</span>
+                </div>
+              );
+            })}
+          </div>
+        </GlassCard>
+
+        {/* Actions */}
+        <GlassCard style={{ padding: S.lg }}>
+          <SectionLabel>Actions</SectionLabel>
+          <div style={{ display: "flex", flexDirection: "column", gap: S.sm }}>
+            {[
+              { label: "Send message", icon: "💬", color: C.blue },
+              { label: "Edit details", icon: "✏️", color: C.text },
+              { label: "View in Mindbody", icon: "🔗", color: "#059669", disabled: m.matchStatus !== "linked" },
+              { label: "Resolve merge conflict", icon: "⚠️", color: "#DC2626", disabled: m.matchStatus !== "conflict" },
+            ].filter(function(a) { return !a.disabled; }).map(function(a) {
+              return (
+                <div key={a.label} onClick={function() { showToast(); }} style={{
+                  display: "flex", alignItems: "center", gap: S.sm, padding: "10px 14px",
+                  borderRadius: R.lg, border: "1px solid " + C.textA(0.06),
+                  cursor: "pointer", transition: transition,
+                }}>
+                  <span style={{ fontSize: 14 }}>{a.icon}</span>
+                  <span style={{ fontSize: F.sm, fontWeight: 600, color: a.color, fontFamily: F.body }}>{a.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </GlassCard>
+
+        {toast && (
+          <div style={{
+            position: "fixed", top: 80, left: "50%", transform: "translateX(-50%)",
+            background: C.blueGrad, color: C.white, padding: "10px 24px",
+            borderRadius: R.pill, fontSize: F.sm, fontWeight: 700, fontFamily: F.body,
+            boxShadow: C.shadowLg, zIndex: 100,
+          }}>Action triggered</div>
+        )}
+
+        <div style={{ height: 80 }} />
+      </div>
+    );
+  }
+
+  // ─── Member List View (default) ───
+  return (
+    <div style={{ padding: S.lg, display: "flex", flexDirection: "column", gap: S.md, position: "relative", overflow: "hidden" }}>
+      <BlobBg2 color={C.beige} opacity={0.25} position="top-right" scale={1} />
+
+      <div style={{ position: "relative", zIndex: 1, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+        <div>
+          <div style={{ fontSize: F.xs, color: C.textA(0.4), fontFamily: F.body }}>Members</div>
+          <div style={{ fontSize: F.xxl, fontWeight: 800, color: C.text, fontFamily: F.display }}>{mockMembers.length} total</div>
+        </div>
+        <div onClick={function() { setView("add"); }} style={{
+          padding: "8px 16px", borderRadius: R.pill, background: C.blueGrad,
+          color: C.white, fontSize: F.xs, fontWeight: 700, cursor: "pointer",
+          fontFamily: F.body, boxShadow: C.shadowSm,
+        }}>+ Add</div>
+      </div>
+
+      {/* Filter chips */}
+      <div style={{ display: "flex", gap: S.xs, flexWrap: "wrap", position: "relative", zIndex: 1 }}>
+        {[
+          { label: "All", count: mockMembers.length },
+          { label: "🔗 Linked", count: mockMembers.filter(function(m) { return m.matchStatus === "linked"; }).length },
+          { label: "📱 TapIn-only", count: mockMembers.filter(function(m) { return m.matchStatus === "standalone"; }).length },
+          { label: "⚠️ Conflicts", count: mockMembers.filter(function(m) { return m.matchStatus === "conflict"; }).length },
+        ].map(function(f) {
+          return (
+            <div key={f.label} onClick={function() { setSearch(f.label === "All" ? "" : f.label.slice(2).trim()); }} style={{
+              padding: "5px 10px", borderRadius: R.pill,
+              background: C.whiteA(0.7), border: "1px solid " + C.textA(0.08),
+              fontSize: 9, fontWeight: 600, color: C.textA(0.55), fontFamily: F.body,
+              cursor: "pointer", transition: transition,
+            }}>{f.label} ({f.count})</div>
+          );
+        })}
+      </div>
+
+      {/* Search */}
+      <GlassCard heavy style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: S.sm }}>
+        <span style={{ fontSize: 14, color: C.textA(0.35) }}>🔍</span>
+        <input
+          value={search}
+          onChange={function(e) { setSearch(e.target.value); }}
+          placeholder="Search by name, phone, or source..."
+          style={{
+            flex: 1, border: "none", background: "transparent",
+            fontSize: F.sm, fontFamily: F.body, color: C.text,
+          }}
+        />
+        {search && (
+          <span onClick={function() { setSearch(""); }} style={{ fontSize: 12, color: C.textA(0.35), cursor: "pointer" }}>✕</span>
+        )}
+      </GlassCard>
+
+      {/* Member list */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        {filtered.length === 0 && (
+          <div style={{ textAlign: "center", padding: S.xxl, color: C.textA(0.4), fontSize: F.sm, fontFamily: F.body }}>No members found</div>
+        )}
+        {filtered.map(function(m, i) {
+          var statusColor = m.matchStatus === "linked" ? "#059669" : m.matchStatus === "conflict" ? "#DC2626" : m.matchStatus === "pending" ? "#D97706" : C.blue;
+          var statusIcon = m.matchStatus === "linked" ? "🔗" : m.matchStatus === "conflict" ? "⚠️" : m.matchStatus === "pending" ? "⏳" : "📱";
+          var isPhoneOnly = !m.name;
+          var displayName = m.name || m.phone;
+          return (
+            <GlassCard key={i} onClick={function() { openDetail(m); }} style={{ padding: "12px 14px", marginBottom: S.sm, display: "flex", alignItems: "center", gap: S.md, cursor: "pointer" }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: R.full,
+                background: isPhoneOnly ? C.textA(0.06) : C.beigeGrad,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: isPhoneOnly ? 16 : 18, flexShrink: 0,
+              }}>{m.avatar}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ fontSize: F.sm, fontWeight: 700, color: isPhoneOnly ? C.textA(0.55) : C.text, fontFamily: isPhoneOnly ? "monospace" : F.body }}>{displayName}</span>
+                  {isPhoneOnly && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: "#FEF3C7", color: "#92400E", fontWeight: 600, fontFamily: F.body }}>Phone only</span>}
+                  {!isPhoneOnly && m.source !== "Direct" && <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: R.pill, background: C.textA(0.06), color: C.textA(0.45), fontWeight: 600, fontFamily: F.body }}>{m.source}</span>}
+                </div>
+                <div style={{ fontSize: F.xs, color: C.textA(0.45), fontFamily: F.body }}>{m.visits} visits · {m.lastVisit}</div>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ fontSize: 12 }}>{statusIcon}</span>
+                <PillTag variant={m.matchStatus === "linked" ? "green" : m.matchStatus === "conflict" ? "red" : m.visits >= 5 ? "blue" : "warm"}>{m.visits}/10</PillTag>
+              </div>
+            </GlassCard>
+          );
+        })}
+      </div>
+
+      {toast && (
+        <div style={{
+          position: "fixed", top: 80, left: "50%", transform: "translateX(-50%)",
+          background: C.greenGrad, color: C.white, padding: "10px 24px",
+          borderRadius: R.pill, fontSize: F.sm, fontWeight: 700, fontFamily: F.body,
+          boxShadow: C.shadowLg, zIndex: 100,
+        }}>Member added</div>
+      )}
+
+      <div style={{ height: 80 }} />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
 // ADMIN APP (Root + Bottom Nav)
 // ═══════════════════════════════════════════════════════════
 
@@ -1034,7 +1574,8 @@ function AdminApp() {
   var tab = _tab[0]; var setTab = _tab[1];
 
   var tabs = [
-    { id: "dashboard", label: "Dashboard", icon: "📊" },
+    { id: "dashboard", label: "Home", icon: "📊" },
+    { id: "members", label: "Members", icon: "👥" },
     { id: "mindbody", label: "Mindbody", icon: "🔗" },
     { id: "messaging", label: "Messages", icon: "💬" },
     { id: "loyalty", label: "Loyalty", icon: "🎁" },
@@ -1043,6 +1584,7 @@ function AdminApp() {
   function renderTab() {
     switch (tab) {
       case "dashboard": return React.createElement(DashboardTab);
+      case "members": return React.createElement(MembersTab);
       case "mindbody": return React.createElement(MindbodyTab);
       case "messaging": return React.createElement(MessagingTab);
       case "loyalty": return React.createElement(LoyaltyTab);
