@@ -50,12 +50,39 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_rewards_member ON rewards(member_id);
 `);
 
-// Add device_id column if missing (migration for existing DBs)
-// Note: SQLite ALTER TABLE ADD COLUMN does not support UNIQUE constraint
-try {
-  db.exec(`ALTER TABLE members ADD COLUMN device_id TEXT`);
-} catch (e) {
-  // Column already exists — ignore
+// ─── Migration: ensure phone is nullable and device_id column exists ───
+// SQLite doesn't support ALTER COLUMN, so we rebuild the table if needed.
+const tableInfo = db.pragma('table_info(members)');
+const phoneCol = tableInfo.find(c => c.name === 'phone');
+const hasDeviceId = tableInfo.some(c => c.name === 'device_id');
+const phoneIsNotNull = phoneCol && phoneCol.notnull === 1;
+
+if (!hasDeviceId || phoneIsNotNull) {
+  db.pragma('foreign_keys = OFF');
+  db.exec(`
+    CREATE TABLE members_new (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      phone TEXT UNIQUE,
+      device_id TEXT,
+      name TEXT,
+      email TEXT,
+      visit_count INTEGER DEFAULT 0,
+      current_stamp_count INTEGER DEFAULT 0,
+      total_rewards_claimed INTEGER DEFAULT 0,
+      source TEXT DEFAULT 'nfc',
+      match_status TEXT DEFAULT 'unmatched',
+      mindbody_client_id TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+  `);
+  // Copy existing data (device_id will be NULL for old rows)
+  const oldCols = tableInfo.map(c => c.name).join(', ');
+  db.exec(`INSERT INTO members_new (${oldCols}) SELECT ${oldCols} FROM members`);
+  db.exec(`DROP TABLE members`);
+  db.exec(`ALTER TABLE members_new RENAME TO members`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_members_phone ON members(phone)`);
+  db.pragma('foreign_keys = ON');
 }
 
 // Create unique index for device_id lookups (enforces uniqueness)
