@@ -22,8 +22,11 @@
     <text x="187" y="96" text-anchor="middle" font-size="10" fill="#B0482D" font-weight="600" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">Good Moves Studio</text>
     <circle cx="187" cy="146" r="26" fill="#FFFFFF" stroke="#B0482D" stroke-width="3" />
     <text x="187" y="152" text-anchor="middle" font-size="22" fill="#B0482D">✓</text>
-    <text x="187" y="188" text-anchor="middle" font-size="20" fill="#000044" font-weight="800" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">You're checked in!</text>
-    <text x="187" y="208" text-anchor="middle" font-size="12" fill="rgba(0,0,68,0.65)" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Visit 1 of 10 — welcome to Good Moves!</text>
+    <text x="187" y="186" text-anchor="middle" font-size="20" fill="#000044" font-weight="800" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">You're checked in!</text>
+    <!-- Class association pill -->
+    <rect x="105" y="196" width="165" height="24" rx="12" fill="rgba(0,29,162,0.08)" />
+    <text x="187" y="212" text-anchor="middle" font-size="10" fill="#001DA2" font-weight="600" font-family="system-ui, sans-serif">Reformer Basics · 09:30</text>
+    <text x="187" y="236" text-anchor="middle" font-size="12" fill="rgba(0,0,68,0.65)" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">Visit 1 of 10 — welcome to Good Moves!</text>
     <rect x="20" y="228" width="335" height="150" rx="16" fill="#FFFFFF" stroke="rgba(0,0,68,0.1)" stroke-width="1.5" />
     <text x="34" y="248" font-size="10" fill="rgba(0,0,68,0.45)" font-weight="700" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" text-transform="uppercase">YOUR PROGRESS</text>
     <text x="326" y="248" text-anchor="end" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">1/10</text>

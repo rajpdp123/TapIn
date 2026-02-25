@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="375" height="812" viewBox="0 0 375 812">
+  <defs>
+    <clipPath id="phone"><rect width="375" height="812" rx="50" /></clipPath>
+  </defs>
+  <rect width="375" height="812" rx="50" fill="#FBF6F1" />
+  <g clip-path="url(#phone)">
+    <!-- Dynamic Island -->
+    <rect x="0" y="0" width="375" height="54" fill="#FFFFFF" />
+    <rect x="127" y="10" width="120" height="34" rx="17" fill="#1a1a1a" />
+    <line x1="0" y1="54" x2="375" y2="54" stroke="rgba(0,0,68,0.1)" stroke-width="1" />
+    <!-- Blob decorations -->
+    <g transform="translate(250,-20) scale(0.7)" opacity="0.06">
+      <circle cx="100" cy="100" r="90" fill="#B0482D" />
+    </g>
+    <g transform="translate(-80,580) scale(0.9)" opacity="0.3">
+      <path d="M39.5,-67.5C52.9,-60.1,66.8,-53.2,74.8,-42C82.8,-30.8,84.9,-15.4,83.3,-0.9C81.7,13.5,76.4,27.1,68.4,38.6C60.4,50.1,49.7,59.6,37.4,66.1C25.1,72.6,11.1,76.1,-2.5,80.3C-16.1,84.5,-32.2,89.4,-45,83.8C-57.8,78.2,-67.3,62.1,-73.5,45.8C-79.7,29.5,-82.6,13,-80.5,1.2C-78.4,-10.6,-71.3,-19,-63.5,-28.3C-55.7,-37.6,-47.2,-47.8,-36.8,-56.7C-26.4,-65.6,-13.2,-73.2,0.4,-73.9C14,-74.6,28,-74.9,39.5,-67.5Z" fill="#EEDBC3" transform="translate(100,100)" />
+    </g>
+    <!-- Studio pill -->
+    <rect x="117" y="80" width="140" height="24" rx="12" fill="rgba(176,72,45,0.08)" />
+    <text x="187" y="96" text-anchor="middle" font-size="10" fill="#B0482D" font-weight="600" font-family="Quicksand, system-ui, sans-serif">Good Moves Studio</text>
+    <!-- Check icon -->
+    <circle cx="187" cy="170" r="40" fill="#B0482D" />
+    <text x="187" y="182" text-anchor="middle" font-size="32" fill="#FFFFFF">✓</text>
+    <!-- Headline -->
+    <text x="187" y="240" text-anchor="middle" font-size="22" fill="#000044" font-weight="700" font-family="Quicksand, system-ui, sans-serif">You're already checked in!</text>
+    <!-- Class info -->
+    <rect x="112" y="256" width="150" height="26" rx="13" fill="rgba(0,29,162,0.08)" />
+    <text x="187" y="274" text-anchor="middle" font-size="11" fill="#001DA2" font-weight="600" font-family="system-ui, sans-serif">Reformer Basics · 09:30</text>
+    <text x="187" y="304" text-anchor="middle" font-size="13" fill="rgba(0,0,68,0.6)" font-family="system-ui, sans-serif">You checked in earlier today. See you tomorrow!</text>
+    <!-- Stamp card -->
+    <rect x="20" y="332" width="335" height="160" rx="16" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,68,0.08)" stroke-width="1.5" />
+    <text x="34" y="354" font-size="10" fill="rgba(0,0,68,0.45)" font-weight="700" font-family="system-ui, sans-serif">YOUR PROGRESS</text>
+    <text x="326" y="354" text-anchor="end" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">7/10</text>
+    <!-- Row 1: stamps 1-5, all filled up to 7 -->
+    <rect x="34" y="366" width="48" height="48" rx="10" fill="#B0482D" /><text x="58" y="394" text-anchor="middle" font-size="11" fill="#FFF" font-weight="600">✓</text>
+    <rect x="90" y="366" width="48" height="48" rx="10" fill="#B0482D" /><text x="114" y="394" text-anchor="middle" font-size="11" fill="#FFF" font-weight="600">✓</text>
+    <rect x="146" y="366" width="48" height="48" rx="10" fill="#B0482D" /><text x="170" y="394" text-anchor="middle" font-size="11" fill="#FFF" font-weight="600">✓</text>
+    <rect x="202" y="366" width="48" height="48" rx="10" fill="#B0482D" /><text x="226" y="394" text-anchor="middle" font-size="11" fill="#FFF" font-weight="600">✓</text>
+    <rect x="258" y="366" width="48" height="48" rx="10" fill="#B0482D" /><text x="282" y="394" text-anchor="middle" font-size="11" fill="#FFF" font-weight="600">✓</text>
+    <!-- Row 2: stamps 6-10, 6-7 filled -->
+    <rect x="34" y="422" width="48" height="48" rx="10" fill="#B0482D" /><text x="58" y="450" text-anchor="middle" font-size="11" fill="#FFF" font-weight="600">✓</text>
+    <rect x="90" y="422" width="48" height="48" rx="10" fill="#B0482D" /><text x="114" y="450" text-anchor="middle" font-size="11" fill="#FFF" font-weight="600">✓</text>
+    <rect x="146" y="422" width="48" height="48" rx="10" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="2" /><text x="170" y="450" text-anchor="middle" font-size="11" fill="rgba(0,0,68,0.45)" font-weight="600">8</text>
+    <rect x="202" y="422" width="48" height="48" rx="10" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="2" /><text x="226" y="450" text-anchor="middle" font-size="11" fill="rgba(0,0,68,0.45)" font-weight="600">9</text>
+    <rect x="258" y="422" width="48" height="48" rx="10" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="2" /><text x="282" y="450" text-anchor="middle" font-size="11" fill="rgba(0,0,68,0.45)" font-weight="600">10</text>
+    <!-- Progress bar 70% -->
+    <rect x="34" y="478" width="307" height="6" rx="3" fill="#EEDBC3" />
+    <rect x="34" y="478" width="215" height="6" rx="3" fill="#B0482D" />
+    <!-- My Card link -->
+    <text x="187" y="520" text-anchor="middle" font-size="13" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif" text-decoration="underline">View My Card →</text>
+    <!-- Done button -->
+    <rect x="20" y="732" width="335" height="48" rx="12" fill="#B0482D" />
+    <text x="187" y="760" text-anchor="middle" font-size="14" fill="#FFFFFF" font-weight="700" font-family="Quicksand, system-ui, sans-serif">Done</text>
+  </g>
+</svg>

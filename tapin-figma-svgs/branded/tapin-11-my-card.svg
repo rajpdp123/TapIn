@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="375" height="812" viewBox="0 0 375 812">
+  <defs>
+    <clipPath id="phone"><rect width="375" height="812" rx="50" /></clipPath>
+    <linearGradient id="progressGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#B0482D" />
+      <stop offset="100%" stop-color="#C4603F" />
+    </linearGradient>
+  </defs>
+  <rect width="375" height="812" rx="50" fill="#FBF6F1" />
+  <g clip-path="url(#phone)">
+    <!-- Dynamic Island -->
+    <rect x="0" y="0" width="375" height="54" fill="#FFFFFF" />
+    <rect x="127" y="10" width="120" height="34" rx="17" fill="#1a1a1a" />
+    <line x1="0" y1="54" x2="375" y2="54" stroke="rgba(0,0,68,0.1)" stroke-width="1" />
+    <!-- Header -->
+    <text x="34" y="86" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">← Back</text>
+    <text x="187" y="86" text-anchor="middle" font-size="14" fill="#000044" font-weight="700" font-family="Quicksand, system-ui, sans-serif">My Card</text>
+    <!-- Member info -->
+    <circle cx="52" cy="128" r="22" fill="#B0482D" />
+    <text x="52" y="134" text-anchor="middle" font-size="14" fill="#FFFFFF" font-weight="700" font-family="system-ui, sans-serif">SM</text>
+    <text x="84" y="122" font-size="16" fill="#000044" font-weight="700" font-family="Quicksand, system-ui, sans-serif">Sarah M.</text>
+    <rect x="84" y="130" width="90" height="20" rx="10" fill="rgba(176,72,45,0.08)" />
+    <text x="129" y="144" text-anchor="middle" font-size="9" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">24 total visits</text>
+    <!-- Stamp card -->
+    <rect x="20" y="168" width="335" height="158" rx="16" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,68,0.08)" stroke-width="1.5" />
+    <text x="34" y="190" font-size="10" fill="rgba(0,0,68,0.45)" font-weight="700" font-family="system-ui, sans-serif">CURRENT CYCLE</text>
+    <text x="326" y="190" text-anchor="end" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">4/10</text>
+    <!-- Row 1 -->
+    <rect x="34" y="202" width="48" height="42" rx="8" fill="#B0482D" /><text x="58" y="228" text-anchor="middle" font-size="10" fill="#FFF" font-weight="600">✓</text>
+    <rect x="90" y="202" width="48" height="42" rx="8" fill="#B0482D" /><text x="114" y="228" text-anchor="middle" font-size="10" fill="#FFF" font-weight="600">✓</text>
+    <rect x="146" y="202" width="48" height="42" rx="8" fill="#B0482D" /><text x="170" y="228" text-anchor="middle" font-size="10" fill="#FFF" font-weight="600">✓</text>
+    <rect x="202" y="202" width="48" height="42" rx="8" fill="#B0482D" /><text x="226" y="228" text-anchor="middle" font-size="10" fill="#FFF" font-weight="600">✓</text>
+    <rect x="258" y="202" width="48" height="42" rx="8" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="1.5" /><text x="282" y="228" text-anchor="middle" font-size="10" fill="rgba(0,0,68,0.4)" font-weight="600">5</text>
+    <!-- Row 2 -->
+    <rect x="34" y="252" width="48" height="42" rx="8" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="1.5" /><text x="58" y="278" text-anchor="middle" font-size="10" fill="rgba(0,0,68,0.4)" font-weight="600">6</text>
+    <rect x="90" y="252" width="48" height="42" rx="8" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="1.5" /><text x="114" y="278" text-anchor="middle" font-size="10" fill="rgba(0,0,68,0.4)" font-weight="600">7</text>
+    <rect x="146" y="252" width="48" height="42" rx="8" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="1.5" /><text x="170" y="278" text-anchor="middle" font-size="10" fill="rgba(0,0,68,0.4)" font-weight="600">8</text>
+    <rect x="202" y="252" width="48" height="42" rx="8" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="1.5" /><text x="226" y="278" text-anchor="middle" font-size="10" fill="rgba(0,0,68,0.4)" font-weight="600">9</text>
+    <rect x="258" y="252" width="48" height="42" rx="8" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="1.5" /><text x="282" y="278" text-anchor="middle" font-size="10" fill="rgba(0,0,68,0.4)" font-weight="600">10</text>
+    <!-- Progress bar -->
+    <rect x="34" y="302" width="307" height="6" rx="3" fill="#EEDBC3" />
+    <rect x="34" y="302" width="123" height="6" rx="3" fill="url(#progressGrad)" />
+    <!-- Visit history -->
+    <text x="34" y="352" font-size="12" fill="#000044" font-weight="700" font-family="Quicksand, system-ui, sans-serif">Visit History</text>
+    <!-- Visit rows -->
+    <rect x="20" y="366" width="335" height="54" rx="12" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+    <text x="34" y="388" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Today, 09:32</text>
+    <rect x="150" y="376" width="120" height="20" rx="10" fill="rgba(0,29,162,0.06)" />
+    <text x="210" y="390" text-anchor="middle" font-size="9" fill="#001DA2" font-weight="600" font-family="system-ui, sans-serif">Reformer Basics · 09:30</text>
+    <text x="326" y="388" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Visit 4</text>
+    <text x="34" y="406" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Stamp 4/10</text>
+
+    <rect x="20" y="428" width="335" height="54" rx="12" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+    <text x="34" y="450" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Mon, 24 Feb</text>
+    <rect x="140" y="438" width="140" height="20" rx="10" fill="rgba(0,29,162,0.06)" />
+    <text x="210" y="452" text-anchor="middle" font-size="9" fill="#001DA2" font-weight="600" font-family="system-ui, sans-serif">Reformer All Levels · 17:30</text>
+    <text x="326" y="450" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Visit 3</text>
+    <text x="34" y="468" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Stamp 3/10</text>
+
+    <rect x="20" y="490" width="335" height="54" rx="12" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+    <text x="34" y="512" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Sat, 22 Feb</text>
+    <rect x="130" y="500" width="140" height="20" rx="10" fill="rgba(0,29,162,0.06)" />
+    <text x="200" y="514" text-anchor="middle" font-size="9" fill="#001DA2" font-weight="600" font-family="system-ui, sans-serif">Weekend Reformer · 09:00</text>
+    <text x="326" y="512" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Visit 2</text>
+    <text x="34" y="530" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Stamp 2/10</text>
+
+    <rect x="20" y="552" width="335" height="54" rx="12" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+    <text x="34" y="574" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Thu, 20 Feb</text>
+    <rect x="130" y="562" width="120" height="20" rx="10" fill="rgba(0,29,162,0.06)" />
+    <text x="190" y="576" text-anchor="middle" font-size="9" fill="#001DA2" font-weight="600" font-family="system-ui, sans-serif">Morning Flow · 07:00</text>
+    <text x="326" y="574" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Visit 1</text>
+    <text x="34" y="592" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Stamp 1/10</text>
+  </g>
+</svg>

@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="375" height="812" viewBox="0 0 375 812">
+  <defs>
+    <clipPath id="phone"><rect width="375" height="812" rx="50" /></clipPath>
+  </defs>
+  <rect width="375" height="812" rx="50" fill="#FFFFFF" />
+  <g clip-path="url(#phone)">
+    <!-- Admin header bar -->
+    <rect x="0" y="0" width="375" height="100" rx="0" fill="#001DA2" />
+    <rect x="0" y="80" width="375" height="30" rx="16" fill="#FFFFFF" />
+    <text x="187" y="50" text-anchor="middle" font-size="18" fill="#FFFFFF" font-weight="700" font-family="Quicksand, system-ui, sans-serif">TapIn Admin</text>
+    <text x="187" y="70" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.7)" font-family="system-ui, sans-serif">Good Moves Studio · Today</text>
+    <!-- Stats cards -->
+    <g transform="translate(0,100)">
+      <rect x="14" y="0" width="108" height="70" rx="12" fill="#FFFFFF" stroke="rgba(0,29,162,0.1)" stroke-width="1.5" />
+      <text x="68" y="30" text-anchor="middle" font-size="24" fill="#001DA2" font-weight="700" font-family="Quicksand, system-ui, sans-serif">23</text>
+      <text x="68" y="48" text-anchor="middle" font-size="9" fill="rgba(0,0,68,0.5)" font-weight="600" font-family="system-ui, sans-serif">CHECK-INS</text>
+      <text x="68" y="60" text-anchor="middle" font-size="8" fill="rgba(0,0,68,0.35)" font-family="system-ui, sans-serif">Today</text>
+
+      <rect x="133" y="0" width="108" height="70" rx="12" fill="#FFFFFF" stroke="rgba(0,29,162,0.1)" stroke-width="1.5" />
+      <text x="187" y="30" text-anchor="middle" font-size="24" fill="#001DA2" font-weight="700" font-family="Quicksand, system-ui, sans-serif">18</text>
+      <text x="187" y="48" text-anchor="middle" font-size="9" fill="rgba(0,0,68,0.5)" font-weight="600" font-family="system-ui, sans-serif">UNIQUE</text>
+      <text x="187" y="60" text-anchor="middle" font-size="8" fill="rgba(0,0,68,0.35)" font-family="system-ui, sans-serif">Members</text>
+
+      <rect x="252" y="0" width="108" height="70" rx="12" fill="#FFFFFF" stroke="rgba(0,29,162,0.1)" stroke-width="1.5" />
+      <text x="306" y="30" text-anchor="middle" font-size="24" fill="#B0482D" font-weight="700" font-family="Quicksand, system-ui, sans-serif">2</text>
+      <text x="306" y="48" text-anchor="middle" font-size="9" fill="rgba(0,0,68,0.5)" font-weight="600" font-family="system-ui, sans-serif">REWARDS</text>
+      <text x="306" y="60" text-anchor="middle" font-size="8" fill="rgba(0,0,68,0.35)" font-family="system-ui, sans-serif">Earned</text>
+    </g>
+    <!-- Feed header -->
+    <text x="20" y="202" font-size="13" fill="#000044" font-weight="700" font-family="Quicksand, system-ui, sans-serif">Live Feed</text>
+    <text x="340" y="202" text-anchor="end" font-size="10" fill="#001DA2" font-weight="600" font-family="system-ui, sans-serif">↻ Refresh</text>
+    <!-- Feed items -->
+    <!-- Reward item (highlighted) -->
+    <rect x="14" y="214" width="347" height="72" rx="12" fill="#FFFFFF" stroke="rgba(176,72,45,0.25)" stroke-width="2" />
+    <rect x="14" y="214" width="4" height="72" rx="2" fill="#B0482D" />
+    <circle cx="44" cy="240" r="16" fill="#B0482D" />
+    <text x="44" y="246" text-anchor="middle" font-size="10" fill="#FFFFFF" font-weight="700">LK</text>
+    <text x="68" y="236" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Lisa K.</text>
+    <text x="68" y="252" font-size="10" fill="rgba(0,0,68,0.5)" font-family="system-ui, sans-serif">Reformer Basics · 09:30</text>
+    <text x="68" y="268" font-size="10" fill="rgba(0,0,68,0.5)" font-family="system-ui, sans-serif">Visit 10/10</text>
+    <rect x="68" y="272" width="80" height="18" rx="9" fill="rgba(176,72,45,0.1)" />
+    <text x="108" y="284" text-anchor="middle" font-size="9" fill="#B0482D" font-weight="700" font-family="'SF Mono', monospace">🎁 482 901</text>
+    <text x="340" y="236" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">09:32</text>
+    <rect x="300" y="244" width="48" height="18" rx="9" fill="rgba(176,72,45,0.1)" />
+    <text x="324" y="256" text-anchor="middle" font-size="8" fill="#B0482D" font-weight="700">REWARD</text>
+    <!-- Regular item -->
+    <rect x="14" y="294" width="347" height="58" rx="12" fill="#FFFFFF" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+    <circle cx="44" cy="323" r="16" fill="#001DA2" />
+    <text x="44" y="329" text-anchor="middle" font-size="10" fill="#FFFFFF" font-weight="700">SM</text>
+    <text x="68" y="318" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Sarah M.</text>
+    <text x="68" y="334" font-size="10" fill="rgba(0,0,68,0.5)" font-family="system-ui, sans-serif">Reformer Basics · 09:30</text>
+    <text x="340" y="318" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">09:31</text>
+    <text x="340" y="336" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Visit 7/10</text>
+    <!-- New member item -->
+    <rect x="14" y="360" width="347" height="58" rx="12" fill="#FFFFFF" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+    <circle cx="44" cy="389" r="16" fill="#EEDBC3" />
+    <text x="44" y="395" text-anchor="middle" font-size="10" fill="#B0482D" font-weight="700">?</text>
+    <text x="68" y="384" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">+49 176 ••• 4521</text>
+    <text x="68" y="400" font-size="10" fill="rgba(0,0,68,0.5)" font-family="system-ui, sans-serif">Reformer Basics · 09:30</text>
+    <text x="340" y="384" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">09:28</text>
+    <rect x="298" y="392" width="42" height="18" rx="9" fill="rgba(0,29,162,0.08)" />
+    <text x="319" y="404" text-anchor="middle" font-size="8" fill="#001DA2" font-weight="700">NEW</text>
+    <!-- More items -->
+    <rect x="14" y="426" width="347" height="58" rx="12" fill="#FFFFFF" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+    <circle cx="44" cy="455" r="16" fill="#001DA2" />
+    <text x="44" y="461" text-anchor="middle" font-size="10" fill="#FFFFFF" font-weight="700">MH</text>
+    <text x="68" y="450" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Maria H.</text>
+    <text x="68" y="466" font-size="10" fill="rgba(0,0,68,0.5)" font-family="system-ui, sans-serif">Morning Flow · 07:00</text>
+    <text x="340" y="450" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">07:02</text>
+    <text x="340" y="468" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Visit 3/10</text>
+
+    <rect x="14" y="492" width="347" height="58" rx="12" fill="#FFFFFF" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+    <circle cx="44" cy="521" r="16" fill="#001DA2" />
+    <text x="44" y="527" text-anchor="middle" font-size="10" fill="#FFFFFF" font-weight="700">JP</text>
+    <text x="68" y="516" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Julia P.</text>
+    <text x="68" y="532" font-size="10" fill="rgba(0,0,68,0.5)" font-family="system-ui, sans-serif">Morning Flow · 07:00</text>
+    <text x="340" y="516" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">07:01</text>
+    <text x="340" y="534" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Visit 12/10</text>
+
+    <!-- Reward highlight item -->
+    <rect x="14" y="558" width="347" height="72" rx="12" fill="#FFFFFF" stroke="rgba(176,72,45,0.25)" stroke-width="2" />
+    <rect x="14" y="558" width="4" height="72" rx="2" fill="#B0482D" />
+    <circle cx="44" cy="584" r="16" fill="#B0482D" />
+    <text x="44" y="590" text-anchor="middle" font-size="10" fill="#FFFFFF" font-weight="700">AW</text>
+    <text x="68" y="580" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Anna W.</text>
+    <text x="68" y="596" font-size="10" fill="rgba(0,0,68,0.5)" font-family="system-ui, sans-serif">Morning Flow · 07:00</text>
+    <text x="68" y="612" font-size="10" fill="rgba(0,0,68,0.5)" font-family="system-ui, sans-serif">Visit 10/10</text>
+    <rect x="68" y="616" width="80" height="18" rx="9" fill="rgba(176,72,45,0.1)" />
+    <text x="108" y="628" text-anchor="middle" font-size="9" fill="#B0482D" font-weight="700" font-family="'SF Mono', monospace">🎁 739 204</text>
+    <text x="340" y="580" text-anchor="end" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">07:00</text>
+    <rect x="296" y="588" width="52" height="18" rx="9" fill="rgba(176,72,45,0.1)" />
+    <text x="322" y="600" text-anchor="middle" font-size="8" fill="#B0482D" font-weight="700">CLAIMED</text>
+  </g>
+</svg>

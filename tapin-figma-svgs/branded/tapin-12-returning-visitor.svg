@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="375" height="812" viewBox="0 0 375 812">
+  <defs>
+    <clipPath id="phone"><rect width="375" height="812" rx="50" /></clipPath>
+  </defs>
+  <rect width="375" height="812" rx="50" fill="#FBF6F1" />
+  <g clip-path="url(#phone)">
+    <!-- Dynamic Island -->
+    <rect x="0" y="0" width="375" height="54" fill="#FFFFFF" />
+    <rect x="127" y="10" width="120" height="34" rx="17" fill="#1a1a1a" />
+    <line x1="0" y1="54" x2="375" y2="54" stroke="rgba(0,0,68,0.1)" stroke-width="1" />
+    <!-- Blobs -->
+    <g transform="translate(-60,-10) scale(1.2)" opacity="0.05">
+      <path d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90,-16.3,88.5,-0.9C87,14.5,81.4,29,72.8,41.5C64.2,54,52.6,64.5,39.4,71.8C26.2,79.1,11.4,83.2,-2.8,87.4C-17,91.6,-34,95.8,-47.2,88.8C-60.4,81.8,-69.8,63.6,-76.4,46.1C-83,28.6,-86.8,11.8,-84.6,-3.6C-82.4,-19,-74.2,-33.1,-63.5,-43.7C-52.8,-54.3,-39.6,-61.5,-26.4,-69.4C-13.2,-77.3,0,-85.9,14.2,-87.2C28.4,-88.5,56.8,-82.5,44.7,-76.4Z" fill="#B0482D" transform="translate(100,100)" />
+    </g>
+    <g transform="translate(200,550) scale(0.9)" opacity="0.25">
+      <circle cx="80" cy="80" r="100" fill="#EEDBC3" />
+    </g>
+    <!-- Studio pill -->
+    <rect x="117" y="90" width="140" height="24" rx="12" fill="rgba(176,72,45,0.08)" />
+    <text x="187" y="106" text-anchor="middle" font-size="10" fill="#B0482D" font-weight="600" font-family="Quicksand, system-ui, sans-serif">Good Moves Studio</text>
+    <!-- Wave emoji -->
+    <text x="187" y="180" text-anchor="middle" font-size="48">👋</text>
+    <!-- Welcome back -->
+    <text x="187" y="230" text-anchor="middle" font-size="26" fill="#000044" font-weight="700" font-family="Quicksand, system-ui, sans-serif">Welcome back, Sarah!</text>
+    <!-- Current progress -->
+    <text x="187" y="258" text-anchor="middle" font-size="14" fill="rgba(0,0,68,0.6)" font-family="system-ui, sans-serif">You're on stamp 6 of 10</text>
+    <!-- Mini stamp preview -->
+    <g transform="translate(80,274)">
+      <rect x="0" y="0" width="22" height="22" rx="5" fill="#B0482D" /><text x="11" y="15" text-anchor="middle" font-size="8" fill="#FFF">✓</text>
+      <rect x="26" y="0" width="22" height="22" rx="5" fill="#B0482D" /><text x="37" y="15" text-anchor="middle" font-size="8" fill="#FFF">✓</text>
+      <rect x="52" y="0" width="22" height="22" rx="5" fill="#B0482D" /><text x="63" y="15" text-anchor="middle" font-size="8" fill="#FFF">✓</text>
+      <rect x="78" y="0" width="22" height="22" rx="5" fill="#B0482D" /><text x="89" y="15" text-anchor="middle" font-size="8" fill="#FFF">✓</text>
+      <rect x="104" y="0" width="22" height="22" rx="5" fill="#B0482D" /><text x="115" y="15" text-anchor="middle" font-size="8" fill="#FFF">✓</text>
+      <rect x="130" y="0" width="22" height="22" rx="5" fill="#B0482D" /><text x="141" y="15" text-anchor="middle" font-size="8" fill="#FFF">✓</text>
+      <rect x="156" y="0" width="22" height="22" rx="5" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="1" /><text x="167" y="15" text-anchor="middle" font-size="8" fill="rgba(0,0,68,0.3)">7</text>
+      <rect x="182" y="0" width="22" height="22" rx="5" fill="#EEDBC3" stroke="rgba(0,0,68,0.1)" stroke-width="1" /><text x="193" y="15" text-anchor="middle" font-size="8" fill="rgba(0,0,68,0.3)">8</text>
+    </g>
+    <!-- Big Check In button -->
+    <rect x="40" y="380" width="295" height="64" rx="20" fill="#B0482D" />
+    <text x="187" y="418" text-anchor="middle" font-size="20" fill="#FFFFFF" font-weight="700" font-family="Quicksand, system-ui, sans-serif">Check In</text>
+    <!-- Not you link -->
+    <text x="187" y="470" text-anchor="middle" font-size="12" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Not Sarah? <tspan fill="#B0482D" font-weight="600">Switch account</tspan></text>
+    <!-- My Card link -->
+    <text x="187" y="510" text-anchor="middle" font-size="13" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif" text-decoration="underline">View My Card →</text>
+  </g>
+</svg>
