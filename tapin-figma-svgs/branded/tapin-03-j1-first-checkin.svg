@@ -20,8 +20,9 @@
     </g>
     <rect x="117" y="80" width="140" height="24" rx="12" fill="rgba(176,72,45,0.08)" />
     <text x="187" y="96" text-anchor="middle" font-size="10" fill="#B0482D" font-weight="600" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">Good Moves Studio</text>
-    <circle cx="187" cy="146" r="26" fill="#FFFFFF" stroke="#B0482D" stroke-width="3" />
-    <text x="187" y="152" text-anchor="middle" font-size="22" fill="#B0482D">✓</text>
+    <!-- Large filled terracotta check circle -->
+    <circle cx="187" cy="146" r="30" fill="#B0482D" />
+    <text x="187" y="154" text-anchor="middle" font-size="24" fill="#FFFFFF" font-weight="700">✓</text>
     <text x="187" y="186" text-anchor="middle" font-size="20" fill="#000044" font-weight="800" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">You're checked in!</text>
     <!-- Class association pill -->
     <rect x="105" y="196" width="165" height="24" rx="12" fill="rgba(0,29,162,0.08)" />

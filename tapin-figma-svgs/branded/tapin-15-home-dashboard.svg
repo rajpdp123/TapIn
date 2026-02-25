@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="375" height="812" viewBox="0 0 375 812">
+  <defs>
+    <clipPath id="phone"><rect width="375" height="812" rx="50" /></clipPath>
+  </defs>
+  <rect width="375" height="812" rx="50" fill="#FBF6F1" />
+  <g clip-path="url(#phone)">
+    <!-- Dynamic Island -->
+    <rect x="0" y="0" width="375" height="54" fill="#FFFFFF" />
+    <rect x="127" y="10" width="120" height="34" rx="17" fill="#1a1a1a" />
+
+    <!-- Blob decoration (top right, subtle) -->
+    <g transform="translate(260,-20) scale(0.6)" opacity="0.06">
+      <circle cx="100" cy="100" r="90" fill="#B0482D" />
+    </g>
+
+    <!-- Header -->
+    <text x="24" y="84" font-size="12" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Welcome back</text>
+    <text x="24" y="112" font-size="26" fill="#000044" font-weight="700" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">Good Moves</text>
+
+    <!-- User avatar -->
+    <circle cx="340" cy="96" r="20" fill="#B0482D" />
+    <text x="340" y="102" text-anchor="middle" font-size="13" fill="#FFFFFF" font-weight="600" font-family="system-ui, sans-serif">SM</text>
+
+    <!-- Progress Ring -->
+    <g transform="translate(187,210)">
+      <!-- Track -->
+      <circle cx="0" cy="0" r="56" fill="none" stroke="rgba(0,0,68,0.06)" stroke-width="10" />
+      <!-- Filled arc (50% = 5 of 10) -->
+      <circle cx="0" cy="0" r="56" fill="none" stroke="#B0482D" stroke-width="10"
+        stroke-dasharray="352" stroke-dashoffset="176"
+        stroke-linecap="round" transform="rotate(-90)" />
+      <!-- Center text -->
+      <text x="0" y="-6" text-anchor="middle" font-size="24" fill="#000044" font-weight="700" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">5</text>
+      <text x="0" y="12" text-anchor="middle" font-size="11" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">of 10</text>
+    </g>
+
+    <!-- Percentage label -->
+    <text x="187" y="288" text-anchor="middle" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif" letter-spacing="2">56% COMPLETE</text>
+
+    <!-- Motivational message -->
+    <text x="187" y="310" text-anchor="middle" font-size="14" fill="#000044" font-weight="600" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">Halfway! Keep that energy!</text>
+
+    <!-- Mini stamp dots row -->
+    <g transform="translate(120,322)">
+      <circle cx="0" cy="0" r="5" fill="#B0482D" />
+      <circle cx="14" cy="0" r="5" fill="#B0482D" />
+      <circle cx="28" cy="0" r="5" fill="#B0482D" />
+      <circle cx="42" cy="0" r="5" fill="#B0482D" />
+      <circle cx="56" cy="0" r="5" fill="#B0482D" />
+      <circle cx="70" cy="0" r="5" fill="rgba(0,0,68,0.1)" />
+      <circle cx="84" cy="0" r="5" fill="rgba(0,0,68,0.1)" />
+      <circle cx="98" cy="0" r="5" fill="rgba(0,0,68,0.1)" />
+      <circle cx="112" cy="0" r="5" fill="rgba(0,0,68,0.1)" />
+      <circle cx="126" cy="0" r="5" fill="rgba(0,0,68,0.1)" />
+    </g>
+
+    <!-- Reward line -->
+    <text x="187" y="350" text-anchor="middle" font-size="12" fill="rgba(0,0,68,0.5)" font-family="system-ui, sans-serif">🎁 Reward: Free class at visit 10 · 5 to go</text>
+
+    <!-- Today's Classes section -->
+    <text x="24" y="386" font-size="16" fill="#000044" font-weight="700" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">Today's Classes</text>
+    <text x="351" y="386" text-anchor="end" font-size="12" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">View all →</text>
+
+    <!-- Classes card -->
+    <rect x="16" y="396" width="343" height="260" rx="16" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+
+    <!-- Class 1: Morning Flow -->
+    <text x="32" y="424" font-size="13" fill="#B0482D" font-weight="700" font-family="system-ui, sans-serif">07:00</text>
+    <text x="84" y="424" font-size="13" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Morning Flow</text>
+    <text x="84" y="440" font-size="11" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Tara · 3 spots</text>
+    <rect x="295" y="412" width="48" height="24" rx="12" fill="rgba(176,72,45,0.08)" />
+    <text x="319" y="428" text-anchor="middle" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">Book</text>
+    <line x1="32" y1="452" x2="343" y2="452" stroke="rgba(0,0,68,0.04)" />
+
+    <!-- Class 2: Reformer Basics -->
+    <text x="32" y="474" font-size="13" fill="#B0482D" font-weight="700" font-family="system-ui, sans-serif">09:30</text>
+    <text x="84" y="474" font-size="13" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Reformer Basics</text>
+    <text x="84" y="490" font-size="11" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Elena · 1 spot</text>
+    <rect x="295" y="462" width="48" height="24" rx="12" fill="rgba(176,72,45,0.08)" />
+    <text x="319" y="478" text-anchor="middle" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">Book</text>
+    <line x1="32" y1="502" x2="343" y2="502" stroke="rgba(0,0,68,0.04)" />
+
+    <!-- Class 3: Power Mat -->
+    <text x="32" y="524" font-size="13" fill="#B0482D" font-weight="700" font-family="system-ui, sans-serif">12:00</text>
+    <text x="84" y="524" font-size="13" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Power Mat</text>
+    <text x="84" y="540" font-size="11" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Petra · 4 spots</text>
+    <rect x="295" y="512" width="48" height="24" rx="12" fill="rgba(176,72,45,0.08)" />
+    <text x="319" y="528" text-anchor="middle" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">Book</text>
+    <line x1="32" y1="552" x2="343" y2="552" stroke="rgba(0,0,68,0.04)" />
+
+    <!-- Class 4: Barre Sculpt -->
+    <text x="32" y="574" font-size="13" fill="#B0482D" font-weight="700" font-family="system-ui, sans-serif">17:30</text>
+    <text x="84" y="574" font-size="13" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Barre Sculpt</text>
+    <text x="84" y="590" font-size="11" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Maia · 2 spots</text>
+    <rect x="295" y="562" width="48" height="24" rx="12" fill="rgba(176,72,45,0.08)" />
+    <text x="319" y="578" text-anchor="middle" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">Book</text>
+    <line x1="32" y1="602" x2="343" y2="602" stroke="rgba(0,0,68,0.04)" />
+
+    <!-- Class 5: Stretch & Restore -->
+    <text x="32" y="624" font-size="13" fill="#B0482D" font-weight="700" font-family="system-ui, sans-serif">19:00</text>
+    <text x="84" y="624" font-size="13" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Stretch &amp; Restore</text>
+    <text x="84" y="640" font-size="11" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Tara · 7 spots</text>
+    <rect x="295" y="612" width="48" height="24" rx="12" fill="rgba(176,72,45,0.08)" />
+    <text x="319" y="628" text-anchor="middle" font-size="10" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">Book</text>
+
+    <!-- Deals & Perks section -->
+    <text x="24" y="686" font-size="16" fill="#000044" font-weight="700" font-family="Quicksand, Varela Round, Nunito, system-ui, sans-serif">Deals &amp; Perks</text>
+
+    <!-- Deal 1: Early Bird Perk -->
+    <rect x="16" y="696" width="168" height="80" rx="14" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+    <text x="28" y="716" font-size="15">☕</text>
+    <rect x="46" y="704" width="50" height="16" rx="8" fill="rgba(176,72,45,0.1)" />
+    <text x="71" y="715" text-anchor="middle" font-size="8" fill="#B0482D" font-weight="600" font-family="system-ui, sans-serif">Popular</text>
+    <text x="28" y="738" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Early Bird Perk</text>
+    <text x="28" y="754" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">5 morning classes = 1 free coffee</text>
+
+    <!-- Deal 2: Bring a Friend -->
+    <rect x="192" y="696" width="168" height="80" rx="14" fill="rgba(255,255,255,0.72)" stroke="rgba(0,0,68,0.06)" stroke-width="1" />
+    <text x="204" y="716" font-size="15">👯</text>
+    <rect x="222" y="704" width="34" height="16" rx="8" fill="rgba(0,29,162,0.08)" />
+    <text x="239" y="715" text-anchor="middle" font-size="8" fill="#001DA2" font-weight="600" font-family="system-ui, sans-serif">New</text>
+    <text x="204" y="738" font-size="12" fill="#000044" font-weight="600" font-family="system-ui, sans-serif">Bring a Friend</text>
+    <text x="204" y="754" font-size="10" fill="rgba(0,0,68,0.4)" font-family="system-ui, sans-serif">Your friend's first class is free</text>
+
+    <!-- Home indicator -->
+    <rect x="140" y="796" width="95" height="4" rx="2" fill="rgba(0,0,68,0.15)" />
+  </g>
+</svg>
