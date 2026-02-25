@@ -214,6 +214,35 @@ app.post('/api/admin/reset', (req, res) => {
   res.json({ success: true, message: 'All data cleared' });
 });
 
+// ─── Admin: Seed visits for testing ───
+app.post('/api/admin/seed', (req, res) => {
+  const { phone, visits: visitCount } = req.body;
+  if (!phone || !visitCount) return res.status(400).json({ error: 'phone and visits required' });
+
+  const normalizedPhone = normalizePhone(phone);
+  let member = stmts.getMemberByPhone.get(normalizedPhone);
+  if (!member) member = stmts.createMemberWithPhone.get(normalizedPhone);
+
+  // Insert backdated visits
+  const insertVisit = db.prepare(`
+    INSERT INTO visits (member_id, class_name, class_time, checked_in_at)
+    VALUES (?, ?, ?, datetime('now', ? || ' days'))
+  `);
+  for (let i = 0; i < visitCount; i++) {
+    insertVisit.run(member.id, 'Seeded Class', '10:00', String(-(visitCount - i)));
+  }
+
+  // Update member counts
+  db.prepare(`
+    UPDATE members SET visit_count = ?, current_stamp_count = ?, updated_at = datetime('now')
+    WHERE id = ?
+  `).run(visitCount, visitCount % 10, member.id);
+
+  member = stmts.getMemberById.get(member.id);
+  const visits = stmts.getVisitsByMember.all(member.id);
+  res.json({ member, visits_created: visitCount, total_visits: visits.length });
+});
+
 // ─── Client reset (clears localStorage + DB, handy for testing) ───
 app.get('/reset', (req, res) => {
   db.exec('DELETE FROM rewards; DELETE FROM visits; DELETE FROM members;');
