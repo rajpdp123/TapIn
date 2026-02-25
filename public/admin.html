@@ -9,7 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--blue:#001DA2;--light:#F8FAFC;--white:#FFFFFF;--text:#0F172A;--border:#E2E8F0;--font:'Quicksand',system-ui,sans-serif}
+:root{
+  --blue:#001DA2;--red:#B0482D;--beige:#EEDBC3;
+  --light:#F8FAFC;--white:#FFFFFF;--text:#0F172A;--border:#E2E8F0;
+  --font:'Quicksand',system-ui,sans-serif;
+  --font-mono:'SF Mono','Menlo','Consolas',monospace;
+}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--light);color:var(--text);min-height:100vh}
 .header{background:var(--blue);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
 .header h1{font-family:var(--font);font-size:18px;font-weight:700}
@@ -23,18 +28,33 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--light);colo
 .feed{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden}
 .feed-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);gap:12px}
 .feed-row:last-child{border-bottom:none}
-.feed-row .avatar{width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:700;font-size:14px;flex-shrink:0}
+
+/* Avatar variants */
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:700;font-size:14px;flex-shrink:0}
+.avatar-known{background:var(--blue);color:#fff}
+.avatar-phone{background:var(--beige);color:var(--red)}
+.avatar-reward{background:var(--red);color:var(--beige)}
+
 .feed-row .info{flex:1;min-width:0}
 .feed-row .info .name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.feed-row .info .detail{font-size:12px;color:#64748B}
+.feed-row .info .detail{font-size:12px;color:#64748B;margin-top:1px}
 .feed-row .meta{text-align:right;flex-shrink:0}
 .feed-row .meta .time{font-size:12px;color:#94A3B8}
+
+/* Tags */
 .tag{display:inline-block;padding:3px 8px;border-radius:100px;font-size:11px;font-weight:600}
 .tag-stamp{background:#EFF6FF;color:var(--blue)}
-.tag-reward{background:#FEF2F2;color:#B0482D;animation:pulse 2s ease infinite}
+.tag-reward{background:rgba(176,72,45,0.1);color:var(--red);font-weight:700}
+.badge-new{display:inline-block;padding:2px 8px;border-radius:8px;background:rgba(0,29,162,0.08);color:var(--blue);font-size:10px;font-weight:700;text-transform:uppercase;margin-left:6px}
+
+/* Reward code in feed */
+.reward-code-inline{display:inline-block;padding:2px 10px;border-radius:8px;background:rgba(176,72,45,0.1);color:var(--red);font-family:var(--font-mono);font-weight:700;font-size:13px;letter-spacing:1px;margin-top:4px}
+
+/* Reward row highlighting */
+.feed-row.reward-highlight{border-left:4px solid var(--red);background:rgba(176,72,45,0.03)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.pulse{animation:pulse 2s ease infinite}
 .empty{padding:40px;text-align:center;color:#94A3B8;font-size:14px}
-.reward-highlight{background:#FFFBEB;border-left:3px solid #F59E0B}
 .auto-refresh{font-size:11px;color:rgba(255,255,255,0.5)}
 </style>
 </head>
@@ -48,10 +68,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--light);colo
 </div>
 
 <div class="stats-bar" id="stats-bar">
-  <div class="stat-card"><div class="stat-value" id="stat-checkins">—</div><div class="stat-label">Check-ins Today</div></div>
-  <div class="stat-card"><div class="stat-value" id="stat-members">—</div><div class="stat-label">Unique Members</div></div>
-  <div class="stat-card"><div class="stat-value" id="stat-rewards">—</div><div class="stat-label">Rewards Earned</div></div>
-  <div class="stat-card"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Total Members</div></div>
+  <div class="stat-card"><div class="stat-value" id="stat-checkins">&mdash;</div><div class="stat-label">Check-ins Today</div></div>
+  <div class="stat-card"><div class="stat-value" id="stat-members">&mdash;</div><div class="stat-label">Unique Members</div></div>
+  <div class="stat-card"><div class="stat-value" id="stat-rewards">&mdash;</div><div class="stat-label">Rewards Earned</div></div>
+  <div class="stat-card"><div class="stat-value" id="stat-total">&mdash;</div><div class="stat-label">Total Members</div></div>
 </div>
 
 <div class="section" id="rewards-section" style="display:none">
@@ -71,15 +91,39 @@ function updateTime() {
   document.getElementById('live-time').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' }) + ' Berlin';
 }
 
-function initials(name, phone) {
+function getInitials(name, phone) {
   if (name) return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-  if (phone) return phone.slice(-2);
-  return '??';
+  if (phone) return phone.replace(/\D/g,'').slice(-4,-2) || '?';
+  return '?';
+}
+
+function avatarClass(name, hasReward) {
+  if (hasReward) return 'avatar avatar-reward';
+  if (name) return 'avatar avatar-known';
+  return 'avatar avatar-phone';
+}
+
+function maskPhone(phone) {
+  if (!phone) return '';
+  // +49 152 *** 4554
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length < 8) return phone;
+  const cc = phone.startsWith('+') ? phone.match(/^\+\d{1,3}/)?.[0] || '' : '';
+  const rest = digits.slice(cc.replace('+','').length);
+  if (rest.length < 6) return phone;
+  const first3 = rest.slice(0,3);
+  const last4 = rest.slice(-4);
+  return `${cc} ${first3} \u2022\u2022\u2022 ${last4}`;
 }
 
 function fmtTime(d) {
   if (!d) return '';
   return new Date(d + (d.includes('Z') ? '' : 'Z')).toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' });
+}
+
+function fmtCode(code) {
+  if (!code) return '';
+  return code.slice(0,3) + ' ' + code.slice(3);
 }
 
 async function refresh() {
@@ -101,14 +145,14 @@ async function refresh() {
       document.getElementById('rewards-section').style.display = 'block';
       document.getElementById('rewards-feed').innerHTML = feed.unclaimed_rewards.map(r => `
         <div class="feed-row reward-highlight">
-          <div class="avatar" style="background:#B0482D">${initials(r.name, r.phone)}</div>
+          <div class="${avatarClass(r.name, true)}">${getInitials(r.name, r.phone)}</div>
           <div class="info">
-            <div class="name">${r.name || r.phone}</div>
+            <div class="name">${r.name || maskPhone(r.phone)}</div>
             <div class="detail">Free class reward</div>
           </div>
           <div class="meta">
-            <div style="font-family:var(--font);font-size:18px;font-weight:800;color:#B0482D;letter-spacing:2px">${r.verification_code}</div>
-            <span class="tag tag-reward">Unclaimed</span>
+            <div class="reward-code-inline pulse">${fmtCode(r.verification_code)}</div>
+            <div><span class="tag tag-reward" style="margin-top:4px">Unclaimed</span></div>
           </div>
         </div>
       `).join('');
@@ -119,20 +163,25 @@ async function refresh() {
     // Check-ins
     const checkinFeed = document.getElementById('checkin-feed');
     if (feed.checkins && feed.checkins.length > 0) {
-      checkinFeed.innerHTML = feed.checkins.map(c => `
-        <div class="feed-row${c.reward_code && c.reward_status === 'unclaimed' ? ' reward-highlight' : ''}">
-          <div class="avatar">${initials(c.name, c.phone)}</div>
+      checkinFeed.innerHTML = feed.checkins.map(c => {
+        const hasReward = c.reward_code && c.reward_status === 'unclaimed';
+        const isNew = c.visit_count === 1;
+        const displayName = c.name || maskPhone(c.phone);
+        const classDetail = c.class_name ? `${c.class_name} &middot; ${c.class_time || ''}` : 'General check-in';
+        return `
+        <div class="feed-row${hasReward ? ' reward-highlight' : ''}">
+          <div class="${avatarClass(c.name, hasReward)}">${getInitials(c.name, c.phone)}</div>
           <div class="info">
-            <div class="name">${c.name || c.phone}</div>
-            <div class="detail">${c.class_name ? c.class_name + (c.class_time ? ' · ' + c.class_time : '') : 'General check-in'}</div>
+            <div class="name">${displayName}${isNew ? '<span class="badge-new">New</span>' : ''}</div>
+            <div class="detail">${classDetail}</div>
           </div>
           <div class="meta">
             <div class="time">${fmtTime(c.checked_in_at)}</div>
             <span class="tag tag-stamp">Stamp ${c.current_stamp_count}/10</span>
-            ${c.reward_code && c.reward_status === 'unclaimed' ? `<br><span class="tag tag-reward" style="margin-top:4px">🎫 ${c.reward_code}</span>` : ''}
+            ${hasReward ? `<div class="reward-code-inline" style="margin-top:4px">${fmtCode(c.reward_code)}</div>` : ''}
           </div>
-        </div>
-      `).join('');
+        </div>`;
+      }).join('');
     } else {
       checkinFeed.innerHTML = '<div class="empty">No check-ins yet today</div>';
     }

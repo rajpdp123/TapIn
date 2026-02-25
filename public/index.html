@@ -22,20 +22,41 @@
   --shadow-lg:0 12px 16px -4px rgba(0,0,68,0.08),0 4px 6px -2px rgba(0,0,68,0.05);
   --font-display:'Quicksand',system-ui,sans-serif;
   --font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font-mono:'SF Mono','Menlo','Consolas',monospace;
   --ease:cubic-bezier(0.4,0,0.2,1);
 }
 html,body{height:100%;font-family:var(--font-body);color:var(--text);background:linear-gradient(180deg,var(--light) 0%,var(--beige) 100%);overflow-x:hidden}
+
+/* ─── Splash ─── */
+#splash{position:fixed;inset:0;z-index:10000;background:#B0482D;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s var(--ease)}
+#splash.fade-out{opacity:0;pointer-events:none}
+#splash .wordmark{font-family:var(--font-display);font-size:42px;font-weight:800;color:#EEDBC3;letter-spacing:4px}
+#splash .subtitle{font-family:var(--font-display);font-size:14px;font-weight:600;color:rgba(238,219,195,0.5);margin-top:6px}
+#splash .spinner{width:28px;height:28px;border:2.5px solid rgba(238,219,195,0.2);border-top-color:#EEDBC3;border-radius:50%;animation:spin 0.7s linear infinite;margin-top:32px}
+
+/* ─── Screens ─── */
 .screen{display:none;min-height:100vh;padding:24px 20px 40px;position:relative;flex-direction:column;align-items:center}
 .screen.active{display:flex}
 .glass{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:20px;border:1px solid var(--glass-border);box-shadow:var(--shadow-md);position:relative;z-index:1}
+
+/* ─── Buttons ─── */
 .btn{display:inline-flex;align-items:center;justify-content:center;padding:16px 32px;border:none;border-radius:100px;font-family:var(--font-display);font-weight:700;font-size:16px;cursor:pointer;transition:all 0.3s var(--ease);text-decoration:none}
 .btn-primary{background:var(--warm-grad);color:var(--white);box-shadow:0 4px 12px rgba(176,72,45,0.3)}
 .btn-primary:active{transform:scale(0.97);box-shadow:0 2px 8px rgba(176,72,45,0.2)}
+.btn-hero{background:var(--warm-grad);color:var(--white);box-shadow:0 4px 12px rgba(176,72,45,0.3);width:100%;padding:20px;font-size:20px;font-weight:800;border-radius:20px;border:none;font-family:var(--font-display);cursor:pointer;transition:all 0.3s var(--ease)}
+.btn-hero:active{transform:scale(0.97)}
 .btn-secondary{background:rgba(0,0,68,0.06);color:var(--text)}
 .btn-secondary:active{background:rgba(0,0,68,0.1)}
-h1,h2,h3{font-family:var(--font-display);font-weight:700}
+.link-text{font-size:13px;color:rgba(0,0,68,0.45);text-decoration:none;cursor:pointer;font-family:var(--font-body)}
+.link-text:hover{color:rgba(0,0,68,0.7)}
+.link-red{font-size:14px;color:var(--red);font-weight:600;font-family:var(--font-display);cursor:pointer;text-decoration:none}
+
+/* ─── Typography ─── */
+h1,h2,h3{font-family:var(--font-display);font-weight:700;color:var(--text)}
 .blob{position:absolute;pointer-events:none;z-index:0}
 .blob-tr{top:-40px;right:-60px}.blob-bl{bottom:-50px;left:-70px}
+
+/* ─── Inputs ─── */
 input[type="tel"],input[type="text"],input[type="email"]{
   width:100%;padding:16px 20px;border:1.5px solid rgba(0,0,68,0.08);border-radius:16px;
   font-size:18px;font-family:var(--font-body);background:rgba(255,255,255,0.6);
@@ -43,31 +64,79 @@ input[type="tel"],input[type="text"],input[type="email"]{
 }
 input:focus{border-color:var(--red)}
 input::placeholder{color:rgba(0,0,68,0.3)}
+
+/* ─── Studio pill badge ─── */
+.studio-pill{display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(176,72,45,0.08);color:var(--red);font-size:12px;font-weight:600;font-family:var(--font-display);margin-bottom:12px}
+
+/* ─── Check icon (branded terracotta circle) ─── */
+.check-icon{width:80px;height:80px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 16px rgba(176,72,45,0.25)}
+.check-icon::after{content:'✓';color:white;font-size:36px;font-weight:700}
+
+/* ─── Class pill badge ─── */
+.class-pill{display:inline-block;padding:4px 14px;border-radius:12px;background:rgba(0,29,162,0.08);color:var(--blue);font-size:12px;font-weight:600;font-family:var(--font-display);margin-top:8px}
+.class-pill-grey{background:rgba(0,0,68,0.06);color:rgba(0,0,68,0.5)}
+
+/* ─── Stamp grid ─── */
 .stamp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.stamp{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all 0.3s var(--ease)}
-.stamp.filled{background:var(--warm-grad);color:var(--white);box-shadow:0 2px 6px rgba(176,72,45,0.2);border:1.5px solid transparent}
-.stamp.empty{background:rgba(255,255,255,0.5);color:rgba(0,0,68,0.3);border:1.5px solid rgba(0,0,68,0.06)}
-.stamp.new{animation:stampPop 0.5s var(--ease)}
-@keyframes stampPop{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+.stamp{aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all 0.3s var(--ease)}
+.stamp.filled{background:var(--red);color:var(--white);box-shadow:0 2px 6px rgba(176,72,45,0.2);border:2px solid var(--red)}
+.stamp.empty{background:var(--beige);color:rgba(0,0,68,0.45);border:2px solid rgba(0,0,68,0.1)}
+.stamp.new{animation:stampPop 0.5s var(--ease);transform:scale(1.08)}
+.stamp.latest{transform:scale(1.08);box-shadow:0 3px 10px rgba(176,72,45,0.3)}
+
+/* ─── Mini stamps (horizontal row for returning screen) ─── */
+.mini-stamps{display:flex;gap:4px;justify-content:center}
+.mini-stamp{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;transition:all 0.3s var(--ease)}
+.mini-stamp.filled{background:var(--red);color:white}
+.mini-stamp.empty{background:rgba(238,219,195,0.6);border:1.5px solid rgba(0,0,68,0.06);color:transparent}
+
+/* ─── Animations ─── */
+@keyframes stampPop{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.25)}100%{transform:scale(1.08);opacity:1}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes confetti{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
 .fade-up{animation:fadeUp 0.4s var(--ease) both}
 .delay-1{animation-delay:0.1s}.delay-2{animation-delay:0.2s}.delay-3{animation-delay:0.3s}
+
+/* ─── Progress bar ─── */
 .progress-bar{height:5px;border-radius:100px;background:rgba(0,0,68,0.04);margin-top:8px;overflow:hidden}
 .progress-fill{height:100%;border-radius:100px;background:var(--warm-grad);transition:width 0.8s var(--ease)}
+
+/* ─── Visit list ─── */
 .visit-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,68,0.04)}
 .visit-row:last-child{border-bottom:none}
 .tag{display:inline-block;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;font-family:var(--font-display)}
+
+/* ─── Confetti ─── */
 .confetti-piece{position:fixed;top:-10px;width:10px;height:10px;border-radius:2px;z-index:9999;animation:confetti 3s linear forwards}
+
+/* ─── Toggle ─── */
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
 .toggle{width:44px;height:24px;border-radius:12px;background:rgba(0,0,68,0.1);position:relative;cursor:pointer;transition:background 0.2s}
 .toggle.on{background:var(--red)}
 .toggle .thumb{width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
 .toggle.on .thumb{left:22px}
-.reward-code{font-family:var(--font-display);font-size:36px;font-weight:800;letter-spacing:8px;color:var(--red);text-align:center;padding:16px;background:rgba(176,72,45,0.06);border-radius:16px;margin:16px 0}
+
+/* ─── Verification code (polished) ─── */
+.verification-code{font-family:var(--font-mono);font-size:44px;font-weight:700;color:var(--red);letter-spacing:6px;text-align:center;padding:24px;background:rgba(255,255,255,0.85);border:2px solid rgba(176,72,45,0.2);border-radius:20px;margin:12px 0}
+.verification-label{font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(0,0,68,0.35);text-transform:uppercase;text-align:center;margin-bottom:4px}
+.info-box{background:rgba(0,29,162,0.06);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--blue);text-align:center;margin-top:12px}
 </style>
 </head>
 <body>
+
+<!-- ═══════════ SPLASH SCREEN ═══════════ -->
+<div id="splash">
+  <svg style="position:absolute;top:-30px;right:-50px;opacity:0.15;pointer-events:none" width="200" height="200" viewBox="0 0 200 200">
+    <path d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90,-16.3,88.5,-0.9C87,14.5,81.4,29,72.8,41.5C64.2,54,52.6,64.5,39.4,71.8C26.2,79.1,11.4,83.2,-2.8,87.4C-17,91.6,-34,95.8,-47.2,88.8C-60.4,81.8,-69.8,63.6,-76.4,46.1C-83,28.6,-86.8,11.8,-84.6,-3.6C-82.4,-19,-74.2,-33.1,-63.5,-43.7C-52.8,-54.3,-39.6,-61.5,-26.4,-69.4C-13.2,-77.3,0,-85.9,14.2,-87.2C28.4,-88.5,56.8,-82.5,44.7,-76.4Z" fill="#EEDBC3" transform="translate(100 100)"/>
+  </svg>
+  <svg style="position:absolute;bottom:-40px;left:-60px;opacity:0.12;pointer-events:none" width="200" height="200" viewBox="0 0 200 200">
+    <path d="M39.5,-67.5C52.9,-60.1,66.8,-53.2,74.8,-42C82.8,-30.8,84.9,-15.4,83.3,-0.9C81.7,13.5,76.4,27.1,68.4,38.6C60.4,50.1,49.7,59.6,37.4,66.1C25.1,72.6,11.1,76.1,-2.5,80.3C-16.1,84.5,-32.2,89.4,-45,83.8C-57.8,78.2,-67.3,62.1,-73.5,45.8C-79.7,29.5,-82.6,13,-80.5,1.2C-78.4,-10.6,-71.3,-19,-63.5,-28.3C-55.7,-37.6,-47.2,-47.8,-36.8,-56.7C-26.4,-65.6,-13.2,-73.2,0.4,-73.9C14,-74.6,28,-74.9,39.5,-67.5Z" fill="#EEDBC3" transform="translate(100 100)"/>
+  </svg>
+  <div class="wordmark">TAPIN</div>
+  <div class="subtitle">by Good Moves</div>
+  <div class="spinner"></div>
+</div>
 
 <!-- ═══ BLOB BACKGROUNDS ═══ -->
 <svg class="blob blob-tr" width="220" height="220" viewBox="0 0 200 200" style="opacity:0.07">
@@ -77,19 +146,14 @@ input::placeholder{color:rgba(0,0,68,0.3)}
   <path d="M39.5,-67.5C52.9,-60.1,66.8,-53.2,74.8,-42C82.8,-30.8,84.9,-15.4,83.3,-0.9C81.7,13.5,76.4,27.1,68.4,38.6C60.4,50.1,49.7,59.6,37.4,66.1C25.1,72.6,11.1,76.1,-2.5,80.3C-16.1,84.5,-32.2,89.4,-45,83.8C-57.8,78.2,-67.3,62.1,-73.5,45.8C-79.7,29.5,-82.6,13,-80.5,1.2C-78.4,-10.6,-71.3,-19,-63.5,-28.3C-55.7,-37.6,-47.2,-47.8,-36.8,-56.7C-26.4,-65.6,-13.2,-73.2,0.4,-73.9C14,-74.6,28,-74.9,39.5,-67.5Z" fill="#EEDBC3" transform="translate(100 100)"/>
 </svg>
 
-<!-- ═══════════ SCREEN: WELCOME ═══════════ -->
-<div id="screen-welcome" class="screen active">
+<!-- ═══════════ SCREEN: WELCOME (new visitor) ═══════════ -->
+<div id="screen-welcome" class="screen">
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
     <div class="fade-up" style="text-align:center;margin-bottom:32px">
+      <span class="studio-pill">Good Moves Pilates Studio</span>
       <div style="font-size:48px;margin-bottom:8px">👋</div>
-      <h1 style="font-size:28px;color:var(--text);margin-bottom:8px">Welcome to<br>Good Moves!</h1>
-      <p style="font-size:14px;color:rgba(0,0,68,0.5)">Tap in to earn stamps towards a free class</p>
-    </div>
-
-    <div id="returning-block" class="glass fade-up delay-1" style="display:none;width:100%;padding:24px;text-align:center;margin-bottom:16px">
-      <p style="font-size:14px;color:rgba(0,0,68,0.5);margin-bottom:4px">Welcome back</p>
-      <h2 id="returning-name" style="font-size:22px;margin-bottom:16px"></h2>
-      <button class="btn btn-primary" style="width:100%;font-size:18px;padding:18px" onclick="doCheckin()">Check In</button>
+      <h1 style="font-size:28px;margin-bottom:8px">Hey Good Mover!</h1>
+      <p style="font-size:14px;color:rgba(0,0,68,0.55)">Enter your number to start collecting visits.<br>Your 10th class is on us!</p>
     </div>
 
     <div id="phone-block" class="glass fade-up delay-1" style="width:100%;padding:24px">
@@ -114,33 +178,53 @@ input::placeholder{color:rgba(0,0,68,0.3)}
   <button class="btn btn-secondary fade-up delay-3" style="margin-top:auto;font-size:13px" onclick="showMyCard()">My Stamp Card</button>
 </div>
 
+<!-- ═══════════ SCREEN: RETURNING VISITOR ═══════════ -->
+<div id="screen-returning" class="screen">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
+    <div class="fade-up" style="text-align:center;margin-bottom:8px">
+      <span class="studio-pill">Good Moves Pilates Studio</span>
+      <div style="font-size:48px;margin-bottom:8px">👋</div>
+      <h1 id="returning-greeting" style="font-size:26px;margin-bottom:4px">Welcome back!</h1>
+      <p id="returning-phone-display" style="font-size:14px;color:rgba(0,0,68,0.4);margin-bottom:20px"></p>
+    </div>
+    <div class="fade-up delay-1" style="width:100%;margin-bottom:20px">
+      <div id="returning-mini-stamps" class="mini-stamps" style="margin-bottom:12px"></div>
+      <p id="returning-stamp-text" style="text-align:center;font-size:14px;font-weight:600;color:var(--red);font-family:var(--font-display)"></p>
+    </div>
+    <button class="btn-hero fade-up delay-1" onclick="doCheckin()">Check In</button>
+    <div class="fade-up delay-2" style="text-align:center;margin-top:20px">
+      <a class="link-text" onclick="switchAccount()" style="display:block;margin-bottom:12px" id="switch-link">Not you? Switch account</a>
+      <a class="link-red" onclick="showMyCard()">View My Card &rarr;</a>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════ SCREEN: LOADING ═══════════ -->
 <div id="screen-loading" class="screen" style="justify-content:center">
   <div style="text-align:center">
     <div style="width:48px;height:48px;border:3px solid rgba(0,0,68,0.08);border-top-color:var(--red);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px"></div>
     <p style="font-size:14px;color:rgba(0,0,68,0.5)">Checking in...</p>
   </div>
-  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 </div>
 
 <!-- ═══════════ SCREEN: CHECKED IN ═══════════ -->
 <div id="screen-checkedin" class="screen">
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
     <div class="fade-up" style="text-align:center;margin-bottom:24px">
-      <div id="checkin-emoji" style="font-size:48px;margin-bottom:8px">✅</div>
-      <h1 id="checkin-title" style="font-size:24px;margin-bottom:8px"></h1>
-      <p id="checkin-class" style="font-size:14px;color:rgba(0,0,68,0.5)"></p>
+      <div class="check-icon"></div>
+      <h1 style="font-size:24px;margin-bottom:4px">You're checked in!</h1>
+      <div id="checkin-class-pill"></div>
     </div>
     <div class="glass fade-up delay-1" style="width:100%;padding:24px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <span style="font-size:14px;font-weight:600;font-family:var(--font-display)">Your Stamps</span>
-        <span id="stamp-label" style="font-size:13px;color:rgba(0,0,68,0.5)"></span>
+        <span id="stamp-label" style="font-size:14px;font-weight:600;color:var(--red);font-family:var(--font-display)"></span>
       </div>
       <div id="stamp-grid" class="stamp-grid"></div>
       <div class="progress-bar" style="margin-top:12px">
         <div id="progress-fill" class="progress-fill"></div>
       </div>
-      <p id="stamps-message" style="text-align:center;font-size:13px;color:rgba(0,0,68,0.4);margin-top:12px"></p>
+      <p id="stamps-message" style="text-align:center;font-size:13px;color:rgba(0,0,68,0.55);margin-top:12px"></p>
     </div>
     <div class="fade-up delay-2" style="display:flex;gap:12px;margin-top:24px;width:100%">
       <button class="btn btn-secondary" style="flex:1" onclick="showMyCard()">My Card</button>
@@ -153,14 +237,15 @@ input::placeholder{color:rgba(0,0,68,0.3)}
 <div id="screen-already" class="screen">
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
     <div class="fade-up" style="text-align:center;margin-bottom:24px">
-      <div style="font-size:48px;margin-bottom:8px">✓</div>
-      <h1 style="font-size:24px;margin-bottom:8px">You're already checked in!</h1>
-      <p id="already-class" style="font-size:14px;color:rgba(0,0,68,0.5)"></p>
+      <div class="check-icon"></div>
+      <h1 style="font-size:24px;margin-bottom:4px">You're already checked in!</h1>
+      <p id="already-class-detail" style="font-size:14px;color:rgba(0,0,68,0.55);margin-top:4px"></p>
+      <div id="already-class-pill"></div>
     </div>
     <div class="glass fade-up delay-1" style="width:100%;padding:24px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <span style="font-size:14px;font-weight:600;font-family:var(--font-display)">Your Stamps</span>
-        <span id="already-stamp-label" style="font-size:13px;color:rgba(0,0,68,0.5)"></span>
+        <span id="already-stamp-label" style="font-size:14px;font-weight:600;color:var(--red);font-family:var(--font-display)"></span>
       </div>
       <div id="already-stamp-grid" class="stamp-grid"></div>
       <div class="progress-bar" style="margin-top:12px">
@@ -180,7 +265,7 @@ input::placeholder{color:rgba(0,0,68,0.3)}
     <div class="fade-up" style="text-align:center;margin-bottom:24px">
       <div style="font-size:56px;margin-bottom:8px">🎉</div>
       <h1 style="font-size:28px;margin-bottom:8px">You earned a<br>free class!</h1>
-      <p style="font-size:14px;color:rgba(0,0,68,0.5)">10 stamps completed — amazing!</p>
+      <p style="font-size:14px;color:rgba(0,0,68,0.55)">10 stamps completed — amazing!</p>
     </div>
     <div class="glass fade-up delay-1" style="width:100%;padding:24px">
       <p style="font-size:14px;color:rgba(0,0,68,0.6);margin-bottom:16px;text-align:center">Enter your details so we can book your free class</p>
@@ -198,11 +283,13 @@ input::placeholder{color:rgba(0,0,68,0.3)}
     <div class="fade-up" style="text-align:center;margin-bottom:24px">
       <div style="font-size:48px;margin-bottom:8px">🎫</div>
       <h1 style="font-size:24px;margin-bottom:8px">Your Free Class Code</h1>
-      <p style="font-size:14px;color:rgba(0,0,68,0.5)">Show this code to reception to book your free class</p>
+      <p style="font-size:14px;color:rgba(0,0,68,0.55)">Show this code to reception to book your free class</p>
     </div>
     <div class="glass fade-up delay-1" style="width:100%;padding:24px;text-align:center">
-      <div id="reward-code-display" class="reward-code"></div>
+      <div class="verification-label">VERIFICATION CODE</div>
+      <div id="reward-code-display" class="verification-code"></div>
       <p style="font-size:13px;color:rgba(0,0,68,0.4)">This code is saved to your stamp card</p>
+      <div class="info-box">Your stamp card has been reset — start collecting again!</div>
     </div>
     <div class="fade-up delay-2" style="display:flex;gap:12px;margin-top:24px;width:100%">
       <button class="btn btn-secondary" style="flex:1" onclick="showMyCard()">My Card</button>
@@ -216,13 +303,13 @@ input::placeholder{color:rgba(0,0,68,0.3)}
   <div style="width:100%;max-width:380px">
     <div class="fade-up" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
       <h1 style="font-size:22px">My Stamp Card</h1>
-      <button class="btn btn-secondary" style="padding:8px 16px;font-size:13px" onclick="goHome()">← Back</button>
+      <button class="btn btn-secondary" style="padding:8px 16px;font-size:13px" onclick="goHome()">&larr; Back</button>
     </div>
 
     <div class="glass fade-up delay-1" style="padding:24px;margin-bottom:16px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <span style="font-size:14px;font-weight:600;font-family:var(--font-display)">Current Progress</span>
-        <span id="card-stamp-label" style="font-size:13px;color:rgba(0,0,68,0.5)"></span>
+        <span id="card-stamp-label" style="font-size:14px;font-weight:600;color:var(--red);font-family:var(--font-display)"></span>
       </div>
       <div id="card-stamp-grid" class="stamp-grid" style="margin-top:12px"></div>
       <div class="progress-bar" style="margin-top:12px">
@@ -257,7 +344,7 @@ input::placeholder{color:rgba(0,0,68,0.3)}
   <div style="text-align:center;max-width:300px">
     <div style="font-size:48px;margin-bottom:16px">📡</div>
     <h1 style="font-size:22px;margin-bottom:8px">You're offline</h1>
-    <p style="font-size:14px;color:rgba(0,0,68,0.5);margin-bottom:24px">Please check your connection to check in</p>
+    <p style="font-size:14px;color:rgba(0,0,68,0.55);margin-bottom:24px">Please check your connection to check in</p>
     <button class="btn btn-primary" onclick="retryConnection()">Try Again</button>
   </div>
 </div>
@@ -270,8 +357,15 @@ let currentRewards = [];
 let rememberMe = true;
 let pendingReward = null;
 
-// ═══ INIT ═══
+// ═══ SPLASH + INIT ═══
 document.addEventListener('DOMContentLoaded', () => {
+  // Splash auto-dismiss after 1.5s
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    splash.classList.add('fade-out');
+    setTimeout(() => splash.style.display = 'none', 400);
+  }, 1500);
+
   const saved = localStorage.getItem('tapin_phone');
   const savedRemember = localStorage.getItem('tapin_remember');
   if (savedRemember === 'false') {
@@ -281,7 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (saved && rememberMe) {
     loadReturningUser(saved);
   }
-  // Register service worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
@@ -290,22 +383,46 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadReturningUser(phone) {
   try {
     const res = await fetch('/api/member/' + encodeURIComponent(phone));
-    if (!res.ok) { showPhoneEntry(); return; }
+    if (!res.ok) { return; }
     const data = await res.json();
     currentMember = data.member;
     currentVisits = data.visits;
     currentRewards = data.rewards;
-    document.getElementById('returning-name').textContent = currentMember.name || formatPhone(currentMember.phone);
-    document.getElementById('returning-block').style.display = 'block';
-    document.getElementById('phone-block').style.display = 'none';
-  } catch {
-    showPhoneEntry();
-  }
+    showReturningScreen();
+  } catch { /* stay on welcome */ }
 }
 
-function showPhoneEntry() {
-  document.getElementById('returning-block').style.display = 'none';
-  document.getElementById('phone-block').style.display = 'block';
+function showReturningScreen() {
+  const m = currentMember;
+  const name = m.name;
+  document.getElementById('returning-greeting').textContent = name ? `Welcome back, ${name}!` : 'Welcome back!';
+  document.getElementById('returning-phone-display').textContent = name ? formatPhone(m.phone) : formatPhone(m.phone);
+  document.getElementById('returning-phone-display').style.display = name ? 'block' : 'block';
+  document.getElementById('switch-link').textContent = name ? `Not ${name}? Switch account` : 'Not you? Switch account';
+
+  // Mini stamps
+  renderMiniStamps(m.current_stamp_count);
+  document.getElementById('returning-stamp-text').textContent =
+    m.current_stamp_count === 0 ? 'Fresh card — ready to go!' : `Stamp ${m.current_stamp_count} of 10`;
+
+  showScreen('returning');
+}
+
+function renderMiniStamps(filled) {
+  const container = document.getElementById('returning-mini-stamps');
+  let html = '';
+  for (let i = 0; i < 10; i++) {
+    html += `<div class="mini-stamp ${i < filled ? 'filled' : 'empty'}">${i < filled ? '✓' : ''}</div>`;
+  }
+  container.innerHTML = html;
+}
+
+function switchAccount() {
+  localStorage.removeItem('tapin_phone');
+  currentMember = null;
+  currentVisits = [];
+  currentRewards = [];
+  showScreen('welcome');
 }
 
 function formatPhone(p) {
@@ -327,9 +444,8 @@ function goHome() {
   if (saved && rememberMe) {
     loadReturningUser(saved);
   } else {
-    showPhoneEntry();
+    showScreen('welcome');
   }
-  showScreen('welcome');
 }
 
 function toggleRemember() {
@@ -382,11 +498,9 @@ async function doCheckin() {
     currentVisits = data.visits;
     currentRewards = data.rewards;
 
-    // Save to localStorage
     if (rememberMe) {
       localStorage.setItem('tapin_phone', currentMember.phone);
     }
-    // Cache for offline stamp card view
     localStorage.setItem('tapin_member', JSON.stringify(currentMember));
     localStorage.setItem('tapin_visits', JSON.stringify(currentVisits.slice(0, 20)));
 
@@ -411,16 +525,19 @@ async function doCheckin() {
   }
 }
 
+function buildClassPill(className, classTime) {
+  if (className) {
+    return `<span class="class-pill">${className} &middot; ${classTime}</span>`;
+  }
+  return `<span class="class-pill class-pill-grey">General check-in</span>`;
+}
+
 function showCheckedIn(data) {
   const m = data.member;
-  document.getElementById('checkin-emoji').textContent = '✅';
-  document.getElementById('checkin-title').textContent = 'You\'re checked in!';
-  document.getElementById('checkin-class').textContent = data.visit.class_name
-    ? `${data.visit.class_name} at ${data.visit.class_time}`
-    : 'General check-in';
+  document.getElementById('checkin-class-pill').innerHTML = buildClassPill(data.visit.class_name, data.visit.class_time);
   document.getElementById('stamp-label').textContent = `Stamp ${m.current_stamp_count} of 10`;
   document.getElementById('stamps-message').textContent =
-    m.current_stamp_count === 0 ? 'Card complete! Starting fresh 🎉'
+    m.current_stamp_count === 0 ? 'Card complete! Starting fresh!'
     : `${10 - m.current_stamp_count} more until your free class!`;
   renderStampGrid('stamp-grid', m.current_stamp_count, m.current_stamp_count);
   document.getElementById('progress-fill').style.width = (m.current_stamp_count / 10 * 100) + '%';
@@ -429,9 +546,14 @@ function showCheckedIn(data) {
 
 function showAlreadyCheckedIn(data) {
   const m = data.member;
-  document.getElementById('already-class').textContent = data.visit.class_name
-    ? `${data.visit.class_name} at ${data.visit.class_time}`
-    : 'Checked in earlier today';
+  const v = data.visit;
+  if (v.class_name) {
+    document.getElementById('already-class-detail').textContent = `You checked in earlier today for`;
+    document.getElementById('already-class-pill').innerHTML = `<span class="class-pill">${v.class_name} &middot; ${v.class_time}</span>`;
+  } else {
+    document.getElementById('already-class-detail').textContent = 'You checked in earlier today';
+    document.getElementById('already-class-pill').innerHTML = '';
+  }
   document.getElementById('already-stamp-label').textContent = `Stamp ${m.current_stamp_count} of 10`;
   renderStampGrid('already-stamp-grid', m.current_stamp_count, -1);
   document.getElementById('already-progress-fill').style.width = (m.current_stamp_count / 10 * 100) + '%';
@@ -454,11 +576,11 @@ async function submitRewardProfile() {
       body: JSON.stringify({ name, email }),
     });
 
-    // Show the reward code
-    document.getElementById('reward-code-display').textContent = pendingReward.verification_code;
+    const code = pendingReward.verification_code;
+    const formatted = code.slice(0,3) + ' ' + code.slice(3);
+    document.getElementById('reward-code-display').textContent = formatted;
     showScreen('reward-code');
 
-    // Update localStorage
     currentMember.name = name;
     if (rememberMe) localStorage.setItem('tapin_phone', currentMember.phone);
     localStorage.setItem('tapin_member', JSON.stringify(currentMember));
@@ -473,10 +595,8 @@ async function showMyCard() {
   let visits = currentVisits;
   let rewards = currentRewards;
 
-  // Try to load fresh data if online
   const phone = currentMember?.phone || localStorage.getItem('tapin_phone');
   if (!phone) {
-    // Try cached
     const cached = localStorage.getItem('tapin_member');
     if (cached) {
       member = JSON.parse(cached);
@@ -504,41 +624,40 @@ async function showMyCard() {
 
   if (!member) { showScreen('welcome'); return; }
 
-  // Render stamps
   document.getElementById('card-stamp-label').textContent = `${member.current_stamp_count} of 10`;
   renderStampGrid('card-stamp-grid', member.current_stamp_count, -1);
   document.getElementById('card-progress-fill').style.width = (member.current_stamp_count / 10 * 100) + '%';
   document.getElementById('card-total-visits').textContent = member.visit_count;
   document.getElementById('card-rewards-claimed').textContent = member.total_rewards_claimed;
 
-  // Render rewards
   if (rewards && rewards.length > 0) {
     document.getElementById('card-rewards-section').style.display = 'block';
-    document.getElementById('card-rewards-list').innerHTML = rewards.map(r => `
+    document.getElementById('card-rewards-list').innerHTML = rewards.map(r => {
+      const code = r.verification_code ? r.verification_code.slice(0,3) + ' ' + r.verification_code.slice(3) : '';
+      return `
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,68,0.04)">
         <div>
           <span class="tag" style="background:${r.status === 'unclaimed' ? 'rgba(176,72,45,0.1);color:var(--red)' : 'rgba(0,0,68,0.06);color:rgba(0,0,68,0.4)'}">
-            ${r.status === 'unclaimed' ? '🎫 Active' : '✓ Claimed'}
+            ${r.status === 'unclaimed' ? 'Active' : 'Claimed'}
           </span>
-          ${r.verification_code ? `<span style="font-family:var(--font-display);font-weight:700;margin-left:8px;color:var(--red)">${r.verification_code}</span>` : ''}
+          ${code ? `<span style="font-family:var(--font-mono);font-weight:700;margin-left:8px;color:var(--red);letter-spacing:1px">${code}</span>` : ''}
         </div>
         <span style="font-size:12px;color:rgba(0,0,68,0.3)">${formatDate(r.earned_at)}</span>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   } else {
     document.getElementById('card-rewards-section').style.display = 'none';
   }
 
-  // Render visits
   const visitEl = document.getElementById('card-visits');
   if (visits && visits.length > 0) {
     visitEl.innerHTML = visits.slice(0, 20).map(v => `
       <div class="visit-row">
         <div>
           <div style="font-size:14px;font-weight:600">${v.class_name || 'General check-in'}</div>
-          <div style="font-size:12px;color:rgba(0,0,68,0.4)">${formatDate(v.checked_in_at)}${v.class_time ? ' · ' + v.class_time : ''}</div>
+          <div style="font-size:12px;color:rgba(0,0,68,0.4)">${formatDate(v.checked_in_at)}${v.class_time ? ' &middot; ' + v.class_time : ''}</div>
         </div>
-        <span class="tag" style="background:rgba(176,72,45,0.08);color:var(--red)">✓</span>
+        <span class="tag" style="background:rgba(176,72,45,0.08);color:var(--red)">&#10003;</span>
       </div>
     `).join('');
   } else {
@@ -555,7 +674,8 @@ function renderStampGrid(containerId, filled, newStamp) {
   for (let i = 0; i < 10; i++) {
     const isFilled = i < filled;
     const isNew = i === newStamp - 1;
-    html += `<div class="stamp ${isFilled ? 'filled' : 'empty'} ${isNew ? 'new' : ''}">${isFilled ? '✓' : i + 1}</div>`;
+    const isLatest = isFilled && i === filled - 1 && !isNew;
+    html += `<div class="stamp ${isFilled ? 'filled' : 'empty'} ${isNew ? 'new' : ''} ${isLatest ? 'latest' : ''}">${isFilled ? '&#10003;' : i + 1}</div>`;
   }
   container.innerHTML = html;
 }
