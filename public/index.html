@@ -374,6 +374,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if (saved && rememberMe) {
     loadReturningUser(saved);
+  } else {
+    showScreen('welcome');
   }
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
@@ -383,13 +385,13 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadReturningUser(phone) {
   try {
     const res = await fetch('/api/member/' + encodeURIComponent(phone));
-    if (!res.ok) { return; }
+    if (!res.ok) { showScreen('welcome'); return; }
     const data = await res.json();
     currentMember = data.member;
     currentVisits = data.visits;
     currentRewards = data.rewards;
     showReturningScreen();
-  } catch { /* stay on welcome */ }
+  } catch { showScreen('welcome'); }
 }
 
 function showReturningScreen() {
