@@ -214,6 +214,13 @@ app.post('/api/admin/reset', (req, res) => {
   res.json({ success: true, message: 'All data cleared' });
 });
 
+// ─── Client reset (clears localStorage + DB, handy for testing) ───
+app.get('/reset', (req, res) => {
+  db.exec('DELETE FROM rewards; DELETE FROM visits; DELETE FROM members;');
+  res.send(`<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"><title>Reset</title></head>
+    <body><script>localStorage.clear();window.location.href='/';</script></body></html>`);
+});
+
 // ─── Serve admin page ───
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
