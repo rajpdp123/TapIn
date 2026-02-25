@@ -1,0 +1,13 @@
+{
+  "name": "TapIn — Good Moves Studio",
+  "short_name": "TapIn",
+  "description": "Earn stamps, get free classes at Good Moves Studio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBF6F1",
+  "theme_color": "#FBF6F1",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

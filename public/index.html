@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FBF6F1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>TapIn — Good Moves Studio</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --red:#B0482D;--beige:#EEDBC3;--blue:#001DA2;--light:#FBF6F1;
+  --text:#000044;--white:#FFFFFF;
+  --warm-grad:linear-gradient(135deg,#C4603F 0%,#B0482D 50%,#8A3520 100%);
+  --glass:rgba(255,255,255,0.72);--glass-border:rgba(255,255,255,0.35);
+  --shadow-md:0 4px 8px -2px rgba(0,0,68,0.08),0 2px 4px -2px rgba(0,0,68,0.06);
+  --shadow-lg:0 12px 16px -4px rgba(0,0,68,0.08),0 4px 6px -2px rgba(0,0,68,0.05);
+  --font-display:'Quicksand',system-ui,sans-serif;
+  --font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+}
+html,body{height:100%;font-family:var(--font-body);color:var(--text);background:linear-gradient(180deg,var(--light) 0%,var(--beige) 100%);overflow-x:hidden}
+.screen{display:none;min-height:100vh;padding:24px 20px 40px;position:relative;flex-direction:column;align-items:center}
+.screen.active{display:flex}
+.glass{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:20px;border:1px solid var(--glass-border);box-shadow:var(--shadow-md);position:relative;z-index:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:16px 32px;border:none;border-radius:100px;font-family:var(--font-display);font-weight:700;font-size:16px;cursor:pointer;transition:all 0.3s var(--ease);text-decoration:none}
+.btn-primary{background:var(--warm-grad);color:var(--white);box-shadow:0 4px 12px rgba(176,72,45,0.3)}
+.btn-primary:active{transform:scale(0.97);box-shadow:0 2px 8px rgba(176,72,45,0.2)}
+.btn-secondary{background:rgba(0,0,68,0.06);color:var(--text)}
+.btn-secondary:active{background:rgba(0,0,68,0.1)}
+h1,h2,h3{font-family:var(--font-display);font-weight:700}
+.blob{position:absolute;pointer-events:none;z-index:0}
+.blob-tr{top:-40px;right:-60px}.blob-bl{bottom:-50px;left:-70px}
+input[type="tel"],input[type="text"],input[type="email"]{
+  width:100%;padding:16px 20px;border:1.5px solid rgba(0,0,68,0.08);border-radius:16px;
+  font-size:18px;font-family:var(--font-body);background:rgba(255,255,255,0.6);
+  color:var(--text);transition:border 0.2s var(--ease);outline:none
+}
+input:focus{border-color:var(--red)}
+input::placeholder{color:rgba(0,0,68,0.3)}
+.stamp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stamp{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all 0.3s var(--ease)}
+.stamp.filled{background:var(--warm-grad);color:var(--white);box-shadow:0 2px 6px rgba(176,72,45,0.2);border:1.5px solid transparent}
+.stamp.empty{background:rgba(255,255,255,0.5);color:rgba(0,0,68,0.3);border:1.5px solid rgba(0,0,68,0.06)}
+.stamp.new{animation:stampPop 0.5s var(--ease)}
+@keyframes stampPop{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes confetti{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.fade-up{animation:fadeUp 0.4s var(--ease) both}
+.delay-1{animation-delay:0.1s}.delay-2{animation-delay:0.2s}.delay-3{animation-delay:0.3s}
+.progress-bar{height:5px;border-radius:100px;background:rgba(0,0,68,0.04);margin-top:8px;overflow:hidden}
+.progress-fill{height:100%;border-radius:100px;background:var(--warm-grad);transition:width 0.8s var(--ease)}
+.visit-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,68,0.04)}
+.visit-row:last-child{border-bottom:none}
+.tag{display:inline-block;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;font-family:var(--font-display)}
+.confetti-piece{position:fixed;top:-10px;width:10px;height:10px;border-radius:2px;z-index:9999;animation:confetti 3s linear forwards}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+.toggle{width:44px;height:24px;border-radius:12px;background:rgba(0,0,68,0.1);position:relative;cursor:pointer;transition:background 0.2s}
+.toggle.on{background:var(--red)}
+.toggle .thumb{width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+.toggle.on .thumb{left:22px}
+.reward-code{font-family:var(--font-display);font-size:36px;font-weight:800;letter-spacing:8px;color:var(--red);text-align:center;padding:16px;background:rgba(176,72,45,0.06);border-radius:16px;margin:16px 0}
+</style>
+</head>
+<body>
+
+<!-- ═══ BLOB BACKGROUNDS ═══ -->
+<svg class="blob blob-tr" width="220" height="220" viewBox="0 0 200 200" style="opacity:0.07">
+  <path d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90,-16.3,88.5,-0.9C87,14.5,81.4,29,72.8,41.5C64.2,54,52.6,64.5,39.4,71.8C26.2,79.1,11.4,83.2,-2.8,87.4C-17,91.6,-34,95.8,-47.2,88.8C-60.4,81.8,-69.8,63.6,-76.4,46.1C-83,28.6,-86.8,11.8,-84.6,-3.6C-82.4,-19,-74.2,-33.1,-63.5,-43.7C-52.8,-54.3,-39.6,-61.5,-26.4,-69.4C-13.2,-77.3,0,-85.9,14.2,-87.2C28.4,-88.5,56.8,-82.5,44.7,-76.4Z" fill="#B0482D" transform="translate(100 100)"/>
+</svg>
+<svg class="blob blob-bl" width="200" height="200" viewBox="0 0 200 200" style="opacity:0.15">
+  <path d="M39.5,-67.5C52.9,-60.1,66.8,-53.2,74.8,-42C82.8,-30.8,84.9,-15.4,83.3,-0.9C81.7,13.5,76.4,27.1,68.4,38.6C60.4,50.1,49.7,59.6,37.4,66.1C25.1,72.6,11.1,76.1,-2.5,80.3C-16.1,84.5,-32.2,89.4,-45,83.8C-57.8,78.2,-67.3,62.1,-73.5,45.8C-79.7,29.5,-82.6,13,-80.5,1.2C-78.4,-10.6,-71.3,-19,-63.5,-28.3C-55.7,-37.6,-47.2,-47.8,-36.8,-56.7C-26.4,-65.6,-13.2,-73.2,0.4,-73.9C14,-74.6,28,-74.9,39.5,-67.5Z" fill="#EEDBC3" transform="translate(100 100)"/>
+</svg>
+
+<!-- ═══════════ SCREEN: WELCOME ═══════════ -->
+<div id="screen-welcome" class="screen active">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
+    <div class="fade-up" style="text-align:center;margin-bottom:32px">
+      <div style="font-size:48px;margin-bottom:8px">👋</div>
+      <h1 style="font-size:28px;color:var(--text);margin-bottom:8px">Welcome to<br>Good Moves!</h1>
+      <p style="font-size:14px;color:rgba(0,0,68,0.5)">Tap in to earn stamps towards a free class</p>
+    </div>
+
+    <div id="returning-block" class="glass fade-up delay-1" style="display:none;width:100%;padding:24px;text-align:center;margin-bottom:16px">
+      <p style="font-size:14px;color:rgba(0,0,68,0.5);margin-bottom:4px">Welcome back</p>
+      <h2 id="returning-name" style="font-size:22px;margin-bottom:16px"></h2>
+      <button class="btn btn-primary" style="width:100%;font-size:18px;padding:18px" onclick="doCheckin()">Check In</button>
+    </div>
+
+    <div id="phone-block" class="glass fade-up delay-1" style="width:100%;padding:24px">
+      <label style="font-size:13px;font-weight:600;color:rgba(0,0,68,0.5);display:block;margin-bottom:8px">Phone number</label>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <input type="tel" id="country-code" value="+49" style="width:72px;text-align:center;flex-shrink:0">
+        <input type="tel" id="phone-input" placeholder="170 1234567" inputmode="tel" style="flex:1" onkeydown="if(event.key==='Enter')doCheckin()">
+      </div>
+      <button class="btn btn-primary" style="width:100%" onclick="doCheckin()">Check In</button>
+      <div id="phone-error" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-top:12px"></div>
+    </div>
+
+    <div class="fade-up delay-2" style="margin-top:16px">
+      <div class="toggle-row">
+        <span style="font-size:13px;color:rgba(0,0,68,0.5)">Remember me on this device</span>
+        <div id="remember-toggle" class="toggle on" onclick="toggleRemember()" style="margin-left:12px">
+          <div class="thumb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-secondary fade-up delay-3" style="margin-top:auto;font-size:13px" onclick="showMyCard()">My Stamp Card</button>
+</div>
+
+<!-- ═══════════ SCREEN: LOADING ═══════════ -->
+<div id="screen-loading" class="screen" style="justify-content:center">
+  <div style="text-align:center">
+    <div style="width:48px;height:48px;border:3px solid rgba(0,0,68,0.08);border-top-color:var(--red);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px"></div>
+    <p style="font-size:14px;color:rgba(0,0,68,0.5)">Checking in...</p>
+  </div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</div>
+
+<!-- ═══════════ SCREEN: CHECKED IN ═══════════ -->
+<div id="screen-checkedin" class="screen">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
+    <div class="fade-up" style="text-align:center;margin-bottom:24px">
+      <div id="checkin-emoji" style="font-size:48px;margin-bottom:8px">✅</div>
+      <h1 id="checkin-title" style="font-size:24px;margin-bottom:8px"></h1>
+      <p id="checkin-class" style="font-size:14px;color:rgba(0,0,68,0.5)"></p>
+    </div>
+    <div class="glass fade-up delay-1" style="width:100%;padding:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <span style="font-size:14px;font-weight:600;font-family:var(--font-display)">Your Stamps</span>
+        <span id="stamp-label" style="font-size:13px;color:rgba(0,0,68,0.5)"></span>
+      </div>
+      <div id="stamp-grid" class="stamp-grid"></div>
+      <div class="progress-bar" style="margin-top:12px">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
+      <p id="stamps-message" style="text-align:center;font-size:13px;color:rgba(0,0,68,0.4);margin-top:12px"></p>
+    </div>
+    <div class="fade-up delay-2" style="display:flex;gap:12px;margin-top:24px;width:100%">
+      <button class="btn btn-secondary" style="flex:1" onclick="showMyCard()">My Card</button>
+      <button class="btn btn-primary" style="flex:1" onclick="goHome()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SCREEN: ALREADY CHECKED IN ═══════════ -->
+<div id="screen-already" class="screen">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
+    <div class="fade-up" style="text-align:center;margin-bottom:24px">
+      <div style="font-size:48px;margin-bottom:8px">✓</div>
+      <h1 style="font-size:24px;margin-bottom:8px">You're already checked in!</h1>
+      <p id="already-class" style="font-size:14px;color:rgba(0,0,68,0.5)"></p>
+    </div>
+    <div class="glass fade-up delay-1" style="width:100%;padding:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <span style="font-size:14px;font-weight:600;font-family:var(--font-display)">Your Stamps</span>
+        <span id="already-stamp-label" style="font-size:13px;color:rgba(0,0,68,0.5)"></span>
+      </div>
+      <div id="already-stamp-grid" class="stamp-grid"></div>
+      <div class="progress-bar" style="margin-top:12px">
+        <div id="already-progress-fill" class="progress-fill"></div>
+      </div>
+    </div>
+    <div class="fade-up delay-2" style="display:flex;gap:12px;margin-top:24px;width:100%">
+      <button class="btn btn-secondary" style="flex:1" onclick="showMyCard()">My Card</button>
+      <button class="btn btn-primary" style="flex:1" onclick="goHome()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SCREEN: REWARD ═══════════ -->
+<div id="screen-reward" class="screen">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
+    <div class="fade-up" style="text-align:center;margin-bottom:24px">
+      <div style="font-size:56px;margin-bottom:8px">🎉</div>
+      <h1 style="font-size:28px;margin-bottom:8px">You earned a<br>free class!</h1>
+      <p style="font-size:14px;color:rgba(0,0,68,0.5)">10 stamps completed — amazing!</p>
+    </div>
+    <div class="glass fade-up delay-1" style="width:100%;padding:24px">
+      <p style="font-size:14px;color:rgba(0,0,68,0.6);margin-bottom:16px;text-align:center">Enter your details so we can book your free class</p>
+      <input type="text" id="reward-name" placeholder="Your name" style="margin-bottom:12px">
+      <input type="email" id="reward-email" placeholder="Email address" style="margin-bottom:16px">
+      <button class="btn btn-primary" style="width:100%" onclick="submitRewardProfile()">Claim My Free Class</button>
+      <div id="reward-error" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SCREEN: REWARD CODE ═══════════ -->
+<div id="screen-reward-code" class="screen">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
+    <div class="fade-up" style="text-align:center;margin-bottom:24px">
+      <div style="font-size:48px;margin-bottom:8px">🎫</div>
+      <h1 style="font-size:24px;margin-bottom:8px">Your Free Class Code</h1>
+      <p style="font-size:14px;color:rgba(0,0,68,0.5)">Show this code to reception to book your free class</p>
+    </div>
+    <div class="glass fade-up delay-1" style="width:100%;padding:24px;text-align:center">
+      <div id="reward-code-display" class="reward-code"></div>
+      <p style="font-size:13px;color:rgba(0,0,68,0.4)">This code is saved to your stamp card</p>
+    </div>
+    <div class="fade-up delay-2" style="display:flex;gap:12px;margin-top:24px;width:100%">
+      <button class="btn btn-secondary" style="flex:1" onclick="showMyCard()">My Card</button>
+      <button class="btn btn-primary" style="flex:1" onclick="goHome()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SCREEN: MY CARD ═══════════ -->
+<div id="screen-card" class="screen">
+  <div style="width:100%;max-width:380px">
+    <div class="fade-up" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+      <h1 style="font-size:22px">My Stamp Card</h1>
+      <button class="btn btn-secondary" style="padding:8px 16px;font-size:13px" onclick="goHome()">← Back</button>
+    </div>
+
+    <div class="glass fade-up delay-1" style="padding:24px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:14px;font-weight:600;font-family:var(--font-display)">Current Progress</span>
+        <span id="card-stamp-label" style="font-size:13px;color:rgba(0,0,68,0.5)"></span>
+      </div>
+      <div id="card-stamp-grid" class="stamp-grid" style="margin-top:12px"></div>
+      <div class="progress-bar" style="margin-top:12px">
+        <div id="card-progress-fill" class="progress-fill"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:16px">
+        <div style="text-align:center;flex:1">
+          <div id="card-total-visits" style="font-size:24px;font-weight:800;font-family:var(--font-display);color:var(--red)">0</div>
+          <div style="font-size:11px;color:rgba(0,0,68,0.4)">Total Visits</div>
+        </div>
+        <div style="text-align:center;flex:1">
+          <div id="card-rewards-claimed" style="font-size:24px;font-weight:800;font-family:var(--font-display);color:var(--red)">0</div>
+          <div style="font-size:11px;color:rgba(0,0,68,0.4)">Rewards</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="card-rewards-section" style="display:none">
+      <h3 class="fade-up delay-1" style="font-size:14px;color:rgba(0,0,68,0.5);margin-bottom:8px">Rewards</h3>
+      <div id="card-rewards-list" class="glass fade-up delay-2" style="padding:16px;margin-bottom:16px"></div>
+    </div>
+
+    <h3 class="fade-up delay-2" style="font-size:14px;color:rgba(0,0,68,0.5);margin-bottom:8px">Visit History</h3>
+    <div id="card-visits" class="glass fade-up delay-3" style="padding:16px">
+      <p style="text-align:center;color:rgba(0,0,68,0.3);font-size:13px">No visits yet</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SCREEN: OFFLINE ═══════════ -->
+<div id="screen-offline" class="screen" style="justify-content:center">
+  <div style="text-align:center;max-width:300px">
+    <div style="font-size:48px;margin-bottom:16px">📡</div>
+    <h1 style="font-size:22px;margin-bottom:8px">You're offline</h1>
+    <p style="font-size:14px;color:rgba(0,0,68,0.5);margin-bottom:24px">Please check your connection to check in</p>
+    <button class="btn btn-primary" onclick="retryConnection()">Try Again</button>
+  </div>
+</div>
+
+<script>
+// ═══ STATE ═══
+let currentMember = null;
+let currentVisits = [];
+let currentRewards = [];
+let rememberMe = true;
+let pendingReward = null;
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('tapin_phone');
+  const savedRemember = localStorage.getItem('tapin_remember');
+  if (savedRemember === 'false') {
+    rememberMe = false;
+    document.getElementById('remember-toggle').classList.remove('on');
+  }
+  if (saved && rememberMe) {
+    loadReturningUser(saved);
+  }
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+});
+
+async function loadReturningUser(phone) {
+  try {
+    const res = await fetch('/api/member/' + encodeURIComponent(phone));
+    if (!res.ok) { showPhoneEntry(); return; }
+    const data = await res.json();
+    currentMember = data.member;
+    currentVisits = data.visits;
+    currentRewards = data.rewards;
+    document.getElementById('returning-name').textContent = currentMember.name || formatPhone(currentMember.phone);
+    document.getElementById('returning-block').style.display = 'block';
+    document.getElementById('phone-block').style.display = 'none';
+  } catch {
+    showPhoneEntry();
+  }
+}
+
+function showPhoneEntry() {
+  document.getElementById('returning-block').style.display = 'none';
+  document.getElementById('phone-block').style.display = 'block';
+}
+
+function formatPhone(p) {
+  if (!p) return '';
+  if (p.startsWith('+49') && p.length > 6) {
+    return p.slice(0,3) + ' ' + p.slice(3,6) + ' ' + p.slice(6);
+  }
+  return p;
+}
+
+// ═══ NAVIGATION ═══
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function goHome() {
+  const saved = localStorage.getItem('tapin_phone');
+  if (saved && rememberMe) {
+    loadReturningUser(saved);
+  } else {
+    showPhoneEntry();
+  }
+  showScreen('welcome');
+}
+
+function toggleRemember() {
+  rememberMe = !rememberMe;
+  const toggle = document.getElementById('remember-toggle');
+  toggle.classList.toggle('on', rememberMe);
+  localStorage.setItem('tapin_remember', rememberMe);
+  if (!rememberMe) {
+    localStorage.removeItem('tapin_phone');
+  }
+}
+
+// ═══ CHECK-IN ═══
+function getFullPhone() {
+  if (currentMember) return currentMember.phone;
+  const cc = document.getElementById('country-code').value.trim();
+  const num = document.getElementById('phone-input').value.trim();
+  if (!num) return null;
+  return cc + num;
+}
+
+async function doCheckin() {
+  const phone = getFullPhone();
+  if (!phone) {
+    showError('phone-error', 'Please enter your phone number');
+    return;
+  }
+
+  if (!navigator.onLine) {
+    showScreen('offline');
+    return;
+  }
+
+  showScreen('loading');
+
+  try {
+    const res = await fetch('/api/checkin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showError('phone-error', data.error || 'Something went wrong');
+      showScreen('welcome');
+      return;
+    }
+
+    currentMember = data.member;
+    currentVisits = data.visits;
+    currentRewards = data.rewards;
+
+    // Save to localStorage
+    if (rememberMe) {
+      localStorage.setItem('tapin_phone', currentMember.phone);
+    }
+    // Cache for offline stamp card view
+    localStorage.setItem('tapin_member', JSON.stringify(currentMember));
+    localStorage.setItem('tapin_visits', JSON.stringify(currentVisits.slice(0, 20)));
+
+    if (data.already_checked_in) {
+      showAlreadyCheckedIn(data);
+    } else if (data.reward_earned) {
+      pendingReward = data.reward;
+      haptic();
+      spawnConfetti();
+      showScreen('reward');
+    } else {
+      haptic();
+      showCheckedIn(data);
+    }
+  } catch (e) {
+    if (!navigator.onLine) {
+      showScreen('offline');
+    } else {
+      showError('phone-error', 'Connection error — please try again');
+      showScreen('welcome');
+    }
+  }
+}
+
+function showCheckedIn(data) {
+  const m = data.member;
+  document.getElementById('checkin-emoji').textContent = '✅';
+  document.getElementById('checkin-title').textContent = 'You\'re checked in!';
+  document.getElementById('checkin-class').textContent = data.visit.class_name
+    ? `${data.visit.class_name} at ${data.visit.class_time}`
+    : 'General check-in';
+  document.getElementById('stamp-label').textContent = `Stamp ${m.current_stamp_count} of 10`;
+  document.getElementById('stamps-message').textContent =
+    m.current_stamp_count === 0 ? 'Card complete! Starting fresh 🎉'
+    : `${10 - m.current_stamp_count} more until your free class!`;
+  renderStampGrid('stamp-grid', m.current_stamp_count, m.current_stamp_count);
+  document.getElementById('progress-fill').style.width = (m.current_stamp_count / 10 * 100) + '%';
+  showScreen('checkedin');
+}
+
+function showAlreadyCheckedIn(data) {
+  const m = data.member;
+  document.getElementById('already-class').textContent = data.visit.class_name
+    ? `${data.visit.class_name} at ${data.visit.class_time}`
+    : 'Checked in earlier today';
+  document.getElementById('already-stamp-label').textContent = `Stamp ${m.current_stamp_count} of 10`;
+  renderStampGrid('already-stamp-grid', m.current_stamp_count, -1);
+  document.getElementById('already-progress-fill').style.width = (m.current_stamp_count / 10 * 100) + '%';
+  showScreen('already');
+}
+
+// ═══ REWARD FLOW ═══
+async function submitRewardProfile() {
+  const name = document.getElementById('reward-name').value.trim();
+  const email = document.getElementById('reward-email').value.trim();
+  if (!name) {
+    showError('reward-error', 'Please enter your name');
+    return;
+  }
+
+  try {
+    await fetch('/api/member/' + encodeURIComponent(currentMember.phone) + '/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email }),
+    });
+
+    // Show the reward code
+    document.getElementById('reward-code-display').textContent = pendingReward.verification_code;
+    showScreen('reward-code');
+
+    // Update localStorage
+    currentMember.name = name;
+    if (rememberMe) localStorage.setItem('tapin_phone', currentMember.phone);
+    localStorage.setItem('tapin_member', JSON.stringify(currentMember));
+  } catch {
+    showError('reward-error', 'Something went wrong — please try again');
+  }
+}
+
+// ═══ MY CARD ═══
+async function showMyCard() {
+  let member = currentMember;
+  let visits = currentVisits;
+  let rewards = currentRewards;
+
+  // Try to load fresh data if online
+  const phone = currentMember?.phone || localStorage.getItem('tapin_phone');
+  if (!phone) {
+    // Try cached
+    const cached = localStorage.getItem('tapin_member');
+    if (cached) {
+      member = JSON.parse(cached);
+      visits = JSON.parse(localStorage.getItem('tapin_visits') || '[]');
+    } else {
+      showScreen('welcome');
+      return;
+    }
+  }
+
+  if (navigator.onLine && phone) {
+    try {
+      const res = await fetch('/api/member/' + encodeURIComponent(phone));
+      if (res.ok) {
+        const data = await res.json();
+        member = data.member;
+        visits = data.visits;
+        rewards = data.rewards;
+        currentMember = member;
+        currentVisits = visits;
+        currentRewards = rewards;
+      }
+    } catch { /* use cached */ }
+  }
+
+  if (!member) { showScreen('welcome'); return; }
+
+  // Render stamps
+  document.getElementById('card-stamp-label').textContent = `${member.current_stamp_count} of 10`;
+  renderStampGrid('card-stamp-grid', member.current_stamp_count, -1);
+  document.getElementById('card-progress-fill').style.width = (member.current_stamp_count / 10 * 100) + '%';
+  document.getElementById('card-total-visits').textContent = member.visit_count;
+  document.getElementById('card-rewards-claimed').textContent = member.total_rewards_claimed;
+
+  // Render rewards
+  if (rewards && rewards.length > 0) {
+    document.getElementById('card-rewards-section').style.display = 'block';
+    document.getElementById('card-rewards-list').innerHTML = rewards.map(r => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,68,0.04)">
+        <div>
+          <span class="tag" style="background:${r.status === 'unclaimed' ? 'rgba(176,72,45,0.1);color:var(--red)' : 'rgba(0,0,68,0.06);color:rgba(0,0,68,0.4)'}">
+            ${r.status === 'unclaimed' ? '🎫 Active' : '✓ Claimed'}
+          </span>
+          ${r.verification_code ? `<span style="font-family:var(--font-display);font-weight:700;margin-left:8px;color:var(--red)">${r.verification_code}</span>` : ''}
+        </div>
+        <span style="font-size:12px;color:rgba(0,0,68,0.3)">${formatDate(r.earned_at)}</span>
+      </div>
+    `).join('');
+  } else {
+    document.getElementById('card-rewards-section').style.display = 'none';
+  }
+
+  // Render visits
+  const visitEl = document.getElementById('card-visits');
+  if (visits && visits.length > 0) {
+    visitEl.innerHTML = visits.slice(0, 20).map(v => `
+      <div class="visit-row">
+        <div>
+          <div style="font-size:14px;font-weight:600">${v.class_name || 'General check-in'}</div>
+          <div style="font-size:12px;color:rgba(0,0,68,0.4)">${formatDate(v.checked_in_at)}${v.class_time ? ' · ' + v.class_time : ''}</div>
+        </div>
+        <span class="tag" style="background:rgba(176,72,45,0.08);color:var(--red)">✓</span>
+      </div>
+    `).join('');
+  } else {
+    visitEl.innerHTML = '<p style="text-align:center;color:rgba(0,0,68,0.3);font-size:13px">No visits yet</p>';
+  }
+
+  showScreen('card');
+}
+
+// ═══ STAMP GRID RENDERER ═══
+function renderStampGrid(containerId, filled, newStamp) {
+  const container = document.getElementById(containerId);
+  let html = '';
+  for (let i = 0; i < 10; i++) {
+    const isFilled = i < filled;
+    const isNew = i === newStamp - 1;
+    html += `<div class="stamp ${isFilled ? 'filled' : 'empty'} ${isNew ? 'new' : ''}">${isFilled ? '✓' : i + 1}</div>`;
+  }
+  container.innerHTML = html;
+}
+
+// ═══ HELPERS ═══
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+function haptic() {
+  if (navigator.vibrate) navigator.vibrate([50]);
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const date = new Date(d + (d.includes('Z') ? '' : 'Z'));
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Europe/Berlin' });
+}
+
+function retryConnection() {
+  if (navigator.onLine) {
+    goHome();
+  } else {
+    showScreen('offline');
+  }
+}
+
+function spawnConfetti() {
+  const colors = ['#B0482D', '#C4603F', '#EEDBC3', '#001DA2', '#FBF6F1', '#FFD700'];
+  for (let i = 0; i < 50; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.animationDuration = (2 + Math.random() * 2) + 's';
+    el.style.animationDelay = Math.random() * 0.5 + 's';
+    el.style.width = (6 + Math.random() * 8) + 'px';
+    el.style.height = (6 + Math.random() * 8) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
+}
+</script>
+</body>
+</html>

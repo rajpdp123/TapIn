@@ -4,3 +4,11 @@
 *~
 .env
 node_modules/
+tapin.db
+tapin.db-wal
+tapin.db-shm
+*.prompt.md
+*-prompt.md
+build-tapin-pwa-prompt.md
+deploy-railway-prompt.md
+tapin-native-cowork-prompt.md

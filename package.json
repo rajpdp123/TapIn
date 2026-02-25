@@ -1,0 +1,14 @@
+{
+  "name": "tapin-pwa",
+  "version": "2.0.0",
+  "description": "TapIn NFC loyalty check-in PWA for Good Moves Studio",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "express": "^4.21.0"
+  }
+}

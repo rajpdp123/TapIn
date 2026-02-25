@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TapIn Admin — Good Moves Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#001DA2;--light:#F8FAFC;--white:#FFFFFF;--text:#0F172A;--border:#E2E8F0;--font:'Quicksand',system-ui,sans-serif}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--light);color:var(--text);min-height:100vh}
+.header{background:var(--blue);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-family:var(--font);font-size:18px;font-weight:700}
+.header .badge{background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:600}
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;padding:16px 24px}
+.stat-card{background:var(--white);border-radius:12px;padding:16px;border:1px solid var(--border);text-align:center}
+.stat-value{font-family:var(--font);font-size:28px;font-weight:800;color:var(--blue)}
+.stat-label{font-size:12px;color:#64748B;margin-top:2px}
+.section{padding:0 24px 24px}
+.section h2{font-family:var(--font);font-size:16px;font-weight:700;color:#334155;margin-bottom:12px}
+.feed{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden}
+.feed-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);gap:12px}
+.feed-row:last-child{border-bottom:none}
+.feed-row .avatar{width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:700;font-size:14px;flex-shrink:0}
+.feed-row .info{flex:1;min-width:0}
+.feed-row .info .name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feed-row .info .detail{font-size:12px;color:#64748B}
+.feed-row .meta{text-align:right;flex-shrink:0}
+.feed-row .meta .time{font-size:12px;color:#94A3B8}
+.tag{display:inline-block;padding:3px 8px;border-radius:100px;font-size:11px;font-weight:600}
+.tag-stamp{background:#EFF6FF;color:var(--blue)}
+.tag-reward{background:#FEF2F2;color:#B0482D;animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.empty{padding:40px;text-align:center;color:#94A3B8;font-size:14px}
+.reward-highlight{background:#FFFBEB;border-left:3px solid #F59E0B}
+.auto-refresh{font-size:11px;color:rgba(255,255,255,0.5)}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>TapIn Admin</h1>
+    <span class="auto-refresh">Auto-refreshes every 15s</span>
+  </div>
+  <span class="badge" id="live-time"></span>
+</div>
+
+<div class="stats-bar" id="stats-bar">
+  <div class="stat-card"><div class="stat-value" id="stat-checkins">—</div><div class="stat-label">Check-ins Today</div></div>
+  <div class="stat-card"><div class="stat-value" id="stat-members">—</div><div class="stat-label">Unique Members</div></div>
+  <div class="stat-card"><div class="stat-value" id="stat-rewards">—</div><div class="stat-label">Rewards Earned</div></div>
+  <div class="stat-card"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Total Members</div></div>
+</div>
+
+<div class="section" id="rewards-section" style="display:none">
+  <h2>Unclaimed Rewards</h2>
+  <div class="feed" id="rewards-feed"></div>
+</div>
+
+<div class="section">
+  <h2>Today's Check-ins</h2>
+  <div class="feed" id="checkin-feed">
+    <div class="empty">No check-ins yet today</div>
+  </div>
+</div>
+
+<script>
+function updateTime() {
+  document.getElementById('live-time').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' }) + ' Berlin';
+}
+
+function initials(name, phone) {
+  if (name) return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  if (phone) return phone.slice(-2);
+  return '??';
+}
+
+function fmtTime(d) {
+  if (!d) return '';
+  return new Date(d + (d.includes('Z') ? '' : 'Z')).toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' });
+}
+
+async function refresh() {
+  try {
+    const [feedRes, statsRes] = await Promise.all([
+      fetch('/api/admin/feed'),
+      fetch('/api/admin/stats'),
+    ]);
+    const feed = await feedRes.json();
+    const stats = await statsRes.json();
+
+    document.getElementById('stat-checkins').textContent = stats.total_checkins;
+    document.getElementById('stat-members').textContent = stats.unique_members;
+    document.getElementById('stat-rewards').textContent = stats.rewards_earned;
+    document.getElementById('stat-total').textContent = stats.total_members;
+
+    // Unclaimed rewards
+    if (feed.unclaimed_rewards && feed.unclaimed_rewards.length > 0) {
+      document.getElementById('rewards-section').style.display = 'block';
+      document.getElementById('rewards-feed').innerHTML = feed.unclaimed_rewards.map(r => `
+        <div class="feed-row reward-highlight">
+          <div class="avatar" style="background:#B0482D">${initials(r.name, r.phone)}</div>
+          <div class="info">
+            <div class="name">${r.name || r.phone}</div>
+            <div class="detail">Free class reward</div>
+          </div>
+          <div class="meta">
+            <div style="font-family:var(--font);font-size:18px;font-weight:800;color:#B0482D;letter-spacing:2px">${r.verification_code}</div>
+            <span class="tag tag-reward">Unclaimed</span>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      document.getElementById('rewards-section').style.display = 'none';
+    }
+
+    // Check-ins
+    const checkinFeed = document.getElementById('checkin-feed');
+    if (feed.checkins && feed.checkins.length > 0) {
+      checkinFeed.innerHTML = feed.checkins.map(c => `
+        <div class="feed-row${c.reward_code && c.reward_status === 'unclaimed' ? ' reward-highlight' : ''}">
+          <div class="avatar">${initials(c.name, c.phone)}</div>
+          <div class="info">
+            <div class="name">${c.name || c.phone}</div>
+            <div class="detail">${c.class_name ? c.class_name + (c.class_time ? ' · ' + c.class_time : '') : 'General check-in'}</div>
+          </div>
+          <div class="meta">
+            <div class="time">${fmtTime(c.checked_in_at)}</div>
+            <span class="tag tag-stamp">Stamp ${c.current_stamp_count}/10</span>
+            ${c.reward_code && c.reward_status === 'unclaimed' ? `<br><span class="tag tag-reward" style="margin-top:4px">🎫 ${c.reward_code}</span>` : ''}
+          </div>
+        </div>
+      `).join('');
+    } else {
+      checkinFeed.innerHTML = '<div class="empty">No check-ins yet today</div>';
+    }
+  } catch (e) {
+    console.error('Refresh failed:', e);
+  }
+}
+
+updateTime();
+refresh();
+setInterval(updateTime, 1000);
+setInterval(refresh, 15000);
+</script>
+</body>
+</html>

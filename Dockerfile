@@ -1,7 +1,8 @@
 FROM node:20-alpine
 WORKDIR /app
-COPY deploy/package.json .
-COPY deploy/server.js .
-COPY tapin-prototype-standalone.html index.html
+COPY package.json .
+RUN npm install --production
+COPY server.js db.js schedule.js ./
+COPY public/ public/
 EXPOSE 3000
 CMD ["node", "server.js"]
