@@ -90,6 +90,15 @@ input::placeholder{color:rgba(0,0,68,0.3)}
 .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:100;background:rgba(176,72,45,0.1);color:var(--red);padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;font-family:var(--font-display);opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.show{opacity:1}
 
+/* Notification bubble */
+.notif{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);z-index:200;
+  background:var(--blue);color:var(--white);padding:12px 24px;border-radius:16px;
+  font-size:14px;font-weight:600;font-family:var(--font-display);
+  box-shadow:0 8px 24px rgba(0,29,162,0.25);
+  transition:transform .4s var(--ease),opacity .4s var(--ease);opacity:0;pointer-events:none;
+  max-width:340px;text-align:center}
+.notif.show{transform:translateX(-50%) translateY(0);opacity:1}
+
 /* Verification code */
 .vcode{font-family:var(--font-mono);font-size:44px;font-weight:700;color:var(--red);letter-spacing:6px;text-align:center;padding:24px;background:rgba(255,255,255,0.85);border:2px solid rgba(176,72,45,0.2);border-radius:20px;margin:12px 0}
 .info-box{background:rgba(0,29,162,0.06);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--blue);text-align:center;margin-top:12px}
@@ -149,6 +158,7 @@ input::placeholder{color:rgba(0,0,68,0.3)}
 
 <!-- TOAST -->
 <div id="toast" class="toast"></div>
+<div id="notif" class="notif"></div>
 
 <!-- ════ SCREEN: FIRST CHECK-IN ════ -->
 <div id="screen-checkin" class="screen">
@@ -158,7 +168,10 @@ input::placeholder{color:rgba(0,0,68,0.3)}
       <span class="studio-pill">Good Moves Studio</span>
       <div class="check-icon" style="margin-top:20px"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
       <h1 style="font-size:24px;margin-bottom:4px">You're checked in!</h1>
-      <p id="ci-subtext" style="font-size:14px;color:rgba(0,0,68,0.55);margin-bottom:20px"></p>
+      <p id="ci-subtext" style="font-size:14px;color:rgba(0,0,68,0.55);margin-bottom:8px"></p>
+      <div id="ci-class-pill" style="display:none;margin-bottom:12px">
+        <span id="ci-class-text" style="display:inline-block;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;font-family:var(--font-display)"></span>
+      </div>
     </div>
 
     <!-- Stamp card -->
@@ -193,7 +206,7 @@ input::placeholder{color:rgba(0,0,68,0.3)}
       </div>
     </div>
     <p style="font-size:12px;color:rgba(0,0,68,0.3);text-align:center;margin-bottom:16px">Only stored as a hash · no spam · text DELETE to remove</p>
-    <button class="btn-muted fade-up d3" onclick="savePhone()">✓ Save & Continue</button>
+    <button class="btn btn-outline fade-up d3" style="width:100%;padding:16px;font-size:16px;border-radius:16px" onclick="savePhone()">→ Save & Continue</button>
     <div id="phone-error" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-top:12px"></div>
   </div>
 </div>
@@ -211,21 +224,27 @@ input::placeholder{color:rgba(0,0,68,0.3)}
     </div>
 
     <!-- Progress ring -->
-    <div class="glass fade-up d1" style="padding:24px;text-align:center;margin-bottom:16px">
-      <div style="position:relative;width:120px;height:120px;margin:0 auto 12px">
-        <svg width="120" height="120" style="transform:rotate(-90deg)">
-          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(0,0,68,0.06)" stroke-width="8"/>
-          <circle id="ring" cx="60" cy="60" r="52" fill="none" stroke="#B0482D" stroke-width="8" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73" style="transition:stroke-dashoffset 1s var(--ease)"/>
-        </svg>
-        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
-          <span id="ring-num" style="font-size:28px;font-weight:800;font-family:var(--font-display);line-height:1"></span>
-          <span style="font-size:11px;color:rgba(0,0,68,0.4)">of 10</span>
+    <div class="glass fade-up d1" style="padding:20px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:20px">
+        <!-- Ring -->
+        <div style="position:relative;width:100px;height:100px;flex-shrink:0">
+          <svg width="100" height="100" style="transform:rotate(-90deg)">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(0,0,68,0.06)" stroke-width="7"/>
+            <circle id="ring" cx="50" cy="50" r="42" fill="none" stroke="#B0482D" stroke-width="7" stroke-linecap="round" stroke-dasharray="263.89" stroke-dashoffset="263.89" style="transition:stroke-dashoffset 1s var(--ease)"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <span id="ring-num" style="font-size:24px;font-weight:800;font-family:var(--font-display);line-height:1"></span>
+            <span style="font-size:10px;color:rgba(0,0,68,0.4)">of 10</span>
+          </div>
+        </div>
+        <!-- Text -->
+        <div style="flex:1;min-width:0">
+          <p id="ring-pct" style="font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(0,0,68,0.4);text-transform:uppercase;margin-bottom:4px"></p>
+          <p id="ring-msg" style="font-size:15px;color:var(--text);font-weight:700;font-family:var(--font-display);line-height:1.3"></p>
         </div>
       </div>
-      <p id="ring-pct" class="section-label" style="margin-bottom:4px"></p>
-      <p id="ring-msg" style="font-size:14px;color:rgba(0,0,68,0.55);font-weight:600;font-family:var(--font-display)"></p>
-      <div id="dash-dots" class="dots" style="margin-top:16px"></div>
-      <p id="dash-reward" style="font-size:13px;color:rgba(0,0,68,0.5);margin-top:10px"></p>
+      <div id="dash-dots" class="dots" style="margin-top:14px"></div>
+      <p id="dash-reward" style="font-size:13px;color:rgba(0,0,68,0.5);margin-top:8px;text-align:center"></p>
     </div>
 
     <!-- Today's classes -->
@@ -321,6 +340,90 @@ input::placeholder{color:rgba(0,0,68,0.3)}
   </div>
 </div>
 
+<!-- ════ SCREEN: PROFILE ════ -->
+<div id="screen-profile" class="screen">
+  <div style="width:100%;max-width:380px">
+    <!-- Header -->
+    <div class="fade-up" style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+      <button onclick="goHome()" style="background:none;border:none;font-size:14px;color:var(--red);font-weight:600;font-family:var(--font-display);cursor:pointer">← Back</button>
+    </div>
+
+    <!-- Avatar + title -->
+    <div class="fade-up" style="text-align:center;margin-bottom:24px">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--beige);border:2px solid rgba(176,72,45,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px">👤</div>
+      <h1 style="font-size:20px">Your Profile</h1>
+      <p style="font-size:12px;color:rgba(0,0,68,0.45)">Complete your info for a personalised experience</p>
+    </div>
+
+    <!-- Completion bar -->
+    <div class="fade-up d1" style="background:rgba(176,72,45,0.08);border-radius:10px;padding:10px 16px;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div class="pbar" style="flex:1;margin-right:12px"><div id="prof-bar" class="fill" style="width:20%"></div></div>
+        <span id="prof-count" style="font-size:11px;font-weight:700;color:var(--red)">1/5</span>
+      </div>
+    </div>
+
+    <!-- Fields card -->
+    <div class="glass fade-up d1" style="padding:0;overflow:hidden;margin-bottom:20px">
+      <!-- Phone (verified) -->
+      <div style="display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--beige)">
+        <span style="font-size:18px;margin-right:12px">📱</span>
+        <div style="flex:1">
+          <div style="font-size:10px;font-weight:700;color:rgba(0,0,68,0.4);text-transform:uppercase;letter-spacing:1px">Phone</div>
+          <div id="prof-phone" style="font-size:13px;font-weight:600;color:var(--text)"></div>
+        </div>
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center"><span style="color:white;font-size:12px">✓</span></div>
+      </div>
+
+      <!-- Name -->
+      <div id="prof-name-row" style="display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--beige);cursor:pointer" onclick="editProfileField('name')">
+        <span style="font-size:18px;margin-right:12px">👤</span>
+        <div style="flex:1">
+          <div style="font-size:10px;font-weight:700;color:rgba(0,0,68,0.4);text-transform:uppercase;letter-spacing:1px">Name</div>
+          <div id="prof-name" style="font-size:13px;color:var(--beige);font-style:italic">Add your name</div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:var(--red)">Add →</span>
+      </div>
+
+      <!-- Email -->
+      <div id="prof-email-row" style="display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--beige);cursor:pointer" onclick="editProfileField('email')">
+        <span style="font-size:18px;margin-right:12px">✉️</span>
+        <div style="flex:1">
+          <div style="font-size:10px;font-weight:700;color:rgba(0,0,68,0.4);text-transform:uppercase;letter-spacing:1px">Email</div>
+          <div id="prof-email" style="font-size:13px;color:var(--beige);font-style:italic">Add your email</div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:var(--red)">Add →</span>
+      </div>
+
+      <!-- Birthday -->
+      <div id="prof-bday-row" style="display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--beige);cursor:pointer" onclick="editProfileField('birthday')">
+        <span style="font-size:18px;margin-right:12px">🎂</span>
+        <div style="flex:1">
+          <div style="font-size:10px;font-weight:700;color:rgba(0,0,68,0.4);text-transform:uppercase;letter-spacing:1px">Birthday</div>
+          <div id="prof-bday" style="font-size:13px;color:var(--beige);font-style:italic">Add for a birthday surprise</div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:var(--red)">Add →</span>
+      </div>
+
+      <!-- Preferred Class -->
+      <div id="prof-class-row" style="display:flex;align-items:center;padding:16px 20px;cursor:pointer" onclick="editProfileField('preferred_class')">
+        <span style="font-size:18px;margin-right:12px">🧘</span>
+        <div style="flex:1">
+          <div style="font-size:10px;font-weight:700;color:rgba(0,0,68,0.4);text-transform:uppercase;letter-spacing:1px">Preferred Class</div>
+          <div id="prof-pref" style="font-size:13px;color:var(--beige);font-style:italic">e.g. Morning Flow, Barre</div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:var(--red)">Add →</span>
+      </div>
+    </div>
+
+    <!-- Explainer -->
+    <div class="fade-up d2" style="background:rgba(176,72,45,0.06);border:1px solid rgba(176,72,45,0.1);border-radius:12px;padding:14px 16px;margin-bottom:24px">
+      <p style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">Why we ask</p>
+      <p style="font-size:12px;color:rgba(0,0,68,0.5);line-height:1.5">Your name and email help us link visits to Mindbody. Birthday lets us surprise you.</p>
+    </div>
+  </div>
+</div>
+
 <!-- ════ SCREEN: OFFLINE ════ -->
 <div id="screen-offline" class="screen" style="justify-content:center">
   <div style="text-align:center;max-width:300px">
@@ -399,7 +502,7 @@ async function startFlow() {
         if (!data.already_checked_in) haptic();
         renderDashboard(data.already_checked_in, data.visit);
         show('dash');
-        if (data.already_checked_in) showToast('You checked in earlier today ✓');
+        if (data.already_checked_in) showNotif('✅ Already checked in today');
       }
     } catch {
       // Offline or error — try cached
@@ -433,6 +536,7 @@ async function startFlow() {
       } else {
         renderFirstCheckin(data);
         show('checkin');
+        if (!data.already_checked_in) showNotif('✅ You\'re checked in!');
       }
     } catch {
       show('offline');
@@ -448,6 +552,21 @@ function renderFirstCheckin(data) {
   document.getElementById('ci-subtext').textContent =
     v === 1 ? `Visit ${v} of 10 — welcome to Good Moves!` : `Visit ${v} of 10 — keep moving!`;
   document.getElementById('ci-count').textContent = `${s}/10`;
+
+  const pill = document.getElementById('ci-class-pill');
+  const pillText = document.getElementById('ci-class-text');
+  if (data.visit && data.visit.class_name) {
+    pillText.textContent = data.visit.class_name + ' at ' + data.visit.class_time;
+    pillText.style.background = 'rgba(0,29,162,0.08)';
+    pillText.style.color = '#001DA2';
+    pill.style.display = 'block';
+  } else {
+    pillText.textContent = 'General check-in';
+    pillText.style.background = 'rgba(0,0,68,0.06)';
+    pillText.style.color = 'rgba(0,0,68,0.45)';
+    pill.style.display = 'block';
+  }
+
   renderStamps('ci-stamps', s, data.already_checked_in ? -1 : s);
   document.getElementById('ci-bar').style.width = (s / 10 * 100) + '%';
 }
@@ -461,17 +580,20 @@ async function renderDashboard(alreadyIn, visit) {
   // Avatar
   const av = document.getElementById('dash-avatar');
   if (m.name) {
-    av.textContent = m.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    const parts = m.name.trim().split(/\s+/);
+    av.textContent = parts.map(p => p[0]).join('').toUpperCase().slice(0, 2);
   } else {
-    av.textContent = m.phone ? m.phone.slice(-2) : '?';
+    av.textContent = '👤';
   }
+  av.style.cursor = 'pointer';
+  av.onclick = () => { renderProfile(); show('profile'); };
 
   // Ring
-  const circ = 2 * Math.PI * 52; // r=52
+  const circ = 2 * Math.PI * 42; // r=42
   const offset = circ * (1 - s / 10);
   document.getElementById('ring-num').textContent = s;
   setTimeout(() => { document.getElementById('ring').style.strokeDashoffset = offset; }, 100);
-  document.getElementById('ring-pct').textContent = `${pct}% COMPLETE`;
+  document.getElementById('ring-pct').textContent = `🌱 ${pct}% COMPLETE`;
   document.getElementById('ring-msg').textContent = MOTIV[s] || MOTIV[0];
 
   // Dots
@@ -499,7 +621,7 @@ async function renderDashboard(alreadyIn, visit) {
           <span class="class-time">${c.time}</span>
           <div class="class-info">
             <div class="class-name">${c.name}</div>
-            <div class="class-detail">${c.teacher} · ${c.spots} spots</div>
+            <div class="class-detail">${c.teacher} · ${c.spots} ${c.spots === 1 ? 'spot' : 'spots'}</div>
           </div>
           <button class="btn-outline">Book</button>
         </div>`;
@@ -549,7 +671,7 @@ async function savePhone() {
     localStorage.setItem('tapin_phone', member.phone);
     localStorage.setItem('tapin_member', JSON.stringify(member));
 
-    showToast('Saved! We\'ll remember you next time.');
+    showNotif('📱 Progress saved!');
     // Transition to dashboard after brief delay
     setTimeout(() => {
       renderDashboard(false, visits[0]);
@@ -660,6 +782,13 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
+function showNotif(msg, duration = 3000) {
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), duration);
+}
+
 function showErr(id, msg) {
   const el = document.getElementById(id);
   el.textContent = msg; el.style.display = 'block';
@@ -675,6 +804,115 @@ function fmtDate(d) {
 }
 
 function retry() { if (navigator.onLine) startFlow(); }
+
+// ═══ PROFILE ═══
+function editProfileField(field) {
+  const labels = {
+    name: 'Your name',
+    email: 'Email address',
+    birthday: 'Birthday (DD.MM)',
+    preferred_class: 'Preferred class type'
+  };
+  const current = member?.[field] || '';
+  const val = prompt(labels[field], current);
+  if (val === null) return;
+
+  const phone = member?.phone || localStorage.getItem('tapin_phone');
+  if (!phone) return;
+
+  fetch('/api/member/' + encodeURIComponent(phone) + '/profile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ [field]: val })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.member) {
+      member = data.member;
+      localStorage.setItem('tapin_member', JSON.stringify(member));
+      renderProfile();
+      showNotif('✅ Updated!');
+    }
+  })
+  .catch(() => showNotif('Could not save — try again'));
+}
+
+function renderProfile() {
+  if (!member) return;
+
+  // Phone
+  const ph = member.phone || '';
+  document.getElementById('prof-phone').textContent = ph || 'Not set';
+
+  // Name
+  const nameEl = document.getElementById('prof-name');
+  const nameAction = document.querySelector('#prof-name-row span:last-child');
+  if (member.name) {
+    nameEl.textContent = member.name;
+    nameEl.style.color = 'var(--text)';
+    nameEl.style.fontStyle = 'normal';
+    nameAction.textContent = 'Edit →';
+  } else {
+    nameEl.textContent = 'Add your name';
+    nameEl.style.color = 'var(--beige)';
+    nameEl.style.fontStyle = 'italic';
+    nameAction.textContent = 'Add →';
+  }
+
+  // Email
+  const emailEl = document.getElementById('prof-email');
+  const emailAction = document.querySelector('#prof-email-row span:last-child');
+  if (member.email) {
+    emailEl.textContent = member.email;
+    emailEl.style.color = 'var(--text)';
+    emailEl.style.fontStyle = 'normal';
+    emailAction.textContent = 'Edit →';
+  } else {
+    emailEl.textContent = 'Add your email';
+    emailEl.style.color = 'var(--beige)';
+    emailEl.style.fontStyle = 'italic';
+    emailAction.textContent = 'Add →';
+  }
+
+  // Birthday
+  const bdayEl = document.getElementById('prof-bday');
+  const bdayAction = document.querySelector('#prof-bday-row span:last-child');
+  if (member.birthday) {
+    bdayEl.textContent = member.birthday;
+    bdayEl.style.color = 'var(--text)';
+    bdayEl.style.fontStyle = 'normal';
+    bdayAction.textContent = 'Edit →';
+  } else {
+    bdayEl.textContent = 'Add for a birthday surprise';
+    bdayEl.style.color = 'var(--beige)';
+    bdayEl.style.fontStyle = 'italic';
+    bdayAction.textContent = 'Add →';
+  }
+
+  // Preferred class
+  const prefEl = document.getElementById('prof-pref');
+  const prefAction = document.querySelector('#prof-class-row span:last-child');
+  if (member.preferred_class) {
+    prefEl.textContent = member.preferred_class;
+    prefEl.style.color = 'var(--text)';
+    prefEl.style.fontStyle = 'normal';
+    prefAction.textContent = 'Edit →';
+  } else {
+    prefEl.textContent = 'e.g. Morning Flow, Barre';
+    prefEl.style.color = 'var(--beige)';
+    prefEl.style.fontStyle = 'italic';
+    prefAction.textContent = 'Add →';
+  }
+
+  // Completion bar
+  let filled = 1; // phone always counts
+  if (member.name) filled++;
+  if (member.email) filled++;
+  if (member.birthday) filled++;
+  if (member.preferred_class) filled++;
+  document.getElementById('prof-bar').style.width = (filled * 20) + '%';
+  document.getElementById('prof-count').textContent = filled + '/5';
+}
 
 function spawnConfetti() {
   const colors = ['#B0482D', '#C4603F', '#EEDBC3', '#001DA2', '#FBF6F1', '#FFD700'];

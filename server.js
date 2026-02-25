@@ -162,14 +162,22 @@ app.post('/api/member/:id/link-phone', (req, res) => {
 // ─── API: Update profile ───
 app.post('/api/member/:phone/profile', (req, res) => {
   const phone = normalizePhone(req.params.phone);
-  const { name, email } = req.body;
+  const { name, email, birthday, preferred_class } = req.body;
   if (!phone) return res.status(400).json({ error: 'Phone number required' });
 
-  stmts.updateMemberProfile.run(name || null, email || null, phone);
   const member = stmts.getMemberByPhone.get(phone);
   if (!member) return res.status(404).json({ error: 'Member not found' });
 
-  res.json({ member });
+  // Update each field if provided (keep existing value if not sent)
+  const newName = name !== undefined ? name || null : member.name;
+  const newEmail = email !== undefined ? email || null : member.email;
+  const newBday = birthday !== undefined ? birthday || null : member.birthday;
+  const newPref = preferred_class !== undefined ? preferred_class || null : member.preferred_class;
+
+  stmts.updateMemberProfile.run(newName, newEmail, newBday, newPref, phone);
+  const updated = stmts.getMemberByPhone.get(phone);
+
+  res.json({ member: updated });
 });
 
 // ─── API: Claim reward ───

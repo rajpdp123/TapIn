@@ -90,6 +90,10 @@ try {
   db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_members_device ON members(device_id)`);
 } catch (e) { /* ignore */ }
 
+// Add profile columns if missing
+try { db.exec(`ALTER TABLE members ADD COLUMN birthday TEXT`); } catch (e) { /* exists */ }
+try { db.exec(`ALTER TABLE members ADD COLUMN preferred_class TEXT`); } catch (e) { /* exists */ }
+
 // ─── Prepared statements ───
 const stmts = {
   getMemberByPhone: db.prepare('SELECT * FROM members WHERE phone = ?'),
@@ -112,7 +116,7 @@ const stmts = {
   `),
 
   updateMemberProfile: db.prepare(`
-    UPDATE members SET name = ?, email = ?, updated_at = datetime('now')
+    UPDATE members SET name = ?, email = ?, birthday = ?, preferred_class = ?, updated_at = datetime('now')
     WHERE phone = ?
   `),
 
