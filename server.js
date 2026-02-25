@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const { db, stmts, generateVerificationCode } = require('./db');
-const { getTodaySchedule, findClassForCheckin } = require('./schedule');
+const { getTodaySchedule, findClassForCheckin, DEALS } = require('./schedule');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,28 +13,60 @@ app.use(express.static(path.join(__dirname, 'public')));
 function normalizePhone(raw) {
   if (!raw) return null;
   let phone = raw.replace(/[\s\-\(\)]/g, '');
-  // Handle 0-prefix German numbers
   if (phone.startsWith('0') && !phone.startsWith('00')) {
     phone = '+49' + phone.slice(1);
   }
-  // Handle 49 without +
   if (phone.startsWith('49') && phone.length > 10) {
     phone = '+' + phone;
   }
-  // Handle 0049
   if (phone.startsWith('00')) {
     phone = '+' + phone.slice(2);
   }
-  // Ensure + prefix
   if (!phone.startsWith('+')) {
     phone = '+49' + phone;
   }
   return phone;
 }
 
-// Berlin date string for cooldown comparison
-function berlinDateStr() {
-  return new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' });
+// ─── Helper: perform check-in for a member ───
+function performCheckin(member) {
+  // Cooldown: one check-in per calendar day (Berlin time)
+  const todayVisit = stmts.getTodayVisitForMember.get(member.id);
+  if (todayVisit) {
+    member = stmts.getMemberById.get(member.id);
+    const visits = stmts.getVisitsByMember.all(member.id);
+    const rewards = stmts.getRewardsByMember.all(member.id);
+    return {
+      member, visit: todayVisit, visits, rewards,
+      already_checked_in: true, reward_earned: false, reward: null,
+      message: "You're already checked in today!",
+    };
+  }
+
+  const { class_name, class_time } = findClassForCheckin();
+  const willEarnReward = member.current_stamp_count >= 9;
+
+  stmts.updateMemberVisit.run(member.id);
+  const visit = stmts.createVisit.get(member.id, class_name, class_time);
+
+  let reward = null;
+  if (willEarnReward) {
+    const code = generateVerificationCode();
+    reward = stmts.createReward.get(member.id, code);
+  }
+
+  member = stmts.getMemberById.get(member.id);
+  const visits = stmts.getVisitsByMember.all(member.id);
+  const rewards = stmts.getRewardsByMember.all(member.id);
+
+  return {
+    member, visit, visits, rewards,
+    reward_earned: !!reward, reward,
+    already_checked_in: false,
+    message: class_name
+      ? `Checked in for ${class_name} at ${class_time}!`
+      : 'Checked in successfully!',
+  };
 }
 
 // ─── API: Register ───
@@ -43,78 +75,37 @@ app.post('/api/register', (req, res) => {
   if (!phone) return res.status(400).json({ error: 'Phone number required' });
 
   let member = stmts.getMemberByPhone.get(phone);
-  if (member) {
-    return res.json({ member, existing: true });
-  }
+  if (member) return res.json({ member, existing: true });
 
-  member = stmts.createMember.get(phone);
+  member = stmts.createMemberWithPhone.get(phone);
   res.json({ member, existing: false });
 });
 
-// ─── API: Check-in ───
+// ─── API: Check-in (accepts phone OR device_id) ───
 app.post('/api/checkin', (req, res) => {
   const phone = normalizePhone(req.body.phone);
-  if (!phone) return res.status(400).json({ error: 'Phone number required' });
+  const deviceId = req.body.device_id;
 
-  let member = stmts.getMemberByPhone.get(phone);
-  if (!member) {
-    member = stmts.createMember.get(phone);
-  }
+  let member = null;
 
-  // Cooldown: one check-in per calendar day (Berlin time)
-  const todayVisit = stmts.getTodayVisitForMember.get(member.id);
-  if (todayVisit) {
-    // Refresh member data
+  if (phone) {
     member = stmts.getMemberByPhone.get(phone);
-    const visits = stmts.getVisitsByMember.all(member.id);
-    const rewards = stmts.getRewardsByMember.all(member.id);
-    return res.json({
-      member,
-      visit: todayVisit,
-      visits,
-      rewards,
-      already_checked_in: true,
-      message: "You're already checked in today!",
-    });
+    if (!member) {
+      member = stmts.createMemberWithPhone.get(phone);
+    }
+  } else if (deviceId) {
+    member = stmts.getMemberByDeviceId.get(deviceId);
+    if (!member) {
+      member = stmts.createMemberWithDevice.get(deviceId);
+    }
+  } else {
+    return res.status(400).json({ error: 'Phone or device_id required' });
   }
 
-  // Find class
-  const { class_name, class_time } = findClassForCheckin();
-
-  // Check if this visit earns a reward (visit will be the 10th stamp)
-  const willEarnReward = member.current_stamp_count >= 9;
-
-  // Increment visit
-  stmts.updateMemberVisit.run(member.id);
-  const visit = stmts.createVisit.get(member.id, class_name, class_time);
-
-  // Create reward if 10th stamp
-  let reward = null;
-  if (willEarnReward) {
-    const code = generateVerificationCode();
-    reward = stmts.createReward.get(member.id, code);
-  }
-
-  // Refresh member data
-  member = stmts.getMemberByPhone.get(phone);
-  const visits = stmts.getVisitsByMember.all(member.id);
-  const rewards = stmts.getRewardsByMember.all(member.id);
-
-  res.json({
-    member,
-    visit,
-    visits,
-    rewards,
-    reward_earned: !!reward,
-    reward,
-    already_checked_in: false,
-    message: class_name
-      ? `Checked in for ${class_name} at ${class_time}!`
-      : 'Checked in successfully!',
-  });
+  res.json(performCheckin(member));
 });
 
-// ─── API: Get member ───
+// ─── API: Get member by phone ───
 app.get('/api/member/:phone', (req, res) => {
   const phone = normalizePhone(req.params.phone);
   if (!phone) return res.status(400).json({ error: 'Phone number required' });
@@ -126,6 +117,46 @@ app.get('/api/member/:phone', (req, res) => {
   const rewards = stmts.getRewardsByMember.all(member.id);
 
   res.json({ member, visits, rewards });
+});
+
+// ─── API: Link phone to member (by member id) ───
+app.post('/api/member/:id/link-phone', (req, res) => {
+  const memberId = parseInt(req.params.id, 10);
+  const phone = normalizePhone(req.body.phone);
+  if (!phone) return res.status(400).json({ error: 'Phone number required' });
+
+  const member = stmts.getMemberById.get(memberId);
+  if (!member) return res.status(404).json({ error: 'Member not found' });
+
+  // Check if phone is already linked to another member
+  const existing = stmts.getMemberByPhone.get(phone);
+  if (existing && existing.id !== memberId) {
+    // Merge: keep the one with more visits, transfer data from the other
+    const keep = existing.visit_count >= member.visit_count ? existing : member;
+    const discard = keep.id === existing.id ? member : existing;
+
+    stmts.transferVisits.run(keep.id, discard.id);
+    stmts.transferRewards.run(keep.id, discard.id);
+    stmts.deleteMember.run(discard.id);
+
+    // Ensure the kept member has the phone
+    if (keep.id === member.id) {
+      stmts.linkPhoneToMember.run(phone, keep.id);
+    }
+
+    const merged = stmts.getMemberById.get(keep.id);
+    const visits = stmts.getVisitsByMember.all(keep.id);
+    const rewards = stmts.getRewardsByMember.all(keep.id);
+    return res.json({ member: merged, visits, rewards, merged: true });
+  }
+
+  // Simple link — no conflict
+  stmts.linkPhoneToMember.run(phone, memberId);
+  const updated = stmts.getMemberById.get(memberId);
+  const visits = stmts.getVisitsByMember.all(memberId);
+  const rewards = stmts.getRewardsByMember.all(memberId);
+
+  res.json({ member: updated, visits, rewards, merged: false });
 });
 
 // ─── API: Update profile ───
@@ -157,6 +188,11 @@ app.post('/api/reward/:id/claim', (req, res) => {
 // ─── API: Today's schedule ───
 app.get('/api/schedule/today', (req, res) => {
   res.json({ classes: getTodaySchedule() });
+});
+
+// ─── API: Deals ───
+app.get('/api/deals', (req, res) => {
+  res.json({ deals: DEALS });
 });
 
 // ─── API: Admin feed ───

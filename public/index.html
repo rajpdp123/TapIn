@@ -19,7 +19,6 @@
   --warm-grad:linear-gradient(135deg,#C4603F 0%,#B0482D 50%,#8A3520 100%);
   --glass:rgba(255,255,255,0.72);--glass-border:rgba(255,255,255,0.35);
   --shadow-md:0 4px 8px -2px rgba(0,0,68,0.08),0 2px 4px -2px rgba(0,0,68,0.06);
-  --shadow-lg:0 12px 16px -4px rgba(0,0,68,0.08),0 4px 6px -2px rgba(0,0,68,0.05);
   --font-display:'Quicksand',system-ui,sans-serif;
   --font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   --font-mono:'SF Mono','Menlo','Consolas',monospace;
@@ -27,686 +26,655 @@
 }
 html,body{height:100%;font-family:var(--font-body);color:var(--text);background:linear-gradient(180deg,var(--light) 0%,var(--beige) 100%);overflow-x:hidden}
 
-/* ─── Splash ─── */
+/* Splash */
 #splash{position:fixed;inset:0;z-index:10000;background:#B0482D;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.4s var(--ease)}
-#splash.fade-out{opacity:0;pointer-events:none}
-#splash .wordmark{font-family:var(--font-display);font-size:42px;font-weight:800;color:#EEDBC3;letter-spacing:4px}
-#splash .subtitle{font-family:var(--font-display);font-size:14px;font-weight:600;color:rgba(238,219,195,0.5);margin-top:6px}
-#splash .spinner{width:28px;height:28px;border:2.5px solid rgba(238,219,195,0.2);border-top-color:#EEDBC3;border-radius:50%;animation:spin 0.7s linear infinite;margin-top:32px}
+#splash.out{opacity:0;pointer-events:none}
+#splash .wm{font-family:var(--font-display);font-size:42px;font-weight:800;color:#EEDBC3;letter-spacing:4px}
+#splash .sub{font-family:var(--font-display);font-size:14px;font-weight:600;color:rgba(238,219,195,0.5);margin-top:6px}
+#splash .sp{width:28px;height:28px;border:2.5px solid rgba(238,219,195,0.2);border-top-color:#EEDBC3;border-radius:50%;animation:spin 0.7s linear infinite;margin-top:32px}
 
-/* ─── Screens ─── */
+/* Screens */
 .screen{display:none;min-height:100vh;padding:24px 20px 40px;position:relative;flex-direction:column;align-items:center}
 .screen.active{display:flex}
 .glass{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:20px;border:1px solid var(--glass-border);box-shadow:var(--shadow-md);position:relative;z-index:1}
 
-/* ─── Buttons ─── */
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:16px 32px;border:none;border-radius:100px;font-family:var(--font-display);font-weight:700;font-size:16px;cursor:pointer;transition:all 0.3s var(--ease);text-decoration:none}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:16px 32px;border:none;border-radius:100px;font-family:var(--font-display);font-weight:700;font-size:16px;cursor:pointer;transition:all .3s var(--ease);text-decoration:none}
 .btn-primary{background:var(--warm-grad);color:var(--white);box-shadow:0 4px 12px rgba(176,72,45,0.3)}
-.btn-primary:active{transform:scale(0.97);box-shadow:0 2px 8px rgba(176,72,45,0.2)}
-.btn-hero{background:var(--warm-grad);color:var(--white);box-shadow:0 4px 12px rgba(176,72,45,0.3);width:100%;padding:20px;font-size:20px;font-weight:800;border-radius:20px;border:none;font-family:var(--font-display);cursor:pointer;transition:all 0.3s var(--ease)}
-.btn-hero:active{transform:scale(0.97)}
+.btn-primary:active{transform:scale(0.97)}
+.btn-muted{background:rgba(0,0,68,0.06);color:var(--text);width:100%;padding:16px;border-radius:16px;border:none;font-family:var(--font-display);font-size:16px;font-weight:700;cursor:pointer}
+.btn-outline{background:transparent;border:1.5px solid var(--red);color:var(--red);padding:8px 16px;border-radius:100px;font-family:var(--font-display);font-weight:600;font-size:12px;cursor:pointer}
 .btn-secondary{background:rgba(0,0,68,0.06);color:var(--text)}
-.btn-secondary:active{background:rgba(0,0,68,0.1)}
-.link-text{font-size:13px;color:rgba(0,0,68,0.45);text-decoration:none;cursor:pointer;font-family:var(--font-body)}
-.link-text:hover{color:rgba(0,0,68,0.7)}
-.link-red{font-size:14px;color:var(--red);font-weight:600;font-family:var(--font-display);cursor:pointer;text-decoration:none}
-
-/* ─── Typography ─── */
 h1,h2,h3{font-family:var(--font-display);font-weight:700;color:var(--text)}
+
+/* Blobs */
 .blob{position:absolute;pointer-events:none;z-index:0}
 .blob-tr{top:-40px;right:-60px}.blob-bl{bottom:-50px;left:-70px}
 
-/* ─── Inputs ─── */
+/* Inputs */
 input[type="tel"],input[type="text"],input[type="email"]{
   width:100%;padding:16px 20px;border:1.5px solid rgba(0,0,68,0.08);border-radius:16px;
   font-size:18px;font-family:var(--font-body);background:rgba(255,255,255,0.6);
-  color:var(--text);transition:border 0.2s var(--ease);outline:none
+  color:var(--text);transition:border .2s var(--ease);outline:none
 }
 input:focus{border-color:var(--red)}
 input::placeholder{color:rgba(0,0,68,0.3)}
 
-/* ─── Studio pill badge ─── */
-.studio-pill{display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(176,72,45,0.08);color:var(--red);font-size:12px;font-weight:600;font-family:var(--font-display);margin-bottom:12px}
+/* Shared components */
+.studio-pill{display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(176,72,45,0.08);color:var(--red);font-size:12px;font-weight:600;font-family:var(--font-display)}
+.check-icon{width:64px;height:64px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 4px 16px rgba(176,72,45,0.25)}
+.check-icon svg{width:28px;height:28px}
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(0,0,68,0.4);text-transform:uppercase}
+.divider{display:flex;align-items:center;gap:12px;margin:28px 0 20px;width:100%}
+.divider .line{flex:1;height:1px;background:rgba(0,0,68,0.08)}
+.divider .label{font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(0,0,68,0.3);text-transform:uppercase;white-space:nowrap}
 
-/* ─── Check icon (branded terracotta circle) ─── */
-.check-icon{width:80px;height:80px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 16px rgba(176,72,45,0.25)}
-.check-icon::after{content:'✓';color:white;font-size:36px;font-weight:700}
-
-/* ─── Class pill badge ─── */
-.class-pill{display:inline-block;padding:4px 14px;border-radius:12px;background:rgba(0,29,162,0.08);color:var(--blue);font-size:12px;font-weight:600;font-family:var(--font-display);margin-top:8px}
-.class-pill-grey{background:rgba(0,0,68,0.06);color:rgba(0,0,68,0.5)}
-
-/* ─── Stamp grid ─── */
+/* Stamp grid */
 .stamp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.stamp{aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all 0.3s var(--ease)}
-.stamp.filled{background:var(--red);color:var(--white);box-shadow:0 2px 6px rgba(176,72,45,0.2);border:2px solid var(--red)}
+.stamp{aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:all .3s var(--ease)}
+.stamp.filled{background:var(--red);color:var(--white);border:2px solid var(--red);box-shadow:0 2px 6px rgba(176,72,45,0.2)}
 .stamp.empty{background:var(--beige);color:rgba(0,0,68,0.45);border:2px solid rgba(0,0,68,0.1)}
-.stamp.new{animation:stampPop 0.5s var(--ease);transform:scale(1.08)}
-.stamp.latest{transform:scale(1.08);box-shadow:0 3px 10px rgba(176,72,45,0.3)}
+.stamp.new{animation:stampPop .5s var(--ease);transform:scale(1.08)}
 
-/* ─── Mini stamps (horizontal row for returning screen) ─── */
-.mini-stamps{display:flex;gap:4px;justify-content:center}
-.mini-stamp{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;transition:all 0.3s var(--ease)}
-.mini-stamp.filled{background:var(--red);color:white}
-.mini-stamp.empty{background:rgba(238,219,195,0.6);border:1.5px solid rgba(0,0,68,0.06);color:transparent}
+/* Mini dots */
+.dots{display:flex;gap:4px;justify-content:center}
+.dot{width:8px;height:8px;border-radius:50%;transition:all .3s var(--ease)}
+.dot.filled{background:var(--red)}
+.dot.empty{background:rgba(0,0,68,0.1)}
 
-/* ─── Animations ─── */
-@keyframes stampPop{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.25)}100%{transform:scale(1.08);opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes confetti{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.fade-up{animation:fadeUp 0.4s var(--ease) both}
-.delay-1{animation-delay:0.1s}.delay-2{animation-delay:0.2s}.delay-3{animation-delay:0.3s}
+/* Progress bar */
+.pbar{height:6px;border-radius:100px;background:rgba(0,0,68,0.06);overflow:hidden}
+.pbar .fill{height:100%;border-radius:100px;background:var(--warm-grad);transition:width .8s var(--ease)}
 
-/* ─── Progress bar ─── */
-.progress-bar{height:5px;border-radius:100px;background:rgba(0,0,68,0.04);margin-top:8px;overflow:hidden}
-.progress-fill{height:100%;border-radius:100px;background:var(--warm-grad);transition:width 0.8s var(--ease)}
+/* Toast */
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:100;background:rgba(176,72,45,0.1);color:var(--red);padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;font-family:var(--font-display);opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
 
-/* ─── Visit list ─── */
+/* Verification code */
+.vcode{font-family:var(--font-mono);font-size:44px;font-weight:700;color:var(--red);letter-spacing:6px;text-align:center;padding:24px;background:rgba(255,255,255,0.85);border:2px solid rgba(176,72,45,0.2);border-radius:20px;margin:12px 0}
+.info-box{background:rgba(0,29,162,0.06);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--blue);text-align:center;margin-top:12px}
+
+/* Class row */
+.class-row{display:flex;align-items:center;padding:14px 0;border-bottom:1px solid rgba(0,0,68,0.04);gap:12px}
+.class-row:last-child{border-bottom:none}
+.class-row.current{border-left:3px solid var(--red);padding-left:12px;margin-left:-3px}
+.class-time{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--red);min-width:48px}
+.class-info{flex:1}
+.class-name{font-weight:600;font-size:14px;color:var(--text)}
+.class-detail{font-size:12px;color:rgba(0,0,68,0.4);margin-top:1px}
+
+/* Deal card */
+.deal-card{display:flex;align-items:center;gap:14px;padding:16px;border-bottom:1px solid rgba(0,0,68,0.04)}
+.deal-card:last-child{border-bottom:none}
+.deal-icon{width:44px;height:44px;border-radius:12px;background:rgba(176,72,45,0.06);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.deal-info{flex:1}
+.deal-title{font-weight:600;font-size:14px}
+.deal-desc{font-size:12px;color:rgba(0,0,68,0.45);margin-top:2px}
+.deal-tag{display:inline-block;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--font-display)}
+.deal-tag.popular{background:rgba(176,72,45,0.08);color:var(--red)}
+.deal-tag.new{background:rgba(0,29,162,0.08);color:var(--blue)}
+
+/* Visit row */
 .visit-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,68,0.04)}
 .visit-row:last-child{border-bottom:none}
 .tag{display:inline-block;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;font-family:var(--font-display)}
 
-/* ─── Confetti ─── */
+/* Confetti */
 .confetti-piece{position:fixed;top:-10px;width:10px;height:10px;border-radius:2px;z-index:9999;animation:confetti 3s linear forwards}
 
-/* ─── Toggle ─── */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
-.toggle{width:44px;height:24px;border-radius:12px;background:rgba(0,0,68,0.1);position:relative;cursor:pointer;transition:background 0.2s}
-.toggle.on{background:var(--red)}
-.toggle .thumb{width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
-.toggle.on .thumb{left:22px}
-
-/* ─── Verification code (polished) ─── */
-.verification-code{font-family:var(--font-mono);font-size:44px;font-weight:700;color:var(--red);letter-spacing:6px;text-align:center;padding:24px;background:rgba(255,255,255,0.85);border:2px solid rgba(176,72,45,0.2);border-radius:20px;margin:12px 0}
-.verification-label{font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(0,0,68,0.35);text-transform:uppercase;text-align:center;margin-bottom:4px}
-.info-box{background:rgba(0,29,162,0.06);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--blue);text-align:center;margin-top:12px}
+/* Anims */
+@keyframes stampPop{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.25)}100%{transform:scale(1.08);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes confetti{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ringDraw{from{stroke-dashoffset:var(--ring-circ)}to{stroke-dashoffset:var(--ring-offset)}}
+.fade-up{animation:fadeUp .4s var(--ease) both}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}
 </style>
 </head>
 <body>
 
-<!-- ═══════════ SPLASH SCREEN ═══════════ -->
+<!-- SPLASH -->
 <div id="splash">
-  <svg style="position:absolute;top:-30px;right:-50px;opacity:0.15;pointer-events:none" width="200" height="200" viewBox="0 0 200 200">
-    <path d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90,-16.3,88.5,-0.9C87,14.5,81.4,29,72.8,41.5C64.2,54,52.6,64.5,39.4,71.8C26.2,79.1,11.4,83.2,-2.8,87.4C-17,91.6,-34,95.8,-47.2,88.8C-60.4,81.8,-69.8,63.6,-76.4,46.1C-83,28.6,-86.8,11.8,-84.6,-3.6C-82.4,-19,-74.2,-33.1,-63.5,-43.7C-52.8,-54.3,-39.6,-61.5,-26.4,-69.4C-13.2,-77.3,0,-85.9,14.2,-87.2C28.4,-88.5,56.8,-82.5,44.7,-76.4Z" fill="#EEDBC3" transform="translate(100 100)"/>
-  </svg>
-  <svg style="position:absolute;bottom:-40px;left:-60px;opacity:0.12;pointer-events:none" width="200" height="200" viewBox="0 0 200 200">
-    <path d="M39.5,-67.5C52.9,-60.1,66.8,-53.2,74.8,-42C82.8,-30.8,84.9,-15.4,83.3,-0.9C81.7,13.5,76.4,27.1,68.4,38.6C60.4,50.1,49.7,59.6,37.4,66.1C25.1,72.6,11.1,76.1,-2.5,80.3C-16.1,84.5,-32.2,89.4,-45,83.8C-57.8,78.2,-67.3,62.1,-73.5,45.8C-79.7,29.5,-82.6,13,-80.5,1.2C-78.4,-10.6,-71.3,-19,-63.5,-28.3C-55.7,-37.6,-47.2,-47.8,-36.8,-56.7C-26.4,-65.6,-13.2,-73.2,0.4,-73.9C14,-74.6,28,-74.9,39.5,-67.5Z" fill="#EEDBC3" transform="translate(100 100)"/>
-  </svg>
-  <div class="wordmark">TAPIN</div>
-  <div class="subtitle">by Good Moves</div>
-  <div class="spinner"></div>
+  <svg style="position:absolute;top:-30px;right:-50px;opacity:0.15;pointer-events:none" width="200" height="200" viewBox="0 0 200 200"><path d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90,-16.3,88.5,-0.9C87,14.5,81.4,29,72.8,41.5C64.2,54,52.6,64.5,39.4,71.8C26.2,79.1,11.4,83.2,-2.8,87.4C-17,91.6,-34,95.8,-47.2,88.8C-60.4,81.8,-69.8,63.6,-76.4,46.1C-83,28.6,-86.8,11.8,-84.6,-3.6C-82.4,-19,-74.2,-33.1,-63.5,-43.7C-52.8,-54.3,-39.6,-61.5,-26.4,-69.4C-13.2,-77.3,0,-85.9,14.2,-87.2C28.4,-88.5,56.8,-82.5,44.7,-76.4Z" fill="#EEDBC3" transform="translate(100 100)"/></svg>
+  <svg style="position:absolute;bottom:-40px;left:-60px;opacity:0.12;pointer-events:none" width="200" height="200" viewBox="0 0 200 200"><path d="M39.5,-67.5C52.9,-60.1,66.8,-53.2,74.8,-42C82.8,-30.8,84.9,-15.4,83.3,-0.9C81.7,13.5,76.4,27.1,68.4,38.6C60.4,50.1,49.7,59.6,37.4,66.1C25.1,72.6,11.1,76.1,-2.5,80.3C-16.1,84.5,-32.2,89.4,-45,83.8C-57.8,78.2,-67.3,62.1,-73.5,45.8C-79.7,29.5,-82.6,13,-80.5,1.2C-78.4,-10.6,-71.3,-19,-63.5,-28.3C-55.7,-37.6,-47.2,-47.8,-36.8,-56.7C-26.4,-65.6,-13.2,-73.2,0.4,-73.9C14,-74.6,28,-74.9,39.5,-67.5Z" fill="#EEDBC3" transform="translate(100 100)"/></svg>
+  <div class="wm">TAPIN</div>
+  <div class="sub">by Good Moves</div>
+  <div class="sp"></div>
 </div>
 
-<!-- ═══ BLOB BACKGROUNDS ═══ -->
-<svg class="blob blob-tr" width="220" height="220" viewBox="0 0 200 200" style="opacity:0.07">
-  <path d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90,-16.3,88.5,-0.9C87,14.5,81.4,29,72.8,41.5C64.2,54,52.6,64.5,39.4,71.8C26.2,79.1,11.4,83.2,-2.8,87.4C-17,91.6,-34,95.8,-47.2,88.8C-60.4,81.8,-69.8,63.6,-76.4,46.1C-83,28.6,-86.8,11.8,-84.6,-3.6C-82.4,-19,-74.2,-33.1,-63.5,-43.7C-52.8,-54.3,-39.6,-61.5,-26.4,-69.4C-13.2,-77.3,0,-85.9,14.2,-87.2C28.4,-88.5,56.8,-82.5,44.7,-76.4Z" fill="#B0482D" transform="translate(100 100)"/>
-</svg>
-<svg class="blob blob-bl" width="200" height="200" viewBox="0 0 200 200" style="opacity:0.15">
-  <path d="M39.5,-67.5C52.9,-60.1,66.8,-53.2,74.8,-42C82.8,-30.8,84.9,-15.4,83.3,-0.9C81.7,13.5,76.4,27.1,68.4,38.6C60.4,50.1,49.7,59.6,37.4,66.1C25.1,72.6,11.1,76.1,-2.5,80.3C-16.1,84.5,-32.2,89.4,-45,83.8C-57.8,78.2,-67.3,62.1,-73.5,45.8C-79.7,29.5,-82.6,13,-80.5,1.2C-78.4,-10.6,-71.3,-19,-63.5,-28.3C-55.7,-37.6,-47.2,-47.8,-36.8,-56.7C-26.4,-65.6,-13.2,-73.2,0.4,-73.9C14,-74.6,28,-74.9,39.5,-67.5Z" fill="#EEDBC3" transform="translate(100 100)"/>
-</svg>
+<!-- BLOBS -->
+<svg class="blob blob-tr" width="220" height="220" viewBox="0 0 200 200" style="opacity:0.07"><path d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.5,90,-16.3,88.5,-0.9C87,14.5,81.4,29,72.8,41.5C64.2,54,52.6,64.5,39.4,71.8C26.2,79.1,11.4,83.2,-2.8,87.4C-17,91.6,-34,95.8,-47.2,88.8C-60.4,81.8,-69.8,63.6,-76.4,46.1C-83,28.6,-86.8,11.8,-84.6,-3.6C-82.4,-19,-74.2,-33.1,-63.5,-43.7C-52.8,-54.3,-39.6,-61.5,-26.4,-69.4C-13.2,-77.3,0,-85.9,14.2,-87.2C28.4,-88.5,56.8,-82.5,44.7,-76.4Z" fill="#B0482D" transform="translate(100 100)"/></svg>
+<svg class="blob blob-bl" width="200" height="200" viewBox="0 0 200 200" style="opacity:0.15"><path d="M39.5,-67.5C52.9,-60.1,66.8,-53.2,74.8,-42C82.8,-30.8,84.9,-15.4,83.3,-0.9C81.7,13.5,76.4,27.1,68.4,38.6C60.4,50.1,49.7,59.6,37.4,66.1C25.1,72.6,11.1,76.1,-2.5,80.3C-16.1,84.5,-32.2,89.4,-45,83.8C-57.8,78.2,-67.3,62.1,-73.5,45.8C-79.7,29.5,-82.6,13,-80.5,1.2C-78.4,-10.6,-71.3,-19,-63.5,-28.3C-55.7,-37.6,-47.2,-47.8,-36.8,-56.7C-26.4,-65.6,-13.2,-73.2,0.4,-73.9C14,-74.6,28,-74.9,39.5,-67.5Z" fill="#EEDBC3" transform="translate(100 100)"/></svg>
 
-<!-- ═══════════ SCREEN: WELCOME (new visitor) ═══════════ -->
-<div id="screen-welcome" class="screen">
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
-    <div class="fade-up" style="text-align:center;margin-bottom:32px">
-      <span class="studio-pill">Good Moves Pilates Studio</span>
-      <div style="font-size:48px;margin-bottom:8px">👋</div>
-      <h1 style="font-size:28px;margin-bottom:8px">Hey Good Mover!</h1>
-      <p style="font-size:14px;color:rgba(0,0,68,0.55)">Enter your number to start collecting visits.<br>Your 10th class is on us!</p>
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- ════ SCREEN: FIRST CHECK-IN ════ -->
+<div id="screen-checkin" class="screen">
+  <div style="width:100%;max-width:380px">
+    <!-- Top: confirmation -->
+    <div class="fade-up" style="text-align:center;padding-top:16px">
+      <span class="studio-pill">Good Moves Studio</span>
+      <div class="check-icon" style="margin-top:20px"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h1 style="font-size:24px;margin-bottom:4px">You're checked in!</h1>
+      <p id="ci-subtext" style="font-size:14px;color:rgba(0,0,68,0.55);margin-bottom:20px"></p>
     </div>
 
-    <div id="phone-block" class="glass fade-up delay-1" style="width:100%;padding:24px">
-      <label style="font-size:13px;font-weight:600;color:rgba(0,0,68,0.5);display:block;margin-bottom:8px">Phone number</label>
-      <div style="display:flex;gap:8px;margin-bottom:16px">
-        <input type="tel" id="country-code" value="+49" style="width:72px;text-align:center;flex-shrink:0">
-        <input type="tel" id="phone-input" placeholder="170 1234567" inputmode="tel" style="flex:1" onkeydown="if(event.key==='Enter')doCheckin()">
+    <!-- Stamp card -->
+    <div class="glass fade-up d1" style="padding:20px;margin-bottom:4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span class="section-label">YOUR PROGRESS</span>
+        <span id="ci-count" style="font-size:14px;font-weight:700;color:var(--red);font-family:var(--font-display)"></span>
       </div>
-      <button class="btn btn-primary" style="width:100%" onclick="doCheckin()">Check In</button>
-      <div id="phone-error" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-top:12px"></div>
+      <div id="ci-stamps" class="stamp-grid"></div>
+      <div class="pbar" style="margin-top:10px"><div id="ci-bar" class="fill"></div></div>
     </div>
 
-    <div class="fade-up delay-2" style="margin-top:16px">
-      <div class="toggle-row">
-        <span style="font-size:13px;color:rgba(0,0,68,0.5)">Remember me on this device</span>
-        <div id="remember-toggle" class="toggle on" onclick="toggleRemember()" style="margin-left:12px">
-          <div class="thumb"></div>
+    <!-- Divider -->
+    <div class="divider fade-up d2">
+      <div class="line"></div>
+      <span class="label">SAVE YOUR PROGRESS</span>
+      <div class="line"></div>
+    </div>
+
+    <!-- Phone entry -->
+    <div class="fade-up d2">
+      <h2 style="font-size:18px;margin-bottom:4px">Enter your phone number</h2>
+      <p style="font-size:14px;color:rgba(0,0,68,0.4);margin-bottom:16px">So we remember you next time. No app needed.</p>
+    </div>
+    <div class="glass fade-up d3" style="padding:20px;margin-bottom:12px">
+      <div style="display:flex;gap:8px;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:6px;padding:0 12px;background:rgba(255,255,255,0.5);border:1.5px solid rgba(0,0,68,0.08);border-radius:16px;flex-shrink:0">
+          <span style="font-size:18px">🇩🇪</span>
+          <input type="tel" id="cc" value="+49" style="width:44px;border:none;padding:16px 0;background:transparent;font-size:18px;text-align:center">
+        </div>
+        <input type="tel" id="phone" placeholder="170 1234 5678" inputmode="tel" style="flex:1" onkeydown="if(event.key==='Enter')savePhone()">
+      </div>
+    </div>
+    <p style="font-size:12px;color:rgba(0,0,68,0.3);text-align:center;margin-bottom:16px">Only stored as a hash · no spam · text DELETE to remove</p>
+    <button class="btn-muted fade-up d3" onclick="savePhone()">✓ Save & Continue</button>
+    <div id="phone-error" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- ════ SCREEN: DASHBOARD ════ -->
+<div id="screen-dash" class="screen">
+  <div style="width:100%;max-width:380px">
+    <!-- Header -->
+    <div class="fade-up" style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px">
+      <div>
+        <p style="font-size:13px;color:rgba(0,0,68,0.4)">Welcome back</p>
+        <h1 style="font-size:28px">Good Moves</h1>
+      </div>
+      <div id="dash-avatar" style="width:40px;height:40px;border-radius:50%;background:var(--red);color:var(--beige);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:16px"></div>
+    </div>
+
+    <!-- Progress ring -->
+    <div class="glass fade-up d1" style="padding:24px;text-align:center;margin-bottom:16px">
+      <div style="position:relative;width:120px;height:120px;margin:0 auto 12px">
+        <svg width="120" height="120" style="transform:rotate(-90deg)">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(0,0,68,0.06)" stroke-width="8"/>
+          <circle id="ring" cx="60" cy="60" r="52" fill="none" stroke="#B0482D" stroke-width="8" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73" style="transition:stroke-dashoffset 1s var(--ease)"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <span id="ring-num" style="font-size:28px;font-weight:800;font-family:var(--font-display);line-height:1"></span>
+          <span style="font-size:11px;color:rgba(0,0,68,0.4)">of 10</span>
         </div>
       </div>
+      <p id="ring-pct" class="section-label" style="margin-bottom:4px"></p>
+      <p id="ring-msg" style="font-size:14px;color:rgba(0,0,68,0.55);font-weight:600;font-family:var(--font-display)"></p>
+      <div id="dash-dots" class="dots" style="margin-top:16px"></div>
+      <p id="dash-reward" style="font-size:13px;color:rgba(0,0,68,0.5);margin-top:10px"></p>
     </div>
-  </div>
-  <button class="btn btn-secondary fade-up delay-3" style="margin-top:auto;font-size:13px" onclick="showMyCard()">My Stamp Card</button>
-</div>
 
-<!-- ═══════════ SCREEN: RETURNING VISITOR ═══════════ -->
-<div id="screen-returning" class="screen">
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
-    <div class="fade-up" style="text-align:center;margin-bottom:8px">
-      <span class="studio-pill">Good Moves Pilates Studio</span>
-      <div style="font-size:48px;margin-bottom:8px">👋</div>
-      <h1 id="returning-greeting" style="font-size:26px;margin-bottom:4px">Welcome back!</h1>
-      <p id="returning-phone-display" style="font-size:14px;color:rgba(0,0,68,0.4);margin-bottom:20px"></p>
+    <!-- Today's classes -->
+    <div class="fade-up d2" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h2 style="font-size:16px">Today's Classes</h2>
+      <span style="font-size:13px;color:var(--red);font-weight:600;font-family:var(--font-display);cursor:pointer">View all →</span>
     </div>
-    <div class="fade-up delay-1" style="width:100%;margin-bottom:20px">
-      <div id="returning-mini-stamps" class="mini-stamps" style="margin-bottom:12px"></div>
-      <p id="returning-stamp-text" style="text-align:center;font-size:14px;font-weight:600;color:var(--red);font-family:var(--font-display)"></p>
-    </div>
-    <button class="btn-hero fade-up delay-1" onclick="doCheckin()">Check In</button>
-    <div class="fade-up delay-2" style="text-align:center;margin-top:20px">
-      <a class="link-text" onclick="switchAccount()" style="display:block;margin-bottom:12px" id="switch-link">Not you? Switch account</a>
-      <a class="link-red" onclick="showMyCard()">View My Card &rarr;</a>
+    <div id="dash-classes" class="glass fade-up d2" style="padding:4px 16px;margin-bottom:16px"></div>
+
+    <!-- Deals -->
+    <h2 class="fade-up d3" style="font-size:16px;margin-bottom:8px">Deals & Perks</h2>
+    <div id="dash-deals" class="glass fade-up d3" style="padding:0;overflow:hidden;margin-bottom:16px"></div>
+
+    <!-- My Card link -->
+    <div class="fade-up d3" style="text-align:center">
+      <a onclick="showMyCard()" style="font-size:14px;color:var(--red);font-weight:600;font-family:var(--font-display);cursor:pointer">View Full Stamp Card →</a>
     </div>
   </div>
 </div>
 
-<!-- ═══════════ SCREEN: LOADING ═══════════ -->
+<!-- ════ SCREEN: LOADING ════ -->
 <div id="screen-loading" class="screen" style="justify-content:center">
   <div style="text-align:center">
-    <div style="width:48px;height:48px;border:3px solid rgba(0,0,68,0.08);border-top-color:var(--red);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px"></div>
+    <div style="width:48px;height:48px;border:3px solid rgba(0,0,68,0.08);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px"></div>
     <p style="font-size:14px;color:rgba(0,0,68,0.5)">Checking in...</p>
   </div>
 </div>
 
-<!-- ═══════════ SCREEN: CHECKED IN ═══════════ -->
-<div id="screen-checkedin" class="screen">
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
-    <div class="fade-up" style="text-align:center;margin-bottom:24px">
-      <div class="check-icon"></div>
-      <h1 style="font-size:24px;margin-bottom:4px">You're checked in!</h1>
-      <div id="checkin-class-pill"></div>
-    </div>
-    <div class="glass fade-up delay-1" style="width:100%;padding:24px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <span style="font-size:14px;font-weight:600;font-family:var(--font-display)">Your Stamps</span>
-        <span id="stamp-label" style="font-size:14px;font-weight:600;color:var(--red);font-family:var(--font-display)"></span>
-      </div>
-      <div id="stamp-grid" class="stamp-grid"></div>
-      <div class="progress-bar" style="margin-top:12px">
-        <div id="progress-fill" class="progress-fill"></div>
-      </div>
-      <p id="stamps-message" style="text-align:center;font-size:13px;color:rgba(0,0,68,0.55);margin-top:12px"></p>
-    </div>
-    <div class="fade-up delay-2" style="display:flex;gap:12px;margin-top:24px;width:100%">
-      <button class="btn btn-secondary" style="flex:1" onclick="showMyCard()">My Card</button>
-      <button class="btn btn-primary" style="flex:1" onclick="goHome()">Done</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ SCREEN: ALREADY CHECKED IN ═══════════ -->
-<div id="screen-already" class="screen">
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
-    <div class="fade-up" style="text-align:center;margin-bottom:24px">
-      <div class="check-icon"></div>
-      <h1 style="font-size:24px;margin-bottom:4px">You're already checked in!</h1>
-      <p id="already-class-detail" style="font-size:14px;color:rgba(0,0,68,0.55);margin-top:4px"></p>
-      <div id="already-class-pill"></div>
-    </div>
-    <div class="glass fade-up delay-1" style="width:100%;padding:24px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <span style="font-size:14px;font-weight:600;font-family:var(--font-display)">Your Stamps</span>
-        <span id="already-stamp-label" style="font-size:14px;font-weight:600;color:var(--red);font-family:var(--font-display)"></span>
-      </div>
-      <div id="already-stamp-grid" class="stamp-grid"></div>
-      <div class="progress-bar" style="margin-top:12px">
-        <div id="already-progress-fill" class="progress-fill"></div>
-      </div>
-    </div>
-    <div class="fade-up delay-2" style="display:flex;gap:12px;margin-top:24px;width:100%">
-      <button class="btn btn-secondary" style="flex:1" onclick="showMyCard()">My Card</button>
-      <button class="btn btn-primary" style="flex:1" onclick="goHome()">Done</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ SCREEN: REWARD ═══════════ -->
-<div id="screen-reward" class="screen">
+<!-- ════ SCREEN: CELEBRATION ════ -->
+<div id="screen-celebrate" class="screen" style="background:#B0482D;min-height:100vh">
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
     <div class="fade-up" style="text-align:center;margin-bottom:24px">
       <div style="font-size:56px;margin-bottom:8px">🎉</div>
-      <h1 style="font-size:28px;margin-bottom:8px">You earned a<br>free class!</h1>
-      <p style="font-size:14px;color:rgba(0,0,68,0.55)">10 stamps completed — amazing!</p>
+      <h1 style="font-size:28px;color:var(--beige);margin-bottom:8px">You earned a<br>free class!</h1>
+      <p style="font-size:14px;color:rgba(238,219,195,0.7)">10 visits completed — you're amazing!</p>
     </div>
-    <div class="glass fade-up delay-1" style="width:100%;padding:24px">
-      <p style="font-size:14px;color:rgba(0,0,68,0.6);margin-bottom:16px;text-align:center">Enter your details so we can book your free class</p>
-      <input type="text" id="reward-name" placeholder="Your name" style="margin-bottom:12px">
-      <input type="email" id="reward-email" placeholder="Email address" style="margin-bottom:16px">
-      <button class="btn btn-primary" style="width:100%" onclick="submitRewardProfile()">Claim My Free Class</button>
-      <div id="reward-error" style="display:none;color:var(--red);font-size:13px;text-align:center;margin-top:12px"></div>
+    <div style="background:rgba(255,255,255,0.15);backdrop-filter:blur(16px);border-radius:20px;border:1px solid rgba(255,255,255,0.2);padding:24px;width:100%">
+      <p style="font-size:14px;color:rgba(238,219,195,0.8);margin-bottom:16px;text-align:center">So we can book your free class</p>
+      <input type="text" id="rew-name" placeholder="Your name" style="margin-bottom:12px;background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.2);color:var(--beige)">
+      <input type="email" id="rew-email" placeholder="Email address" style="margin-bottom:16px;background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.2);color:var(--beige)">
+      <button class="btn" style="width:100%;background:var(--beige);color:var(--red)" onclick="submitReward()">Claim My Reward →</button>
+      <div id="rew-error" style="display:none;color:var(--beige);font-size:13px;text-align:center;margin-top:12px"></div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════ SCREEN: REWARD CODE ═══════════ -->
-<div id="screen-reward-code" class="screen">
+<!-- ════ SCREEN: REWARD CODE ════ -->
+<div id="screen-code" class="screen">
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;max-width:380px">
     <div class="fade-up" style="text-align:center;margin-bottom:24px">
       <div style="font-size:48px;margin-bottom:8px">🎫</div>
       <h1 style="font-size:24px;margin-bottom:8px">Your Free Class Code</h1>
       <p style="font-size:14px;color:rgba(0,0,68,0.55)">Show this code to reception to book your free class</p>
     </div>
-    <div class="glass fade-up delay-1" style="width:100%;padding:24px;text-align:center">
-      <div class="verification-label">VERIFICATION CODE</div>
-      <div id="reward-code-display" class="verification-code"></div>
+    <div class="glass fade-up d1" style="width:100%;padding:24px;text-align:center">
+      <p class="section-label" style="margin-bottom:4px">VERIFICATION CODE</p>
+      <div id="code-display" class="vcode"></div>
       <p style="font-size:13px;color:rgba(0,0,68,0.4)">This code is saved to your stamp card</p>
       <div class="info-box">Your stamp card has been reset — start collecting again!</div>
     </div>
-    <div class="fade-up delay-2" style="display:flex;gap:12px;margin-top:24px;width:100%">
+    <div class="fade-up d2" style="display:flex;gap:12px;margin-top:24px;width:100%">
       <button class="btn btn-secondary" style="flex:1" onclick="showMyCard()">My Card</button>
       <button class="btn btn-primary" style="flex:1" onclick="goHome()">Done</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════ SCREEN: MY CARD ═══════════ -->
+<!-- ════ SCREEN: MY CARD ════ -->
 <div id="screen-card" class="screen">
   <div style="width:100%;max-width:380px">
     <div class="fade-up" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
       <h1 style="font-size:22px">My Stamp Card</h1>
-      <button class="btn btn-secondary" style="padding:8px 16px;font-size:13px" onclick="goHome()">&larr; Back</button>
+      <button class="btn btn-secondary" style="padding:8px 16px;font-size:13px" onclick="goHome()">← Back</button>
     </div>
-
-    <div class="glass fade-up delay-1" style="padding:24px;margin-bottom:16px">
+    <div class="glass fade-up d1" style="padding:24px;margin-bottom:16px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-size:14px;font-weight:600;font-family:var(--font-display)">Current Progress</span>
-        <span id="card-stamp-label" style="font-size:14px;font-weight:600;color:var(--red);font-family:var(--font-display)"></span>
+        <span class="section-label">CURRENT PROGRESS</span>
+        <span id="card-count" style="font-size:14px;font-weight:700;color:var(--red);font-family:var(--font-display)"></span>
       </div>
-      <div id="card-stamp-grid" class="stamp-grid" style="margin-top:12px"></div>
-      <div class="progress-bar" style="margin-top:12px">
-        <div id="card-progress-fill" class="progress-fill"></div>
-      </div>
+      <div id="card-stamps" class="stamp-grid" style="margin-top:12px"></div>
+      <div class="pbar" style="margin-top:12px"><div id="card-bar" class="fill"></div></div>
       <div style="display:flex;justify-content:space-between;margin-top:16px">
-        <div style="text-align:center;flex:1">
-          <div id="card-total-visits" style="font-size:24px;font-weight:800;font-family:var(--font-display);color:var(--red)">0</div>
-          <div style="font-size:11px;color:rgba(0,0,68,0.4)">Total Visits</div>
-        </div>
-        <div style="text-align:center;flex:1">
-          <div id="card-rewards-claimed" style="font-size:24px;font-weight:800;font-family:var(--font-display);color:var(--red)">0</div>
-          <div style="font-size:11px;color:rgba(0,0,68,0.4)">Rewards</div>
-        </div>
+        <div style="text-align:center;flex:1"><div id="card-visits" style="font-size:24px;font-weight:800;font-family:var(--font-display);color:var(--red)">0</div><div style="font-size:11px;color:rgba(0,0,68,0.4)">Total Visits</div></div>
+        <div style="text-align:center;flex:1"><div id="card-rewards" style="font-size:24px;font-weight:800;font-family:var(--font-display);color:var(--red)">0</div><div style="font-size:11px;color:rgba(0,0,68,0.4)">Rewards</div></div>
       </div>
     </div>
-
-    <div id="card-rewards-section" style="display:none">
-      <h3 class="fade-up delay-1" style="font-size:14px;color:rgba(0,0,68,0.5);margin-bottom:8px">Rewards</h3>
-      <div id="card-rewards-list" class="glass fade-up delay-2" style="padding:16px;margin-bottom:16px"></div>
+    <div id="card-rew-section" style="display:none">
+      <h3 class="fade-up d1" style="font-size:14px;color:rgba(0,0,68,0.5);margin-bottom:8px">Rewards</h3>
+      <div id="card-rew-list" class="glass fade-up d2" style="padding:16px;margin-bottom:16px"></div>
     </div>
-
-    <h3 class="fade-up delay-2" style="font-size:14px;color:rgba(0,0,68,0.5);margin-bottom:8px">Visit History</h3>
-    <div id="card-visits" class="glass fade-up delay-3" style="padding:16px">
-      <p style="text-align:center;color:rgba(0,0,68,0.3);font-size:13px">No visits yet</p>
-    </div>
+    <h3 class="fade-up d2" style="font-size:14px;color:rgba(0,0,68,0.5);margin-bottom:8px">Visit History</h3>
+    <div id="card-hist" class="glass fade-up d3" style="padding:16px"><p style="text-align:center;color:rgba(0,0,68,0.3);font-size:13px">No visits yet</p></div>
   </div>
 </div>
 
-<!-- ═══════════ SCREEN: OFFLINE ═══════════ -->
+<!-- ════ SCREEN: OFFLINE ════ -->
 <div id="screen-offline" class="screen" style="justify-content:center">
   <div style="text-align:center;max-width:300px">
     <div style="font-size:48px;margin-bottom:16px">📡</div>
     <h1 style="font-size:22px;margin-bottom:8px">You're offline</h1>
     <p style="font-size:14px;color:rgba(0,0,68,0.55);margin-bottom:24px">Please check your connection to check in</p>
-    <button class="btn btn-primary" onclick="retryConnection()">Try Again</button>
+    <button class="btn btn-primary" onclick="retry()">Try Again</button>
   </div>
 </div>
 
 <script>
 // ═══ STATE ═══
-let currentMember = null;
-let currentVisits = [];
-let currentRewards = [];
-let rememberMe = true;
-let pendingReward = null;
+let member = null, visits = [], rewards = [], pendingReward = null;
 
-// ═══ SPLASH + INIT ═══
+const MOTIV = [
+  "Fresh card — let's get moving!",
+  "Great start! Keep it up!",
+  "You're building a streak!",
+  "3 down, 7 to go!",
+  "Almost halfway there!",
+  "Halfway! Keep that energy!",
+  "More than halfway — you've got this!",
+  "3 more to go!",
+  "So close! Just 2 more!",
+  "One. More. Class. 🔥",
+];
+
+// ═══ DEVICE ID ═══
+function getDeviceId() {
+  let id = localStorage.getItem('tapin_device_id');
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem('tapin_device_id', id);
+  }
+  return id;
+}
+
+// ═══ INIT ═══
 document.addEventListener('DOMContentLoaded', () => {
-  // Splash auto-dismiss after 1.5s
   setTimeout(() => {
-    const splash = document.getElementById('splash');
-    splash.classList.add('fade-out');
-    setTimeout(() => splash.style.display = 'none', 400);
+    document.getElementById('splash').classList.add('out');
+    setTimeout(() => document.getElementById('splash').style.display = 'none', 400);
   }, 1500);
 
-  const saved = localStorage.getItem('tapin_phone');
-  const savedRemember = localStorage.getItem('tapin_remember');
-  if (savedRemember === 'false') {
-    rememberMe = false;
-    document.getElementById('remember-toggle').classList.remove('on');
-  }
-  if (saved && rememberMe) {
-    loadReturningUser(saved);
-  } else {
-    showScreen('welcome');
-  }
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
+
+  startFlow();
 });
 
-async function loadReturningUser(phone) {
-  try {
-    const res = await fetch('/api/member/' + encodeURIComponent(phone));
-    if (!res.ok) { showScreen('welcome'); return; }
-    const data = await res.json();
-    currentMember = data.member;
-    currentVisits = data.visits;
-    currentRewards = data.rewards;
-    showReturningScreen();
-  } catch { showScreen('welcome'); }
-}
+async function startFlow() {
+  if (!navigator.onLine) { show('offline'); return; }
 
-function showReturningScreen() {
-  const m = currentMember;
-  const name = m.name;
-  document.getElementById('returning-greeting').textContent = name ? `Welcome back, ${name}!` : 'Welcome back!';
-  document.getElementById('returning-phone-display').textContent = name ? formatPhone(m.phone) : formatPhone(m.phone);
-  document.getElementById('returning-phone-display').style.display = name ? 'block' : 'block';
-  document.getElementById('switch-link').textContent = name ? `Not ${name}? Switch account` : 'Not you? Switch account';
+  const phone = localStorage.getItem('tapin_phone');
+  if (phone) {
+    // Returning user — auto-checkin + show dashboard
+    show('loading');
+    try {
+      const res = await fetch('/api/checkin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await res.json();
+      member = data.member;
+      visits = data.visits;
+      rewards = data.rewards;
+      localStorage.setItem('tapin_member', JSON.stringify(member));
 
-  // Mini stamps
-  renderMiniStamps(m.current_stamp_count);
-  document.getElementById('returning-stamp-text').textContent =
-    m.current_stamp_count === 0 ? 'Fresh card — ready to go!' : `Stamp ${m.current_stamp_count} of 10`;
-
-  showScreen('returning');
-}
-
-function renderMiniStamps(filled) {
-  const container = document.getElementById('returning-mini-stamps');
-  let html = '';
-  for (let i = 0; i < 10; i++) {
-    html += `<div class="mini-stamp ${i < filled ? 'filled' : 'empty'}">${i < filled ? '✓' : ''}</div>`;
-  }
-  container.innerHTML = html;
-}
-
-function switchAccount() {
-  localStorage.removeItem('tapin_phone');
-  currentMember = null;
-  currentVisits = [];
-  currentRewards = [];
-  showScreen('welcome');
-}
-
-function formatPhone(p) {
-  if (!p) return '';
-  if (p.startsWith('+49') && p.length > 6) {
-    return p.slice(0,3) + ' ' + p.slice(3,6) + ' ' + p.slice(6);
-  }
-  return p;
-}
-
-// ═══ NAVIGATION ═══
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-}
-
-function goHome() {
-  const saved = localStorage.getItem('tapin_phone');
-  if (saved && rememberMe) {
-    loadReturningUser(saved);
+      if (data.reward_earned) {
+        pendingReward = data.reward;
+        haptic(); spawnConfetti();
+        show('celebrate');
+      } else {
+        if (!data.already_checked_in) haptic();
+        renderDashboard(data.already_checked_in, data.visit);
+        show('dash');
+        if (data.already_checked_in) showToast('You checked in earlier today ✓');
+      }
+    } catch {
+      // Offline or error — try cached
+      const cached = localStorage.getItem('tapin_member');
+      if (cached) {
+        member = JSON.parse(cached);
+        renderDashboard(true, null);
+        show('dash');
+        showToast('Showing cached data — check your connection');
+      } else { show('offline'); }
+    }
   } else {
-    showScreen('welcome');
+    // First-time — instant device-based checkin
+    show('loading');
+    try {
+      const res = await fetch('/api/checkin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ device_id: getDeviceId() }),
+      });
+      const data = await res.json();
+      member = data.member;
+      visits = data.visits;
+      rewards = data.rewards;
+      if (!data.already_checked_in) haptic();
+
+      if (data.reward_earned) {
+        pendingReward = data.reward;
+        haptic(); spawnConfetti();
+        show('celebrate');
+      } else {
+        renderFirstCheckin(data);
+        show('checkin');
+      }
+    } catch {
+      show('offline');
+    }
   }
 }
 
-function toggleRemember() {
-  rememberMe = !rememberMe;
-  const toggle = document.getElementById('remember-toggle');
-  toggle.classList.toggle('on', rememberMe);
-  localStorage.setItem('tapin_remember', rememberMe);
-  if (!rememberMe) {
-    localStorage.removeItem('tapin_phone');
-  }
+// ═══ RENDER: FIRST CHECK-IN ═══
+function renderFirstCheckin(data) {
+  const m = data.member;
+  const v = m.visit_count;
+  const s = m.current_stamp_count;
+  document.getElementById('ci-subtext').textContent =
+    v === 1 ? `Visit ${v} of 10 — welcome to Good Moves!` : `Visit ${v} of 10 — keep moving!`;
+  document.getElementById('ci-count').textContent = `${s}/10`;
+  renderStamps('ci-stamps', s, data.already_checked_in ? -1 : s);
+  document.getElementById('ci-bar').style.width = (s / 10 * 100) + '%';
 }
 
-// ═══ CHECK-IN ═══
-function getFullPhone() {
-  if (currentMember) return currentMember.phone;
-  const cc = document.getElementById('country-code').value.trim();
-  const num = document.getElementById('phone-input').value.trim();
-  if (!num) return null;
-  return cc + num;
+// ═══ RENDER: DASHBOARD ═══
+async function renderDashboard(alreadyIn, visit) {
+  const m = member;
+  const s = m.current_stamp_count;
+  const pct = Math.round(s / 10 * 100);
+
+  // Avatar
+  const av = document.getElementById('dash-avatar');
+  if (m.name) {
+    av.textContent = m.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  } else {
+    av.textContent = m.phone ? m.phone.slice(-2) : '?';
+  }
+
+  // Ring
+  const circ = 2 * Math.PI * 52; // r=52
+  const offset = circ * (1 - s / 10);
+  document.getElementById('ring-num').textContent = s;
+  setTimeout(() => { document.getElementById('ring').style.strokeDashoffset = offset; }, 100);
+  document.getElementById('ring-pct').textContent = `${pct}% COMPLETE`;
+  document.getElementById('ring-msg').textContent = MOTIV[s] || MOTIV[0];
+
+  // Dots
+  let dots = '';
+  for (let i = 0; i < 10; i++) dots += `<div class="dot ${i < s ? 'filled' : 'empty'}"></div>`;
+  document.getElementById('dash-dots').innerHTML = dots;
+
+  // Reward
+  const toGo = 10 - s;
+  document.getElementById('dash-reward').textContent = `🎁 Reward: Free class at visit 10 · ${toGo} to go`;
+
+  // Classes
+  try {
+    const schedRes = await fetch('/api/schedule/today');
+    const sched = await schedRes.json();
+    const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    const el = document.getElementById('dash-classes');
+    if (sched.classes && sched.classes.length > 0) {
+      el.innerHTML = sched.classes.map(c => {
+        const [h, mn] = c.time.split(':').map(Number);
+        const cMin = h * 60 + mn;
+        const isCurrent = visit && visit.class_name === c.name;
+        return `<div class="class-row${isCurrent ? ' current' : ''}">
+          <span class="class-time">${c.time}</span>
+          <div class="class-info">
+            <div class="class-name">${c.name}</div>
+            <div class="class-detail">${c.teacher} · ${c.spots} spots</div>
+          </div>
+          <button class="btn-outline">Book</button>
+        </div>`;
+      }).join('');
+    } else {
+      el.innerHTML = '<p style="padding:16px;text-align:center;color:rgba(0,0,68,0.3);font-size:13px">No classes today</p>';
+    }
+  } catch { /* ignore */ }
+
+  // Deals
+  try {
+    const dealRes = await fetch('/api/deals');
+    const dealData = await dealRes.json();
+    const el = document.getElementById('dash-deals');
+    el.innerHTML = (dealData.deals || []).map(d => `
+      <div class="deal-card">
+        <div class="deal-icon">${d.icon}</div>
+        <div class="deal-info">
+          <div class="deal-title">${d.title}</div>
+          <div class="deal-desc">${d.description}</div>
+        </div>
+        <span class="deal-tag ${d.tag === 'Popular' ? 'popular' : 'new'}">${d.tag}</span>
+      </div>
+    `).join('');
+  } catch { /* ignore */ }
 }
 
-async function doCheckin() {
-  const phone = getFullPhone();
-  if (!phone) {
-    showError('phone-error', 'Please enter your phone number');
-    return;
-  }
-
-  if (!navigator.onLine) {
-    showScreen('offline');
-    return;
-  }
-
-  showScreen('loading');
+// ═══ SAVE PHONE ═══
+async function savePhone() {
+  const cc = document.getElementById('cc').value.trim();
+  const num = document.getElementById('phone').value.trim();
+  if (!num) { showErr('phone-error', 'Please enter your phone number'); return; }
+  const phone = cc + num;
 
   try {
-    const res = await fetch('/api/checkin', {
+    const res = await fetch(`/api/member/${member.id}/link-phone`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone }),
     });
     const data = await res.json();
-    if (!res.ok) {
-      showError('phone-error', data.error || 'Something went wrong');
-      showScreen('welcome');
-      return;
-    }
+    if (!res.ok) { showErr('phone-error', data.error || 'Something went wrong'); return; }
 
-    currentMember = data.member;
-    currentVisits = data.visits;
-    currentRewards = data.rewards;
+    member = data.member;
+    visits = data.visits;
+    rewards = data.rewards;
+    localStorage.setItem('tapin_phone', member.phone);
+    localStorage.setItem('tapin_member', JSON.stringify(member));
 
-    if (rememberMe) {
-      localStorage.setItem('tapin_phone', currentMember.phone);
-    }
-    localStorage.setItem('tapin_member', JSON.stringify(currentMember));
-    localStorage.setItem('tapin_visits', JSON.stringify(currentVisits.slice(0, 20)));
-
-    if (data.already_checked_in) {
-      showAlreadyCheckedIn(data);
-    } else if (data.reward_earned) {
-      pendingReward = data.reward;
-      haptic();
-      spawnConfetti();
-      showScreen('reward');
-    } else {
-      haptic();
-      showCheckedIn(data);
-    }
-  } catch (e) {
-    if (!navigator.onLine) {
-      showScreen('offline');
-    } else {
-      showError('phone-error', 'Connection error — please try again');
-      showScreen('welcome');
-    }
+    showToast('Saved! We\'ll remember you next time.');
+    // Transition to dashboard after brief delay
+    setTimeout(() => {
+      renderDashboard(false, visits[0]);
+      show('dash');
+    }, 1200);
+  } catch {
+    showErr('phone-error', 'Connection error — please try again');
   }
-}
-
-function buildClassPill(className, classTime) {
-  if (className) {
-    return `<span class="class-pill">${className} &middot; ${classTime}</span>`;
-  }
-  return `<span class="class-pill class-pill-grey">General check-in</span>`;
-}
-
-function showCheckedIn(data) {
-  const m = data.member;
-  document.getElementById('checkin-class-pill').innerHTML = buildClassPill(data.visit.class_name, data.visit.class_time);
-  document.getElementById('stamp-label').textContent = `Stamp ${m.current_stamp_count} of 10`;
-  document.getElementById('stamps-message').textContent =
-    m.current_stamp_count === 0 ? 'Card complete! Starting fresh!'
-    : `${10 - m.current_stamp_count} more until your free class!`;
-  renderStampGrid('stamp-grid', m.current_stamp_count, m.current_stamp_count);
-  document.getElementById('progress-fill').style.width = (m.current_stamp_count / 10 * 100) + '%';
-  showScreen('checkedin');
-}
-
-function showAlreadyCheckedIn(data) {
-  const m = data.member;
-  const v = data.visit;
-  if (v.class_name) {
-    document.getElementById('already-class-detail').textContent = `You checked in earlier today for`;
-    document.getElementById('already-class-pill').innerHTML = `<span class="class-pill">${v.class_name} &middot; ${v.class_time}</span>`;
-  } else {
-    document.getElementById('already-class-detail').textContent = 'You checked in earlier today';
-    document.getElementById('already-class-pill').innerHTML = '';
-  }
-  document.getElementById('already-stamp-label').textContent = `Stamp ${m.current_stamp_count} of 10`;
-  renderStampGrid('already-stamp-grid', m.current_stamp_count, -1);
-  document.getElementById('already-progress-fill').style.width = (m.current_stamp_count / 10 * 100) + '%';
-  showScreen('already');
 }
 
 // ═══ REWARD FLOW ═══
-async function submitRewardProfile() {
-  const name = document.getElementById('reward-name').value.trim();
-  const email = document.getElementById('reward-email').value.trim();
-  if (!name) {
-    showError('reward-error', 'Please enter your name');
-    return;
-  }
+async function submitReward() {
+  const name = document.getElementById('rew-name').value.trim();
+  const email = document.getElementById('rew-email').value.trim();
+  if (!name) { showErr('rew-error', 'Please enter your name'); return; }
 
   try {
-    await fetch('/api/member/' + encodeURIComponent(currentMember.phone) + '/profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email }),
-    });
+    if (member.phone) {
+      await fetch('/api/member/' + encodeURIComponent(member.phone) + '/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email }),
+      });
+    }
+    member.name = name;
+    localStorage.setItem('tapin_member', JSON.stringify(member));
 
     const code = pendingReward.verification_code;
-    const formatted = code.slice(0,3) + ' ' + code.slice(3);
-    document.getElementById('reward-code-display').textContent = formatted;
-    showScreen('reward-code');
-
-    currentMember.name = name;
-    if (rememberMe) localStorage.setItem('tapin_phone', currentMember.phone);
-    localStorage.setItem('tapin_member', JSON.stringify(currentMember));
+    document.getElementById('code-display').textContent = code.slice(0, 3) + ' ' + code.slice(3);
+    show('code');
   } catch {
-    showError('reward-error', 'Something went wrong — please try again');
+    showErr('rew-error', 'Something went wrong — please try again');
   }
 }
 
 // ═══ MY CARD ═══
 async function showMyCard() {
-  let member = currentMember;
-  let visits = currentVisits;
-  let rewards = currentRewards;
-
-  const phone = currentMember?.phone || localStorage.getItem('tapin_phone');
-  if (!phone) {
-    const cached = localStorage.getItem('tapin_member');
-    if (cached) {
-      member = JSON.parse(cached);
-      visits = JSON.parse(localStorage.getItem('tapin_visits') || '[]');
-    } else {
-      showScreen('welcome');
-      return;
-    }
-  }
+  const phone = member?.phone || localStorage.getItem('tapin_phone');
+  let m = member, v = visits, r = rewards;
 
   if (navigator.onLine && phone) {
     try {
       const res = await fetch('/api/member/' + encodeURIComponent(phone));
       if (res.ok) {
         const data = await res.json();
-        member = data.member;
-        visits = data.visits;
-        rewards = data.rewards;
-        currentMember = member;
-        currentVisits = visits;
-        currentRewards = rewards;
+        m = data.member; v = data.visits; r = data.rewards;
+        member = m; visits = v; rewards = r;
       }
     } catch { /* use cached */ }
   }
+  if (!m) { const c = localStorage.getItem('tapin_member'); if (c) m = JSON.parse(c); }
+  if (!m) { goHome(); return; }
 
-  if (!member) { showScreen('welcome'); return; }
+  const s = m.current_stamp_count;
+  document.getElementById('card-count').textContent = `${s}/10`;
+  renderStamps('card-stamps', s, -1);
+  document.getElementById('card-bar').style.width = (s / 10 * 100) + '%';
+  document.getElementById('card-visits').textContent = m.visit_count;
+  document.getElementById('card-rewards').textContent = m.total_rewards_claimed;
 
-  document.getElementById('card-stamp-label').textContent = `${member.current_stamp_count} of 10`;
-  renderStampGrid('card-stamp-grid', member.current_stamp_count, -1);
-  document.getElementById('card-progress-fill').style.width = (member.current_stamp_count / 10 * 100) + '%';
-  document.getElementById('card-total-visits').textContent = member.visit_count;
-  document.getElementById('card-rewards-claimed').textContent = member.total_rewards_claimed;
-
-  if (rewards && rewards.length > 0) {
-    document.getElementById('card-rewards-section').style.display = 'block';
-    document.getElementById('card-rewards-list').innerHTML = rewards.map(r => {
-      const code = r.verification_code ? r.verification_code.slice(0,3) + ' ' + r.verification_code.slice(3) : '';
-      return `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,68,0.04)">
-        <div>
-          <span class="tag" style="background:${r.status === 'unclaimed' ? 'rgba(176,72,45,0.1);color:var(--red)' : 'rgba(0,0,68,0.06);color:rgba(0,0,68,0.4)'}">
-            ${r.status === 'unclaimed' ? 'Active' : 'Claimed'}
-          </span>
-          ${code ? `<span style="font-family:var(--font-mono);font-weight:700;margin-left:8px;color:var(--red);letter-spacing:1px">${code}</span>` : ''}
-        </div>
-        <span style="font-size:12px;color:rgba(0,0,68,0.3)">${formatDate(r.earned_at)}</span>
+  if (r && r.length > 0) {
+    document.getElementById('card-rew-section').style.display = 'block';
+    document.getElementById('card-rew-list').innerHTML = r.map(rw => {
+      const code = rw.verification_code ? rw.verification_code.slice(0,3) + ' ' + rw.verification_code.slice(3) : '';
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,68,0.04)">
+        <div><span class="tag" style="background:${rw.status === 'unclaimed' ? 'rgba(176,72,45,0.1);color:var(--red)' : 'rgba(0,0,68,0.06);color:rgba(0,0,68,0.4)'}">${rw.status === 'unclaimed' ? 'Active' : 'Claimed'}</span>${code ? `<span style="font-family:var(--font-mono);font-weight:700;margin-left:8px;color:var(--red)">${code}</span>` : ''}</div>
+        <span style="font-size:12px;color:rgba(0,0,68,0.3)">${fmtDate(rw.earned_at)}</span>
       </div>`;
     }).join('');
-  } else {
-    document.getElementById('card-rewards-section').style.display = 'none';
-  }
+  } else { document.getElementById('card-rew-section').style.display = 'none'; }
 
-  const visitEl = document.getElementById('card-visits');
-  if (visits && visits.length > 0) {
-    visitEl.innerHTML = visits.slice(0, 20).map(v => `
-      <div class="visit-row">
-        <div>
-          <div style="font-size:14px;font-weight:600">${v.class_name || 'General check-in'}</div>
-          <div style="font-size:12px;color:rgba(0,0,68,0.4)">${formatDate(v.checked_in_at)}${v.class_time ? ' &middot; ' + v.class_time : ''}</div>
-        </div>
-        <span class="tag" style="background:rgba(176,72,45,0.08);color:var(--red)">&#10003;</span>
-      </div>
-    `).join('');
-  } else {
-    visitEl.innerHTML = '<p style="text-align:center;color:rgba(0,0,68,0.3);font-size:13px">No visits yet</p>';
-  }
+  const hEl = document.getElementById('card-hist');
+  if (v && v.length > 0) {
+    hEl.innerHTML = v.slice(0, 20).map(vi => `<div class="visit-row"><div><div style="font-size:14px;font-weight:600">${vi.class_name || 'General check-in'}</div><div style="font-size:12px;color:rgba(0,0,68,0.4)">${fmtDate(vi.checked_in_at)}${vi.class_time ? ' · ' + vi.class_time : ''}</div></div><span class="tag" style="background:rgba(176,72,45,0.08);color:var(--red)">✓</span></div>`).join('');
+  } else { hEl.innerHTML = '<p style="text-align:center;color:rgba(0,0,68,0.3);font-size:13px">No visits yet</p>'; }
 
-  showScreen('card');
-}
-
-// ═══ STAMP GRID RENDERER ═══
-function renderStampGrid(containerId, filled, newStamp) {
-  const container = document.getElementById(containerId);
-  let html = '';
-  for (let i = 0; i < 10; i++) {
-    const isFilled = i < filled;
-    const isNew = i === newStamp - 1;
-    const isLatest = isFilled && i === filled - 1 && !isNew;
-    html += `<div class="stamp ${isFilled ? 'filled' : 'empty'} ${isNew ? 'new' : ''} ${isLatest ? 'latest' : ''}">${isFilled ? '&#10003;' : i + 1}</div>`;
-  }
-  container.innerHTML = html;
+  show('card');
 }
 
 // ═══ HELPERS ═══
-function showError(id, msg) {
-  const el = document.getElementById(id);
-  el.textContent = msg;
-  el.style.display = 'block';
-  setTimeout(() => { el.style.display = 'none'; }, 4000);
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
 }
 
-function haptic() {
-  if (navigator.vibrate) navigator.vibrate([50]);
+function goHome() {
+  const phone = localStorage.getItem('tapin_phone');
+  if (phone && member) {
+    renderDashboard(true, null);
+    show('dash');
+  } else { startFlow(); }
 }
 
-function formatDate(d) {
-  if (!d) return '';
-  const date = new Date(d + (d.includes('Z') ? '' : 'Z'));
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Europe/Berlin' });
-}
-
-function retryConnection() {
-  if (navigator.onLine) {
-    goHome();
-  } else {
-    showScreen('offline');
+function renderStamps(id, filled, newIdx) {
+  let html = '';
+  for (let i = 0; i < 10; i++) {
+    const f = i < filled;
+    const n = i === newIdx - 1;
+    html += `<div class="stamp ${f ? 'filled' : 'empty'} ${n ? 'new' : ''}">${f ? '✓' : i + 1}</div>`;
   }
+  document.getElementById(id).innerHTML = html;
 }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+
+function haptic() { if (navigator.vibrate) navigator.vibrate([50]); }
+
+function fmtDate(d) {
+  if (!d) return '';
+  const dt = new Date(d + (d.includes('Z') ? '' : 'Z'));
+  return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Europe/Berlin' });
+}
+
+function retry() { if (navigator.onLine) startFlow(); }
 
 function spawnConfetti() {
   const colors = ['#B0482D', '#C4603F', '#EEDBC3', '#001DA2', '#FBF6F1', '#FFD700'];

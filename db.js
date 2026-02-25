@@ -12,7 +12,8 @@ db.pragma('foreign_keys = ON');
 db.exec(`
   CREATE TABLE IF NOT EXISTS members (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    phone TEXT UNIQUE NOT NULL,
+    phone TEXT UNIQUE,
+    device_id TEXT UNIQUE,
     name TEXT,
     email TEXT,
     visit_count INTEGER DEFAULT 0,
@@ -49,13 +50,32 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_rewards_member ON rewards(member_id);
 `);
 
+// Add device_id column if missing (migration for existing DBs)
+try {
+  db.exec(`ALTER TABLE members ADD COLUMN device_id TEXT UNIQUE`);
+} catch (e) {
+  // Column already exists — ignore
+}
+// Make phone nullable if it isn't already (SQLite doesn't support ALTER COLUMN,
+// but new table definition above already has phone without NOT NULL)
+// Existing rows with phone will keep working fine.
+
+// Create index for device_id lookups
+try {
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_members_device ON members(device_id)`);
+} catch (e) { /* ignore */ }
+
 // ─── Prepared statements ───
 const stmts = {
   getMemberByPhone: db.prepare('SELECT * FROM members WHERE phone = ?'),
+  getMemberByDeviceId: db.prepare('SELECT * FROM members WHERE device_id = ?'),
+  getMemberById: db.prepare('SELECT * FROM members WHERE id = ?'),
 
-  createMember: db.prepare(`
-    INSERT INTO members (phone) VALUES (?)
-    RETURNING *
+  createMemberWithPhone: db.prepare(`
+    INSERT INTO members (phone) VALUES (?) RETURNING *
+  `),
+  createMemberWithDevice: db.prepare(`
+    INSERT INTO members (device_id) VALUES (?) RETURNING *
   `),
 
   updateMemberVisit: db.prepare(`
@@ -70,6 +90,20 @@ const stmts = {
     UPDATE members SET name = ?, email = ?, updated_at = datetime('now')
     WHERE phone = ?
   `),
+
+  linkPhoneToMember: db.prepare(`
+    UPDATE members SET phone = ?, updated_at = datetime('now')
+    WHERE id = ?
+  `),
+
+  // Transfer visits from one member to another
+  transferVisits: db.prepare(`
+    UPDATE visits SET member_id = ? WHERE member_id = ?
+  `),
+  transferRewards: db.prepare(`
+    UPDATE rewards SET member_id = ? WHERE member_id = ?
+  `),
+  deleteMember: db.prepare(`DELETE FROM members WHERE id = ?`),
 
   createVisit: db.prepare(`
     INSERT INTO visits (member_id, class_name, class_time)
