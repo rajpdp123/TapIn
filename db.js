@@ -51,18 +51,16 @@ db.exec(`
 `);
 
 // Add device_id column if missing (migration for existing DBs)
+// Note: SQLite ALTER TABLE ADD COLUMN does not support UNIQUE constraint
 try {
-  db.exec(`ALTER TABLE members ADD COLUMN device_id TEXT UNIQUE`);
+  db.exec(`ALTER TABLE members ADD COLUMN device_id TEXT`);
 } catch (e) {
   // Column already exists — ignore
 }
-// Make phone nullable if it isn't already (SQLite doesn't support ALTER COLUMN,
-// but new table definition above already has phone without NOT NULL)
-// Existing rows with phone will keep working fine.
 
-// Create index for device_id lookups
+// Create unique index for device_id lookups (enforces uniqueness)
 try {
-  db.exec(`CREATE INDEX IF NOT EXISTS idx_members_device ON members(device_id)`);
+  db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_members_device ON members(device_id)`);
 } catch (e) { /* ignore */ }
 
 // ─── Prepared statements ───
