@@ -164,20 +164,67 @@ Reference the existing prototype at `tapin-prototype-standalone.html` in the rep
 
 ---
 
-## Deployment
+## Deployment — Git Push + Railway (YOU MUST DO ALL OF THIS)
 
-The app deploys to the existing Railway project. After building:
+After building the app, you MUST commit, push to GitHub, and deploy to Railway. Do not stop after writing code — the app must be live.
 
-1. Update the `Dockerfile` to install SQLite dependencies and copy the new file structure
-2. Add a Railway volume for SQLite persistence (mount at `/data`, set `DATABASE_PATH=/data/tapin.db` env var)
-3. Set timezone env var: `TZ=Europe/Berlin`
-4. Commit everything and push to `main` — Railway will auto-deploy
-5. Verify the live URL works: `https://tapin-pwa-production.up.railway.app`
-6. Verify the admin page works: `https://tapin-pwa-production.up.railway.app/admin`
+### Step 1: Git commit and push
 
-**Git access**: PAT `<GITHUB_PAT>` (HTTPS remote: `https://rajpdp123:<PAT>@github.com/rajpdp123/TapIn.git`)
+```bash
+cd ~/path-to/TapIn
+git add -A
+git commit -m "Build real TapIn PWA with Express + SQLite backend"
+git remote set-url origin https://rajpdp123:<GITHUB_PAT>@github.com/rajpdp123/TapIn.git
+git push origin main
+```
 
-**Railway CLI**: Use `railway` CLI to add the volume and set env vars. If not installed: `brew install railway` then `railway login`.
+Replace `<GITHUB_PAT>` with the actual token. If the push is blocked by GitHub secret scanning, make sure no tokens are hardcoded in source files — use environment variables instead.
+
+### Step 2: Railway setup
+
+The Railway project already exists. Use the Railway CLI to link to it and deploy:
+
+```bash
+# Install if needed
+brew install railway
+
+# Login
+railway login
+
+# Link to the existing project
+railway link --project ddc67cfa-4d5e-4cfb-b60c-99f884db04ff
+```
+
+### Step 3: Add volume for SQLite persistence
+
+```bash
+# Create a volume mounted at /data for the SQLite database
+railway volume add --mount /data
+```
+
+### Step 4: Set environment variables
+
+```bash
+railway variables set DATABASE_PATH=/data/tapin.db TZ=Europe/Berlin
+```
+
+### Step 5: Deploy
+
+```bash
+railway up
+```
+
+Or if auto-deploy from GitHub is configured, the push in Step 1 triggers it automatically. Verify either way.
+
+### Step 6: Verify
+
+- Open `https://tapin-pwa-production.up.railway.app` — customer PWA should load
+- Open `https://tapin-pwa-production.up.railway.app/admin` — admin feed should load
+- Test a check-in: enter a phone number, verify stamp 1 appears
+- Refresh the page, verify localStorage recognises you, one-tap check-in works
+- Check `/admin` shows the check-in in the feed
+
+If anything fails, check Railway logs (`railway logs`) and fix before finishing.
 
 **SQLite durability note**: SQLite on Railway volumes is fine for MVP traffic (~20-50 check-ins/day). Enable WAL mode (`PRAGMA journal_mode=WAL`) for better concurrent read/write handling. If the service grows, migrate to Railway's Postgres addon — but don't over-engineer for now.
 
