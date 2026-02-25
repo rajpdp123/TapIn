@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const { stmts, generateVerificationCode } = require('./db');
+const { db, stmts, generateVerificationCode } = require('./db');
 const { getTodaySchedule, findClassForCheckin } = require('./schedule');
 
 const app = express();
@@ -170,6 +170,12 @@ app.get('/api/admin/feed', (req, res) => {
 app.get('/api/admin/stats', (req, res) => {
   const stats = stmts.getTodayStats.get();
   res.json(stats);
+});
+
+// ─── Admin: Reset data (dev only) ───
+app.post('/api/admin/reset', (req, res) => {
+  db.exec('DELETE FROM rewards; DELETE FROM visits; DELETE FROM members;');
+  res.json({ success: true, message: 'All data cleared' });
 });
 
 // ─── Serve admin page ───
